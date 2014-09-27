@@ -8,19 +8,32 @@ using System.Collections;
 /// <summary>
 public class Item : MonoBehaviour {
 
-	public bool		bnPickedUp = false;	//< Is this item picked by somebody?
-	public float 	fBurnValue = 0.6f;	//< how much adds to the flame when dropped in the barrel (0..1 max)
+	public bool				bnPickedUp = false;	//< Is this item picked by somebody?
+	public float 			fBurnValue = 0.6f;	//< how much adds to the flame when dropped in the barrel (0..1 max)
+	public Transform 	trPickedBy;					//< Who picked us up?
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * UNITY
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	// Use this for initialization
 	void Start () {
 	
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void LateUpdate() {
+
+		if(trPickedBy != null) {
+
+			this.transform.position = trPickedBy.transform.position;
+		}
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * UNITY
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
 	/// Item touched with barrel: add 'health' to the fire, destroy the item
 	/// </summary>
@@ -36,17 +49,23 @@ public class Item : MonoBehaviour {
 	}
 	
 	/// <summary>
-	/// Check for collisions
+	/// What to do when this item is picked by someone
 	/// </summary>
-	public void OnTriggerEnter2D(Collider2D col) {
+	public void PickedUp(Transform trPicker) {
 
-		if(col.gameObject.layer == MainGame.nItemsLayer)
-			Debug.Log(this.transform + " Triggered by " + col.transform);
-		if(col.gameObject.layer == MainGame.nPlayerLayer)
-			Debug.Log(this.transform + " Health: " +  100);
-		// Collision witg the barrel?
-		if(col.gameObject.layer == MainGame.nBarrelLayer)
-			TouchWithBarrel(col.gameObject);
+		bnPickedUp = true;
+		transform.tag = "Picked";
+		trPickedBy = trPicker;
+	}
+
+	/// <summary>
+	/// What to do when this item is dropped by someone
+	/// </summary>
+	public void Dropped(Transform trPicker) {
+
+		bnPickedUp = false;
+		transform.tag = "Untagged";
+		trPickedBy = null;
 	}
 
 	/// <summary>
@@ -58,5 +77,19 @@ public class Item : MonoBehaviour {
 
 			Destroy(this.gameObject);
 		}
+	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * PHYSICS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+	/// <summary>
+	/// Check for collisions
+	/// </summary>
+	public void OnTriggerEnter2D(Collider2D col) {
+
+		// Collision with the barrel?
+		if(col.gameObject.layer == MainGame.nBarrelLayer)
+			TouchWithBarrel(col.gameObject);
 	}
 }
