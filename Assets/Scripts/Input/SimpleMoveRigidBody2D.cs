@@ -18,9 +18,10 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 	// PRIVATE
 	public bool bnAllowedToGetInput = true;
+	public bool	bnCanMoveHorizontally = true;	//< cannot move while on the air
 
 	// PROTECTED
-	float fMaxSpeed = 1f;
+	public float fMaxSpeed = 1f;	//< this value could (will) be changed by the Player script
 	float fMoveForce = 20f;
 
 	public 	MainGame.ePlayerType playerType;	//< from MainGame
@@ -56,10 +57,10 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 		if (bnAllowedToGetInput) {
 
-			if(playerType == MainGame.ePlayerType.DOG) {
+			if(playerType == MainGame.ePlayerType.DOG && bnCanMoveHorizontally) {
 				fH = Input.GetAxis ("Horizontal");
 			}
-			else {
+			else if(playerType == MainGame.ePlayerType.DUDE && bnCanMoveHorizontally) {
 
 				fH = Input.GetAxis ("Horizontal_2");
 			}
@@ -106,7 +107,7 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	/// <summary>
 	///
 	/// </summary>
-	void FlipSprite ()
+	public void FlipSprite ()
 	{
 
 
