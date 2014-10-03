@@ -16,6 +16,7 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	private Animator animator;
 	public Transform trSprite;
 
+	public Vector2 vRigidbodyVelocity;
 	// PRIVATE
 	public bool bnAllowedToGetInput = true;
 	public bool	bnCanMoveHorizontally = true;	//< cannot move while on the air
@@ -98,6 +99,9 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 			animator.SetFloat("vSpeed", Mathf.Abs(rigidbody2D.velocity.y));
 		}
+
+		//
+		vRigidbodyVelocity = rigidbody2D.velocity;
 	}
 
 	/* ==========================================================================================================

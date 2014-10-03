@@ -27,7 +27,7 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-	//	vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
+		vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
 	//	vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
 	}
 
@@ -53,14 +53,15 @@ public class CameraFollowTarget2D : MonoBehaviour {
 			tr.position = vNewPosition;
 		}
 
-		vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
+		//	vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
+		vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
 
-		if(vScreenWorldPosition.x < 0f) {
+		if(vViewPortWorldPosition.x < 0f) {
 
 				bnCamLockedLeft = true;
 				tr.position = vOldPosition;
 		}
-		else if(isEqual(vScreenWorldPosition.x, 0)) {
+		else if(isEqual(vViewPortWorldPosition.x, 0)) {
 
 			if(!bnCamLockedLeft) {
 				bnCamLockedLeft = true;

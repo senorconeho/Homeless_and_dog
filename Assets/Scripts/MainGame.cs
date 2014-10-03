@@ -26,6 +26,11 @@ public class MainGame : MonoBehaviour {
 
 	public eGameStatus gameStatus = eGameStatus.GAME_PLAY;
 
+	public Transform 		trDog;
+	public Transform		trDude;
+	public Player				dudeScript;
+	public Player				dogScript;
+
 	// Use this for initialization
 	void Start () {
 	

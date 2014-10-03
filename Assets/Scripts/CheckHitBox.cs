@@ -34,7 +34,7 @@ public class CheckHitBox : MonoBehaviour {
 	void CheckEnterTriggerHitBox(Transform trCol) {
 
 		// Dog collisions with...
-		if(this.transform.tag == "Dog") {
+		if(this.transform.tag == "Dog" || this.transform.tag == "Dude") {
 
 			// ... an item
 			if(trCol.gameObject.layer == MainGame.nItemsLayer) {
@@ -60,11 +60,12 @@ public class CheckHitBox : MonoBehaviour {
 	void CheckExitTriggerHitBox(Transform trCol) {
 
 		// Dog exited collisions with...
-		if(this.transform.tag == "Dog") {
+		if(this.transform.tag == "Dog" || this.transform.tag == "Dude") {
 
 			// ... an item
 			if(trCol.gameObject.layer == MainGame.nItemsLayer) {
-				
+			
+				// FIXME: what if the item is picked by another player?	
 				// is this item not picked yet?
 				if(trCol.tag != "Picked") {
 

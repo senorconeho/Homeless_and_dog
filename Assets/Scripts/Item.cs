@@ -8,9 +8,10 @@ using System.Collections;
 /// <summary>
 public class Item : MonoBehaviour {
 
-	public bool				bnPickedUp = false;	//< Is this item picked by somebody?
-	public float 			fBurnValue = 0.6f;	//< how much adds to the flame when dropped in the barrel (0..1 max)
-	public Transform 	trPickedBy;					//< Who picked us up?
+	public bool						bnPickedUp = false;	//< Is this item picked by somebody?
+	public float 					fBurnValue = 0.6f;	//< how much adds to the flame when dropped in the barrel (0..1 max)
+	public Transform 			trPickedBy;					//< Who picked us up?
+	public BoxCollider2D	col;
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
@@ -19,6 +20,7 @@ public class Item : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		col = GetComponent<BoxCollider2D>();
 	}
 	
 	// Update is called once per frame
@@ -56,6 +58,8 @@ public class Item : MonoBehaviour {
 		bnPickedUp = true;
 		transform.tag = "Picked";
 		trPickedBy = trPicker;
+		// disable all collisions
+		col.enabled = false;
 	}
 
 	/// <summary>
@@ -66,6 +70,8 @@ public class Item : MonoBehaviour {
 		bnPickedUp = false;
 		transform.tag = "Untagged";
 		trPickedBy = null;
+		// disable all collisions
+		col.enabled = true;
 	}
 
 	/// <summary>
