@@ -13,10 +13,13 @@ public class Player : MonoBehaviour {
 	public GameHUD								hudScript;		//< The in-game HUD
 	public Transform							trItemPicked;	//< Have we picked some item?
 	public Transform							trItemOver;		//< Transform of the item we are over
+	public Transform							trWindowOver;
 	public Transform							trCarrier;		//< Put the object that indicates where the items must be placed (usually CarrierPosition)
 	public Transform							trThrowCursor; 	//< Transform of the 'ThrowCursor' object. Only need for the homeless dude
+	public ThrowCursor						throwCursorScript;	//< The ThrowCursor from the cursor object
 	public SimpleMoveRigidBody2D	movementScript;
 	public MainGame								gameScript;
+	public Vector3								vThrowForceDirection;
 
 	private Animator animator;
 
@@ -62,6 +65,7 @@ public class Player : MonoBehaviour {
 			trThrowCursor = transform.Find("ThrowCursor");
 			if(trThrowCursor != null) {
 
+				throwCursorScript = trThrowCursor.gameObject.GetComponent<ThrowCursor>();
 				trThrowCursor.gameObject.SetActive(false);
 			}
 		}
@@ -91,6 +95,11 @@ public class Player : MonoBehaviour {
 		// FIXME
 		CheckInput();
 		FSMExecuteCurrentState();
+		if(throwCursorScript != null) {
+			float fAngle = throwCursorScript.GetCurrentAngle() * Mathf.Deg2Rad;
+			vThrowForceDirection = new Vector3(Mathf.Sign(this.transform.localScale.x) * Mathf.Cos(fAngle), Mathf.Sin(fAngle), 0.0f) * 5f;
+			//vThrowForceDirection = throwCursorScript.GetCursorDirection() * 5f;
+		}
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -136,7 +145,7 @@ public class Player : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 	/// <summary>
-	/// We are over some 
+	/// We are over some item
 	/// <summary>
 	public void OverItemEnter(Transform trItem) {
 
@@ -165,6 +174,30 @@ public class Player : MonoBehaviour {
 			hudScript.uiButtonBLabel.text = "";
 			trItemOver = null;
 		}
+	}
+
+	/// <summary>
+	/// We are over some window
+	/// <summary>
+	/// <param name="trWindow">The Transform of the window</param>
+	public void OverWindowEnter(Transform trWindow, Transform trWindowOtherSide) {
+
+		trWindowOver = trWindow;
+		// Updates the HUD
+		hudScript.uiButtonBLabel.text = "ENTER";
+	}
+
+	/// <summary>
+	/// 
+	/// <summary>
+	/// <param name="trWindow">The Transform of the window</param>
+	public void OverWindowExit(Transform trWindow) {
+
+		if(trWindowOver == trWindow)
+			trWindowOver = null;
+
+		// Updates the HUD
+		hudScript.uiButtonBLabel.text = "";
 	}
 
 	/// <summary>
@@ -231,10 +264,15 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	public void ThrowDog() {
 
-		float fMaxThrowForce = 5.0f;
+		float fMaxThrowForce = 10.0f;
+		float fAngle = throwCursorScript.GetCurrentAngle() * Mathf.Deg2Rad;
 
-		Vector2 vThrowForceDirection = Vector2.one * fMaxThrowForce;
+		vThrowForceDirection = new Vector3(Mathf.Sign(this.transform.localScale.x) * Mathf.Cos(fAngle), Mathf.Sin(fAngle), 0.0f) * fMaxThrowForce;
+		//vThrowForceDirection = throwCursorScript.GetCursorDirection() * fMaxThrowForce;
+
 		gameScript.dogScript.ThrowDog(vThrowForceDirection);
+		// Change the FSM
+		FSMEnterNewState(eFSMState.IDLE);
 	}
 
 	/// <summary>
@@ -268,6 +306,12 @@ public class Player : MonoBehaviour {
 				else if(trItemOver != null) {
 					// Pick the item
 					PickItem();
+				}
+				else if(trWindowOver != null) {
+
+					Window windowScript = trWindowOver.gameObject.GetComponent<Window>();
+					if(windowScript != null)
+						this.transform.position = windowScript.trWindowOtherSide.transform.position;
 				}
 			}
 			if(Input.GetKeyUp(KeyCode.L)) { // Dog Button A
@@ -514,6 +558,8 @@ public class Player : MonoBehaviour {
 					// Dude: enable the throw
 					trThrowCursor.gameObject.SetActive(false);
 					// Updates the HUD
+					hudScript.uiButtonBLabel.text = "";
+					hudScript.ThrowBarDeactivate();
 					hudScript.ButtonAAnimate(false);
 				}
 				break;
@@ -523,4 +569,14 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	///
+	/// </summary>
+	public void OnDrawGizmos() {
+
+		//if(playerType == MainGame.ePlayerType.DUDE) {
+		//	Gizmos.color = Color.red;
+		//	Gizmos.DrawRay(gameScript.trDog.position, vThrowForceDirection);
+		//}
+	}
 }

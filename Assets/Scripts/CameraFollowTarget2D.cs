@@ -39,18 +39,46 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		if(trTarget == null)
 			return;
 
-		Vector3 vTargetPosition = trTarget.position;
-		Vector3 vOldPosition = tr.position;
+		Vector3 vTargetPosition = trTarget.position;	// The position of the target in the world
+		Vector3 vCurrentCameraPosition = tr.position;						// Current camera position
+		// HORIZONTAL CHECK
 		// Check where the target is in the screen
 		if(vTargetPosition.x < tr.position.x && !bnCamLockedLeft) {
 
+			// Check left limit
 			Vector3 vNewPosition = new Vector3(vTargetPosition.x, tr.position.y, tr.position.z);
 			tr.position = vNewPosition;
 		}
 		else if(vTargetPosition.x > tr.position.x) {
 
+			// make the camera follow
 			Vector3 vNewPosition = new Vector3(vTargetPosition.x, tr.position.y, tr.position.z);
 			tr.position = vNewPosition;
+		}
+
+		// VERTICAL CHECK
+		// 1 - If the dog is in the upper half of the camera, follow it
+		if(vTargetPosition.y < vCurrentCameraPosition.y) {
+
+			// FIXME: fix the 0.72f value with a 'half room height' value or something like that
+			if(vCurrentCameraPosition.y > 0.72f) {
+
+
+				Vector3 vNewPosition = tr.position;
+				vNewPosition.y = vTargetPosition.y;
+				tr.position = vNewPosition;
+			}
+
+
+		}
+		else if(vTargetPosition.y > vCurrentCameraPosition.y) {
+			
+			Vector3 vNewPosition = tr.position;
+			vNewPosition.y = vTargetPosition.y;
+			tr.position = vNewPosition;
+		}
+		else {
+
 		}
 
 		//	vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
@@ -59,18 +87,19 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		if(vViewPortWorldPosition.x < 0f) {
 
 				bnCamLockedLeft = true;
-				tr.position = vOldPosition;
+				tr.position = vCurrentCameraPosition;
 		}
 		else if(isEqual(vViewPortWorldPosition.x, 0)) {
 
 			if(!bnCamLockedLeft) {
 				bnCamLockedLeft = true;
-				tr.position = vOldPosition;
+				tr.position = vCurrentCameraPosition;
 			}
 		}
 		else
 			bnCamLockedLeft = false;
 
+		// VERTICAL
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------

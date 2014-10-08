@@ -9,10 +9,11 @@ public class ThrowCursor : MonoBehaviour {
 	float fMinAngle = 0;
 	float fMaxAngle = 90;
 	public float fCurrentAngle;
-	float fIncrementAngle = 120.0f;
+	float fIncrementAngle = 30.0f;
 	float	fRadius = 0.2f;
 	public Vector3	vNewPosition;
 	public Vector2 	vOffset;
+	public Vector2 	vDirection;
 
 
 	void OnEnable() {
@@ -70,5 +71,10 @@ public class ThrowCursor : MonoBehaviour {
 	public float GetCurrentAngle() {
 
 		return fCurrentAngle;
+	}
+
+	public Vector3 GetCursorDirection() {
+
+		return vNewPosition.normalized;
 	}
 }

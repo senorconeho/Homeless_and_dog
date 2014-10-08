@@ -10,6 +10,7 @@ public class MainGame : MonoBehaviour {
 	static public int	nPlayerLayer = 9;
 	static public int	nItemsLayer = 10;
 	static public int	nBarrelLayer = 11;
+	static public int nWindowsLayer = 12;
 
 	// Players types
 	public enum ePlayerType {
