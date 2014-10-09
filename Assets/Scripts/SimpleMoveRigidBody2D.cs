@@ -100,6 +100,7 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 			animator.SetFloat("vSpeed", Mathf.Abs(rigidbody2D.velocity.y));
 		}
 
+
 		//
 		vRigidbodyVelocity = rigidbody2D.velocity;
 	}

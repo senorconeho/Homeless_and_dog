@@ -22,6 +22,13 @@ public class CameraFollowTarget2D : MonoBehaviour {
 
 		cam = gameObject.GetComponent<Camera>();	
 		tr = this.transform;
+
+		if(trTarget != null) {
+
+			// Tell the player that we are they camera
+			Player playerScript = trTarget.gameObject.GetComponent<Player>();
+			playerScript.RegisterCamera(this.transform, this);
+		}
 	}
 	
 	// Update is called once per frame
@@ -110,5 +117,31 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	bool isEqual(float a, float b) {
 
 		return(Mathf.Abs(a - b) < 0.001f);
+	}
+	
+	/// <summary>
+	///
+	/// </summary>
+	public void FocusCameraOnTarget() {
+
+		Vector3 vTargetPosition = trTarget.position;	// The position of the target in the world
+		vTargetPosition.z = this.transform.position.z;
+		this.transform.position = vTargetPosition;
+		CheckHorizontalLimits();
+	}
+
+	/// <summary>
+	/// Check if the camera is showing something beyound the 0 world position
+	/// </summary>
+	void CheckHorizontalLimits() {
+
+		// Check the viewport position: what of the world the camera is showing?
+		vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
+		if(vViewPortWorldPosition.x < 0.0f) {
+
+			Vector3 vTargetPosition = transform.position;	// The position of the target in the world
+			vTargetPosition.x = .80f; // FIXME: half width of the screen
+			this.transform.position = vTargetPosition;
+		}
 	}
 }

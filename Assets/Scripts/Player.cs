@@ -21,6 +21,9 @@ public class Player : MonoBehaviour {
 	public MainGame								gameScript;
 	public Vector3								vThrowForceDirection;
 
+	Transform							trCamera;
+	CameraFollowTarget2D	cameraScript;
+
 	private Animator animator;
 
 	float		fCarryingItemSpeed = 0.5f;
@@ -100,6 +103,15 @@ public class Player : MonoBehaviour {
 			vThrowForceDirection = new Vector3(Mathf.Sign(this.transform.localScale.x) * Mathf.Cos(fAngle), Mathf.Sin(fAngle), 0.0f) * 5f;
 			//vThrowForceDirection = throwCursorScript.GetCursorDirection() * 5f;
 		}
+	}
+
+	/// <summary>
+	/// The camera will call this method to register itself with this player
+	/// </summary>
+	public void RegisterCamera(Transform trCam, CameraFollowTarget2D camScript) {
+
+		trCamera = trCam;
+		cameraScript = camScript;
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -184,7 +196,7 @@ public class Player : MonoBehaviour {
 
 		trWindowOver = trWindow;
 		// Updates the HUD
-		hudScript.uiButtonBLabel.text = "ENTER";
+		hudScript.uiButtonALabel.text = "JUMP IN";
 	}
 
 	/// <summary>
@@ -197,7 +209,7 @@ public class Player : MonoBehaviour {
 			trWindowOver = null;
 
 		// Updates the HUD
-		hudScript.uiButtonBLabel.text = "";
+		hudScript.uiButtonALabel.text = "";
 	}
 
 	/// <summary>
@@ -307,12 +319,6 @@ public class Player : MonoBehaviour {
 					// Pick the item
 					PickItem();
 				}
-				else if(trWindowOver != null) {
-
-					Window windowScript = trWindowOver.gameObject.GetComponent<Window>();
-					if(windowScript != null)
-						this.transform.position = windowScript.trWindowOtherSide.transform.position;
-				}
 			}
 			if(Input.GetKeyUp(KeyCode.L)) { // Dog Button A
 
@@ -326,6 +332,14 @@ public class Player : MonoBehaviour {
 
 					// Jump off the lap of the dude
 					FSMEnterNewState(eFSMState.ON_AIR);
+				}
+				else if(trWindowOver != null) {
+
+					Window windowScript = trWindowOver.gameObject.GetComponent<Window>();
+					if(windowScript != null && windowScript.trWindowOtherSide != null)  {
+						this.transform.position = windowScript.trWindowOtherSide.transform.position;
+						cameraScript.FocusCameraOnTarget();
+					}
 				}
 			}
 		}
@@ -568,6 +582,11 @@ public class Player : MonoBehaviour {
 				break;
 		}
 	}
+
+	/* ====================================================================================================
+	 * DEBUG STUFF
+	 * ====================================================================================================
+	 */
 
 	/// <summary>
 	///
