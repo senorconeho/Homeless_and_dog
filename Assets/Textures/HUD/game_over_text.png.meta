@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 30cf1d5900644f04d9226b34a981fb25
+guid: 820e17ce3270c0c499387b83084732b8
 TextureImporter:
   fileIDToRecycleName:
-    21300000: button_A_strip2
+    21300000: game_over_text
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -18,12 +18,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: .25
     normalMapFilter: 0
-  isReadable: 0
+  isReadable: 1
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
-  textureFormat: -3
-  maxTextureSize: 1024
+  textureFormat: 5
+  maxTextureSize: 4096
   textureSettings:
     filterMode: 0
     aniso: 1

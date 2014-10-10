@@ -53,4 +53,14 @@ public class MainGame : MonoBehaviour {
 
 		fNoiseMade += fNoise;	
 	}
+
+	/// <summary>
+	/// </summary>
+	public void ChangeStatusToGameOver() {
+		// Change the status
+		gameStatus = eGameStatus.GAME_OVER;
+		// Activate the message on the screens
+		dudeScript.ActivateGameOver();
+		dogScript.ActivateGameOver();
+	}
 }

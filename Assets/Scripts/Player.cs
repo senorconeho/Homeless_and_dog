@@ -61,6 +61,7 @@ public class Player : MonoBehaviour {
 		animator = this.GetComponent<Animator> ();
 		gameScript = GameObject.Find("Game").gameObject.GetComponent<MainGame>();
 
+		// HUD STUFF
 		// Get the objects for each type of player
 		if(playerType == MainGame.ePlayerType.DUDE) {
 
@@ -72,6 +73,7 @@ public class Player : MonoBehaviour {
 				trThrowCursor.gameObject.SetActive(false);
 			}
 		}
+
 	}
 
 	// Use this for initialization
@@ -319,15 +321,26 @@ public class Player : MonoBehaviour {
 		FSMEnterNewState(eFSMState.ON_AIR);
 		rigidbody2D.AddForce(vThrowForce, ForceMode2D.Impulse);
 	}
+	
+	/// <summary>
+	/// </summary>
+	public void ActivateGameOver() {
+
+		hudScript.ShowGameOver();
+		movementScript.bnAllowedToGetInput = false;
+	}
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * INPUT: MOVE TO ANOTHER SCRIPT, PLEASE!
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-	/// <summary>
+		/// <summary>
 	/// Check the player input
 	/// <summary>
 	void CheckInput() {
+
+		if(!movementScript.bnAllowedToGetInput)
+			return;
 
 		// --------------------------------------------------------
 		// DOG STUFF

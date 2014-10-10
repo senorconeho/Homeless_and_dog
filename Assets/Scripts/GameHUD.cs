@@ -13,6 +13,7 @@ public class GameHUD : MonoBehaviour {
 	public UISpriteAnimation	uiButtonBAnimation;
 	public Transform					trThrowBar;
 	public UISlider						uiThrowBar;
+	public Transform					trSpriteGameOver;
 
 	// Use this for initialization
 	void Start () {
@@ -39,9 +40,15 @@ public class GameHUD : MonoBehaviour {
 
 		// For the dude only: find the throw bar object
 		trThrowBar = trUI.Find("ThrowBar");
-		uiThrowBar = trThrowBar.gameObject.GetComponent<UISlider>();
-		uiThrowBar.sliderValue = 0.0f;
-		trThrowBar.gameObject.SetActive(false);
+		if(trThrowBar != null) {
+			uiThrowBar = trThrowBar.gameObject.GetComponent<UISlider>();
+			uiThrowBar.sliderValue = 0.0f;
+			trThrowBar.gameObject.SetActive(false);
+		}
+
+		// Find the "Game Over" sprite
+		trSpriteGameOver = trUI.Find("SpriteGameOver");
+		trSpriteGameOver.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -89,5 +96,13 @@ public class GameHUD : MonoBehaviour {
 			}
 			uiThrowBar.sliderValue = fValue;
 		}
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void ShowGameOver() {
+
+		trSpriteGameOver.gameObject.SetActive(true);
 	}
 }

@@ -36,7 +36,7 @@ public class Barrel : MonoBehaviour {
 	/// </summary>
 	void Update () {
 
-		if(fFireHealth >= 0) {
+		if(fFireHealth > 0) {
 				
 			fFireHealth -= Time.deltaTime * fBurnSpeed;
 			fFireHealth = Mathf.Clamp01(fFireHealth);
@@ -51,7 +51,7 @@ public class Barrel : MonoBehaviour {
 		}
 		else {
 
-			gameScript.gameStatus = MainGame.eGameStatus.GAME_OVER;
+			gameScript.ChangeStatusToGameOver();
 		}
 	}
 
