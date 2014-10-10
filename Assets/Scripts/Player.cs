@@ -196,7 +196,14 @@ public class Player : MonoBehaviour {
 
 		trWindowOver = trWindow;
 		// Updates the HUD
-		hudScript.uiButtonALabel.text = "JUMP IN";
+		// Are we holding an item?
+		if(trItemPicked != null) {
+
+			hudScript.uiButtonALabel.text = "THROW OUT";
+		}
+		else {
+			hudScript.uiButtonALabel.text = "JUMP IN";
+		}
 	}
 
 	/// <summary>
@@ -264,7 +271,24 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
-	//
+	/// Throw an item through the window. Only works if the window is the 'inside one'
+	/// </summary>
+	void ThrowItemThroughWindow(Transform trWindowOutside) {
+
+		if(trItemPicked == null)  
+			return;
+
+		// 1 - Move the item to the out window location
+		trItemPicked.transform.position = trWindowOutside.transform.position;
+		// Updates the HUD
+		hudScript.uiButtonALabel.text = "";
+
+		// 2 - Drop the item
+		DropItem();
+	}
+
+	/// <summary>
+	///
 	/// </summary>
 	public void DogJumpedOnMyLap() {
 
@@ -305,7 +329,9 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	void CheckInput() {
 
+		// --------------------------------------------------------
 		// DOG STUFF
+		// --------------------------------------------------------
 		if(playerType == MainGame.ePlayerType.DOG) {
 
 			if(Input.GetKeyUp(KeyCode.K)) { // Dog Button B
@@ -333,17 +359,30 @@ public class Player : MonoBehaviour {
 					// Jump off the lap of the dude
 					FSMEnterNewState(eFSMState.ON_AIR);
 				}
-				else if(trWindowOver != null) {
+				else if(trWindowOver != null) { // Touching a window
 
 					Window windowScript = trWindowOver.gameObject.GetComponent<Window>();
 					if(windowScript != null && windowScript.trWindowOtherSide != null)  {
-						this.transform.position = windowScript.trWindowOtherSide.transform.position;
-						cameraScript.FocusCameraOnTarget();
+
+						if(trItemPicked != null) {
+
+							// Are we carrying an item? Throw it out the window!
+							ThrowItemThroughWindow(windowScript.trWindowOtherSide);
+						}
+						else {
+
+							// Throw ourselves out the window
+							this.transform.position = windowScript.trWindowOtherSide.transform.position;
+							cameraScript.FocusCameraOnTarget();
+						}
 					}
 				}
 			}
 		}
+
+		// --------------------------------------------------------
 		// DUDE STUFF
+		// --------------------------------------------------------
 		if(playerType == MainGame.ePlayerType.DUDE) {
 
 			if(Input.GetKeyUp(KeyCode.Y)) { // Dude Button B

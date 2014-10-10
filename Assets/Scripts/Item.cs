@@ -59,7 +59,7 @@ public class Item : MonoBehaviour {
 		transform.tag = "Picked";
 		trPickedBy = trPicker;
 		// disable all collisions
-		col.enabled = false;
+		//col.enabled = false;
 	}
 
 	/// <summary>
@@ -71,7 +71,7 @@ public class Item : MonoBehaviour {
 		transform.tag = "Untagged";
 		trPickedBy = null;
 		// disable all collisions
-		col.enabled = true;
+		//col.enabled = true;
 	}
 
 	/// <summary>
@@ -95,7 +95,15 @@ public class Item : MonoBehaviour {
 	public void OnTriggerEnter2D(Collider2D col) {
 
 		// Collision with the barrel?
-		if(col.gameObject.layer == MainGame.nBarrelLayer)
+		if(col.gameObject.layer == MainGame.nBarrelLayer) {
+		
 			TouchWithBarrel(col.gameObject);
+		}
+		// Collision with window (the inside window, i.e., the on inside the apartment 
+		if(col.gameObject.layer == MainGame.nWindowsLayer && col.transform.tag == "WindowInside") {
+
+			// DEBUG
+			Debug.Log("Collision with window");
+		}
 	}
 }

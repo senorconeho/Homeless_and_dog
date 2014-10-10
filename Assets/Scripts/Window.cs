@@ -7,6 +7,8 @@ public class Window : MonoBehaviour {
 	MainGame	gameScript = null;
 	public Transform	trWindowOtherSide;
 
+	// DEBUG STUFF
+
 	// Use this for initialization
 	void Start () {
 	
@@ -64,4 +66,19 @@ public class Window : MonoBehaviour {
 
 		CheckExitTriggerHitBox(col.transform);
 	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * DEBUG STUFF
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+
+	void OnDrawGizmos() {
+
+		if(trWindowOtherSide != null) {
+
+			Gizmos.color = Color.green;
+			Gizmos.DrawLine(transform.position, trWindowOtherSide.transform.position);
+		}
+	}
+
 }
