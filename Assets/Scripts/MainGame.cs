@@ -24,8 +24,9 @@ public class MainGame : MonoBehaviour {
 
 	public enum eGameStatus {
 
-		GAME_PLAY,
-		GAME_PAUSE,
+		GAME_START_SCREEN, 
+		GAME_PLAY,			// Game executing
+		GAME_PAUSE,			// Game paused: ignore input from the player
 		GAME_OVER
 	};
 
@@ -63,5 +64,20 @@ public class MainGame : MonoBehaviour {
 		// Activate the message on the screens
 		dudeScript.ActivateGameOver();
 		dogScript.ActivateGameOver();
+	}
+
+	/// <summary>
+	///	Return the current game status
+	/// </summary>
+	public eGameStatus GetCurrentGameStatus() {
+
+		return gameStatus;
+	}
+
+	/// <summary>
+	/// On the start screen, the dog entered the game
+	/// </summary>
+	public void DogEnteredTheGame() {
+
 	}
 }

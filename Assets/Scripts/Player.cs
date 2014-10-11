@@ -59,7 +59,7 @@ public class Player : MonoBehaviour {
 		hudScript = GetComponent<GameHUD>();
 		movementScript = GetComponent<SimpleMoveRigidBody2D>();
 		animator = this.GetComponent<Animator> ();
-		gameScript = GameObject.Find("Game").gameObject.GetComponent<MainGame>();
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 
 		// HUD STUFF
 		// Get the objects for each type of player
@@ -125,6 +125,10 @@ public class Player : MonoBehaviour {
 	/// </summary>
 	public void OverDudeEnter() {
 
+		// ignore all collisions when not playing
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
+
 		// Dog with dude? 
 		if(playerType == MainGame.ePlayerType.DOG) {
 
@@ -132,7 +136,7 @@ public class Player : MonoBehaviour {
 				//
 				hudScript.uiButtonALabel.text = "JUMP OFF";
 			}
-			else {
+			else if(hudScript != null){
 				// Updates the HUD
 				hudScript.uiButtonALabel.text = "JUMP ON";
 				bnCollisionDogAndDude = true;
@@ -145,12 +149,18 @@ public class Player : MonoBehaviour {
 	/// </summary>
 	public void OverDudeExit() {
 
+		// ignore all collisions when not playing
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
+
 		// Dog with dude? 
 		if(playerType == MainGame.ePlayerType.DOG) {
 
-			// Updates the HUD
-			hudScript.uiButtonALabel.text = "";
-			bnCollisionDogAndDude = false;
+			if(hudScript != null) {
+				// Updates the HUD
+				hudScript.uiButtonALabel.text = "";
+				bnCollisionDogAndDude = false;
+			}
 		}
 	}
 
@@ -162,6 +172,10 @@ public class Player : MonoBehaviour {
 	/// We are over some item
 	/// <summary>
 	public void OverItemEnter(Transform trItem) {
+
+		// ignore all collisions when not playing
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
 
 		// Do we have an item already?
 		if(trItemPicked != null)
@@ -177,6 +191,10 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	/// <param name="trItem">The Transform of the item</param>
 	public void OverItemExit(Transform trItem) {
+
+		// ignore all collisions when not playing
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
 
 		// Do we have an item already?
 		if(trItemPicked != null)
@@ -196,6 +214,10 @@ public class Player : MonoBehaviour {
 	/// <param name="trWindow">The Transform of the window</param>
 	public void OverWindowEnter(Transform trWindow, Transform trWindowOtherSide) {
 
+		// ignore all collisions when not playing
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
+
 		trWindowOver = trWindow;
 		// Updates the HUD
 		// Are we holding an item?
@@ -213,6 +235,10 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	/// <param name="trWindow">The Transform of the window</param>
 	public void OverWindowExit(Transform trWindow) {
+
+		// ignore all collisions when not playing
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
 
 		if(trWindowOver == trWindow)
 			trWindowOver = null;
@@ -339,14 +365,29 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	void CheckInput() {
 
-		if(!movementScript.bnAllowedToGetInput)
-			return;
+		//if(!movementScript.bnAllowedToGetInput)
+		//	return;
 
 		// --------------------------------------------------------
 		// DOG STUFF
 		// --------------------------------------------------------
 		if(playerType == MainGame.ePlayerType.DOG) {
 
+			// On the start screen
+			if(Input.GetKeyUp(KeyCode.Return)) {
+
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
+					// Allow the player to move around
+					movementScript.bnAllowedToGetInput = true;
+					// Hud
+					hudScript.uiCenterScreenLabel.text = "Waiting another player";
+					// Dog pressed the start button on the start screen
+					gameScript.DogEnteredTheGame();
+				}
+			}
+
+
+			//
 			if(Input.GetKeyUp(KeyCode.K)) { // Dog Button B
 
 				// Are we holding an item?

@@ -14,6 +14,26 @@ public class GameHUD : MonoBehaviour {
 	public Transform					trThrowBar;
 	public UISlider						uiThrowBar;
 	public Transform					trSpriteGameOver;
+	public UILabel						uiCenterScreenLabel;
+
+	//
+	Player	playerScript;
+
+	void Awake() {
+
+		playerScript = GetComponent<Player>();
+
+		// find the panel object
+		if(trUI == null && playerScript.playerType == MainGame.ePlayerType.DOG) {
+
+			trUI = GameObject.Find("/UI Root (2D)/CameraLeft/PanelDog").gameObject.transform;
+		}
+		if(trUI == null && playerScript.playerType == MainGame.ePlayerType.DUDE) {
+
+			trUI = GameObject.Find("/UI Root (2D)/CameraRight/PanelDude").gameObject.transform;
+		}
+	}
+
 
 	// Use this for initialization
 	void Start () {
@@ -21,6 +41,9 @@ public class GameHUD : MonoBehaviour {
 		// Get all the UI components
 		if(trUI == null)
 			return;
+
+		// Get the center screen label
+		uiCenterScreenLabel = trUI.Find("Label_CenterScreen").gameObject.GetComponent<UILabel>();
 
 		// Get the buttons labels
 		uiButtonALabel = trUI.Find("Label_A").gameObject.GetComponent<UILabel>();
