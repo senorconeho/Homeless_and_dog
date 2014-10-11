@@ -25,6 +25,7 @@ public class MainGame : MonoBehaviour {
 	public enum eGameStatus {
 
 		GAME_PLAY,
+		GAME_PAUSE,
 		GAME_OVER
 	};
 
