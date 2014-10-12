@@ -30,12 +30,14 @@ public class MainGame : MonoBehaviour {
 		GAME_OVER
 	};
 
-	public eGameStatus gameStatus = eGameStatus.GAME_PLAY;
+	public eGameStatus gameStatus = eGameStatus.GAME_START_SCREEN;
 
 	public Transform 		trDog;
 	public Transform		trDude;
 	public Player				dudeScript;
 	public Player				dogScript;
+	public bool					bnDogEnteredTheGame = false;
+	public bool					bnDudeEnteredTheGame = false;
 
 	public float				fNoiseMade = 0.0f;
 	// Use this for initialization
@@ -79,5 +81,26 @@ public class MainGame : MonoBehaviour {
 	/// </summary>
 	public void DogEnteredTheGame() {
 
+		bnDogEnteredTheGame = true;
+
+		if(bnDudeEnteredTheGame) {
+
+			// TODO: start game!
+			Application.LoadLevel(Application.loadedLevel+1);
+		}
+
+	}
+	/// <summary>
+	/// On the start screen, the dog entered the game
+	/// </summary>
+	public void DudeEnteredTheGame() {
+
+		bnDudeEnteredTheGame = true;
+
+		if(bnDogEnteredTheGame) {
+
+			// TODO: start game!
+			Application.LoadLevel(Application.loadedLevel+1);
+		}
 	}
 }

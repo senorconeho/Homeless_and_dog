@@ -22,7 +22,7 @@ public class Barrel : MonoBehaviour {
 	/// </summary>
 	void Awake () {
 
-		gameScript = GameObject.Find("Game").gameObject.GetComponent<MainGame>();
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 		fBurnSpeed = 1f/fBurnTime;
 
 		if(trFireFlame != null) {

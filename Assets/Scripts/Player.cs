@@ -380,7 +380,7 @@ public class Player : MonoBehaviour {
 					// Allow the player to move around
 					movementScript.bnAllowedToGetInput = true;
 					// Hud
-					hudScript.uiCenterScreenLabel.text = "Waiting another player";
+					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
 					gameScript.DogEnteredTheGame();
 				}
@@ -438,6 +438,19 @@ public class Player : MonoBehaviour {
 		// DUDE STUFF
 		// --------------------------------------------------------
 		if(playerType == MainGame.ePlayerType.DUDE) {
+
+			// On the start screen
+			if(Input.GetKeyUp(KeyCode.Space)) {
+
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
+					// Allow the player to move around
+					movementScript.bnAllowedToGetInput = true;
+					// Hud
+					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
+					// Dog pressed the start button on the start screen
+					gameScript.DudeEnteredTheGame();
+				}
+			}
 
 			if(Input.GetKeyUp(KeyCode.Y)) { // Dude Button B
 

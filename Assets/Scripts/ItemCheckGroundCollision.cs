@@ -12,7 +12,7 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 
 	void Awake() {
 
-		gameScript = GameObject.Find("Game").gameObject.GetComponent<MainGame>();
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 	}
 
 	/// <summary>

@@ -12,7 +12,7 @@ public class Window : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		gameScript = GameObject.Find("Game").gameObject.GetComponent<MainGame>();
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 		dogScript = gameScript.dogScript; 
 	}
 	
