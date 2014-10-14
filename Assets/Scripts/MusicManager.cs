@@ -6,7 +6,7 @@ using System.Collections;
 /// </summary>
 public class MusicManager : MonoBehaviour {
 
-	public AudioClip	musicInGameSong;
+	public AudioClip	clipInGameSong;
 	AudioSource				musicSource;
 	public float 			fMusicPitch;
 	MainGame					gameScript;
@@ -29,6 +29,13 @@ public class MusicManager : MonoBehaviour {
 	/// </summary>
 	void Start () {
 	
+		// Are we inside a level? Play the in game music
+		if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+
+			musicSource.clip = clipInGameSong;
+			musicSource.loop = true;
+			musicSource.Play();
+		}
 	}
 	
 	/// <summary>
