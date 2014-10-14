@@ -25,8 +25,8 @@ public class MainGame : MonoBehaviour {
 	public enum eGameStatus {
 
 		GAME_START_SCREEN, 
-		GAME_PLAY,			// Game executing
-		GAME_PAUSE,			// Game paused: ignore input from the player
+		GAME_PLAY,				// Game executing
+		GAME_PAUSE,				// Game paused: ignore input from the player
 		GAME_OVER
 	};
 
@@ -36,10 +36,17 @@ public class MainGame : MonoBehaviour {
 	public Transform		trDude;
 	public Player				dudeScript;
 	public Player				dogScript;
+	public GameHUD			hudDudeScript;
+	public GameHUD			hudDogScript;
 	public bool					bnDogEnteredTheGame = false;
 	public bool					bnDudeEnteredTheGame = false;
 
 	public float				fNoiseMade = 0.0f;
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * UNITY MAIN LOOP
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	// Use this for initialization
 	void Start () {
 	
@@ -50,12 +57,22 @@ public class MainGame : MonoBehaviour {
 	
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 *                 
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
-	///
+	/// Add noise made by the players to the 'noise meter'
 	/// </summary>
+	/// <param name="fNoise"> Value of the noise </param>
 	public void AddNoise(float fNoise) {
 
-		fNoiseMade += fNoise;	
+		fNoiseMade += fNoise;
+		fNoiseMade = Mathf.Clamp01(fNoiseMade);	
+
+		// Update the HUD
+		hudDudeScript.NoiseBarUpdate(fNoiseMade);
+		hudDogScript.NoiseBarUpdate(fNoiseMade);
 	}
 
 	/// <summary>

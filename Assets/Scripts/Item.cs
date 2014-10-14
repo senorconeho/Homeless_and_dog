@@ -12,6 +12,7 @@ public class Item : MonoBehaviour {
 	public float 					fBurnValue = 0.6f;	//< how much adds to the flame when dropped in the barrel (0..1 max)
 	public Transform 			trPickedBy;					//< Who picked us up?
 	public BoxCollider2D	col;
+	public bool						bnCrashed;					//< Have this item crashed on the ground?
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
@@ -72,6 +73,15 @@ public class Item : MonoBehaviour {
 		trPickedBy = null;
 		// disable all collisions
 		//col.enabled = true;
+	}
+
+	/// <summary>
+	/// This item fell from some height into the ground (adding noise and crashing)
+	/// </summary>
+	public void Crashed() {
+
+		if(!bnCrashed)
+			bnCrashed = true;
 	}
 
 	/// <summary>

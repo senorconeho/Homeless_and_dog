@@ -1,21 +1,104 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Window logic
+/// </summary>
 public class Window : MonoBehaviour {
 
-	Player		dogScript = null;
-	MainGame	gameScript = null;
-	public Transform	trWindowOtherSide;
+	Player						dogScript = null;
+	MainGame					gameScript = null;
+	public Transform	trWindowOtherSide;		//< The other 'side' of this window
 
-	// DEBUG STUFF
+	public enum eWindowStatusType {
 
-	// Use this for initialization
+		CLOSED,
+		OPEN
+	};
+
+	public eWindowStatusType windowStatus;
+
+	public Sprite			spriteWindowOpen;
+	public Sprite			spriteWindowClosed;
+
+	SpriteRenderer		spriteRenderer;
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * UNITY MAIN LOOP
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+	/// <summary>
+	/// </summary>
+	void Awake() {
+
+		spriteRenderer = GetComponent<SpriteRenderer>();
+	}
+
+	/// <summary>
+	/// Use this for initialization
+	/// </summary>
 	void Start () {
 	
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 		dogScript = gameScript.dogScript; 
+
+		// Update the window sprite
+		if(windowStatus == eWindowStatusType.OPEN) {
+
+			// Update the sprite
+			spriteRenderer.sprite = spriteWindowOpen;
+		}
+		// Update the window sprite
+		if(windowStatus == eWindowStatusType.CLOSED) {
+
+			// Update the sprite
+			spriteRenderer.sprite = spriteWindowClosed;
+		}
+	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * 
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+	/// <summary>
+	/// Check if the window is open, i.e., the dog can enter it
+	/// </summary>
+	/// <returns> A boolean if the window is open </returns>
+	public bool IsTheWindowOpen() {
+
+		return (windowStatus == eWindowStatusType.OPEN);
 	}
 	
+	/// <summary>
+	/// 
+	/// </summary>
+	public void CloseWindow() {
+
+		if(windowStatus == eWindowStatusType.OPEN) {
+
+			windowStatus = eWindowStatusType.CLOSED;
+			// Update the sprite
+			spriteRenderer.sprite = spriteWindowClosed;
+		}
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public void OpenWindow() {
+
+		if(windowStatus == eWindowStatusType.CLOSED) {
+
+			windowStatus = eWindowStatusType.OPEN;
+			// Update the sprite
+			spriteRenderer.sprite = spriteWindowOpen;
+		}
+	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * PHYSICS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
 	/// Someone entered the hit box trigger
 	/// </summary>
@@ -28,7 +111,7 @@ public class Window : MonoBehaviour {
 			if(dogScript == null)
 				dogScript = gameScript.dogScript;
 
-			if(dogScript != null)
+			if(dogScript != null && windowStatus != eWindowStatusType.CLOSED)
 				dogScript.OverWindowEnter(this.transform, trWindowOtherSide);
 		}
 	}
@@ -46,13 +129,8 @@ public class Window : MonoBehaviour {
 		}
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------
-	 * PHYSICS
-	 * -----------------------------------------------------------------------------------------------------------
-	 */
-
 	/// <summary>
-	///
+	///	Trigger entered
 	/// </summary>
 	public void OnTriggerEnter2D(Collider2D col) {
 
@@ -60,7 +138,7 @@ public class Window : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// Trigger exited
 	/// </summary>
 	public void OnTriggerExit2D(Collider2D col) {
 
@@ -71,7 +149,6 @@ public class Window : MonoBehaviour {
 	 * DEBUG STUFF
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-
 	void OnDrawGizmos() {
 
 		if(trWindowOtherSide != null) {

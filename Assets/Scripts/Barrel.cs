@@ -9,20 +9,24 @@ using System.Collections;
 /// </summary>
 public class Barrel : MonoBehaviour {
 
-	public float fFireHealth = 1;
-	public float fBurnTime = 15;	//< How many seconds to burn all the fire?
-	float fBurnSpeed = 1;
-	public Transform trFireFlame;
-	Vector3 vFireFlameStartPosition;
+	public float 			fFireHealth = 1;
+	public float 			fBurnTime = 15;	//< How many seconds to burn all the fire?
+	float 						fBurnSpeed = 1;
+	public Transform 	trFireFlame;
+	Vector3 					vFireFlameStartPosition;
 
-	MainGame gameScript;
+	MainGame 					gameScript;
+	MusicManager			musicScript;
 
 	/// <summary>
 	/// Use this for initialization
 	/// </summary>
 	void Awake () {
 
+		// Get the scripts
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
+		musicScript = GameObject.Find("MusicManager").gameObject.GetComponent<MusicManager>();
+
 		fBurnSpeed = 1f/fBurnTime;
 
 		if(trFireFlame != null) {
@@ -48,6 +52,8 @@ public class Barrel : MonoBehaviour {
 						vFireFlameStartPosition.y + 0.16f * fFireHealth,
 						0f);	
 			}
+
+			UpdateMusicPitchFromFireLevel();
 		}
 		else {
 
@@ -64,6 +70,22 @@ public class Barrel : MonoBehaviour {
 			fFireHealth += fHealthValue;
 
 		fFireHealth = Mathf.Clamp01(fFireHealth);
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void UpdateMusicPitchFromFireLevel() {
+
+		if(musicScript != null) {
+
+			// Only changes the music's pitch if the fire is lower than 50%
+			if(fFireHealth < .5f) {
+
+				float fNewPitch = 1 + (1-fFireHealth)/10; 
+				musicScript.AdjustMusicPitch(fNewPitch);
+			}
+		}
 	}
 
 	/// <summary>

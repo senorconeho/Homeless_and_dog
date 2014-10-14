@@ -87,10 +87,12 @@ public class Player : MonoBehaviour {
 		if(playerType == MainGame.ePlayerType.DUDE) {
 
 			gameScript.dudeScript = this;
+			gameScript.hudDudeScript = hudScript;
 		}
 		if(playerType == MainGame.ePlayerType.DOG) {
 
 			gameScript.dogScript = this;
+			gameScript.hudDogScript = hudScript;
 		}
 	}
 	
@@ -423,7 +425,7 @@ public class Player : MonoBehaviour {
 							// Are we carrying an item? Throw it out the window!
 							ThrowItemThroughWindow(windowScript.trWindowOtherSide);
 						}
-						else {
+						else if(windowScript.IsTheWindowOpen()){
 
 							// Throw ourselves out the window
 							this.transform.position = windowScript.trWindowOtherSide.transform.position;
