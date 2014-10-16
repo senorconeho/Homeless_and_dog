@@ -107,9 +107,12 @@ public class Room : MonoBehaviour {
 
 			// Generate the resident for the first time
 			trResident = Instantiate(trResidentPrefab, trResidentSpawnPoint.position, trResidentPrefab.rotation) as Transform;
+			trResident.gameObject.SetActive(false);
 			ResidentBehaviour residentScript = trResident.gameObject.GetComponent<ResidentBehaviour>();
 			residentScript.SetSpawnPoint(trResidentSpawnPoint);
 			residentScript.SetRoomScript(this);
+			trResident.gameObject.SetActive(true);
+
 		}
 		else {
 
@@ -127,5 +130,13 @@ public class Room : MonoBehaviour {
 		// Disable the resident object
 		trResident.gameObject.SetActive(false);
 		bnResidentIn = false;
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public Transform GetWindowObject() {
+
+		return trWindow;
 	}
 }

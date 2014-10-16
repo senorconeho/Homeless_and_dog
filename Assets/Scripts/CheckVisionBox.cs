@@ -46,15 +46,29 @@ public class CheckVisionBox : MonoBehaviour {
 	public void OnTriggerEnter2D(Collider2D col) {
 
 		// Check if we hit the dog
-		if(col.transform.gameObject.layer == MainGame.nPlayerLayer && col.transform.tag == "Dog") {
+		if(col.transform.tag == "Dog") {
 			// Gotcha!
 			if(residentScript != null)
-				residentScript.GotTheDog(col.transform);
+				residentScript.SpottedTheDog(col.transform);
 		}
-		else if(col.transform.gameObject.layer == MainGame.nWindowsLayer) {
+		//else if(col.transform.gameObject.layer == MainGame.nWindowsLayer) {
 
+		//	if(residentScript != null)
+		//		residentScript.SpottedAWindow(col.transform);
+		//}
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void OnTriggerExit2D(Collider2D col) {
+
+		// Check if we hit the dog
+		if(col.transform.tag == "Dog") {
+			// Gotcha!
 			if(residentScript != null)
-				residentScript.SpottedAWindow(col.transform);
+				residentScript.LostTheDog(col.transform);
 		}
 	}
+
 }

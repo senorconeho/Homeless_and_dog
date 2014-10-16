@@ -16,6 +16,7 @@ public class ResidentBehaviour : MonoBehaviour {
 	SimpleMoveRigidBody2D	movementScript;
 	public Transform trTarget = null;
 	public Transform trSpawnPoint = null;
+	public Transform	trWindow;	//< Window object of the room
 	public Room	roomScript = null;
 
 	// PROTECTED
@@ -30,10 +31,18 @@ public class ResidentBehaviour : MonoBehaviour {
 	/// <\summary>
 	void OnEnable() {
 
-		trTarget = null;
+		if(roomScript != null) {
+
+			trWindow = roomScript.GetWindowObject();
+		}
+
+		// The first target is the window
+		trTarget = trWindow;
+
 		if(movementScript != null) {
 
-			movementScript.SetNPCMovementDirection(-1);	// Walk to the left
+			int nDirection = CheckDirectionToTheTarget();
+			movementScript.SetNPCMovementDirection(nDirection);	// Walk to the target
 		}
 	}
 
@@ -80,9 +89,18 @@ public class ResidentBehaviour : MonoBehaviour {
 		trSpawnPoint = tr;
 	}
 
+	/// <summary>
+	/// Set the first variables of the resident. Called after the object is instantiated
+	/// </summary>
 	public void SetRoomScript(Room script) {
 
 		roomScript = script;
+
+		if(trWindow == null) {
+
+			trWindow = roomScript.GetWindowObject();
+			trTarget = trWindow;
+		}
 	}
 
 	/// <summary>
@@ -101,8 +119,7 @@ public class ResidentBehaviour : MonoBehaviour {
 		}
 		else if(trTarget.tag == "Dog") {
 			// Have we reached the dog
-			// TODO: disable or destroy this object
-
+			movementScript.SetNPCMovementDirection(0);	// Stop
 		}
 		else if(trTarget.tag == "SpawnPoint") {
 
@@ -121,16 +138,27 @@ public class ResidentBehaviour : MonoBehaviour {
 		yield return new WaitForSeconds(fWaitTime);
 
 		// Change movement direction
-		movementScript.SetNPCMovementDirection(1);
+		int nDirection = CheckDirectionToTheTarget();
+		movementScript.SetNPCMovementDirection(nDirection);	// Walk to the target
+	}
+
+
+	/// <summary>
+	/// What to do when the dog get out of the field of view (escaped, perhaps?)
+	/// </summary>
+	public void LostTheDog(Transform trDog) {
+
+		// The target now is the dog
+		trTarget = trWindow;
 	}
 
 	/// <summary>
 	///
 	/// </summary>
-	public void GotTheDog(Transform trDog) {
+	public void SpottedTheDog(Transform trDog) {
 
-		// DEBUG
-		Debug.Log("Got the dog!");
+		// The target now is the dog
+		trTarget = trDog;
 	}
 
 	/// <summary>
@@ -145,26 +173,22 @@ public class ResidentBehaviour : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Check of a target exist, and then return the direction to it
+	/// </summary>
+	/// <returns> 1 if the target is to the right, -1 if it is to the left, 0 if no target exists</returns>
+	int CheckDirectionToTheTarget() {
+
+		if(trTarget == null) 
+			return 0;
+
+		return (Math.Sign(trTarget.position.x - transform.position.x));
+	}
+
+	/// <summary>
 	///
 	/// </summary>
 	bool isEqual(float a, float b) {
 
 		return(Mathf.Abs(a - b) < 0.01f);
 	}
-	/* -----------------------------------------------------------------------------------------------------------
-	 * PHYSICS
-	 * -----------------------------------------------------------------------------------------------------------
-	 */
-
-	/// <summary>
-	///
-	/// </summary>
-	//public void OnTriggerEnter2D(Collider2D col) {
-
-	//	// Check if collided with an window
-	//	if(col.gameObject.layer == MainGame.nWindowsLayer) {
-
-	//		StartCoroutine(WaitOnTheWindow(1.5f));
-	//	}
-	//}
 }
