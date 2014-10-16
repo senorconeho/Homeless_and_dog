@@ -9,6 +9,7 @@ public class Window : MonoBehaviour {
 	Player						dogScript = null;
 	MainGame					gameScript = null;
 	public Transform	trWindowOtherSide;		//< The other 'side' of this window
+	public Window			windowOtherSideScript;
 
 	public enum eWindowStatusType {
 
@@ -32,6 +33,7 @@ public class Window : MonoBehaviour {
 	void Awake() {
 
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		windowOtherSideScript = trWindowOtherSide.gameObject.GetComponent<Window>();
 	}
 
 	/// <summary>
@@ -48,8 +50,7 @@ public class Window : MonoBehaviour {
 			// Update the sprite
 			spriteRenderer.sprite = spriteWindowOpen;
 		}
-		// Update the window sprite
-		if(windowStatus == eWindowStatusType.CLOSED) {
+		else if(windowStatus == eWindowStatusType.CLOSED) {
 
 			// Update the sprite
 			spriteRenderer.sprite = spriteWindowClosed;

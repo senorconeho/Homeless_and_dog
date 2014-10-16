@@ -11,25 +11,29 @@ public class Room : MonoBehaviour {
 	 * ==========================================================================================================
 	 */
 	// PUBLIC
-	public string			stRoomName;		//< Name of the room
-	MainGame					gameScript;
-	Transform					trWindow;			//< Window of the room
-	Window						windowScript;	//< pointer to the window script
+	public string				stRoomName;		//< Name of the room
+	MainGame						gameScript;
+	Transform						trWindow;			//< Window of the room
+	Transform 					trWaypoint;
+	Window							windowScript;	//< pointer to the window script
+	public Transform[]	trResidentWaypoints;	//< Waypoints array
 
 	// Resident stuff
 	public Transform	trResidentSpawnPoint;				//< Object pointing where to generate a resident
 	public Transform	trResidentPrefab;						//< Prefab of the resident itself
-	Transform	trResident = null;
-	float			fResidentMinTimeToAppear = 3.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
-	float			fResidentMaxTimeToAppear = 7.5f;
+	Transform					trResident = null;
+	float							fResidentMinTimeToAppear = 3.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
+	float							fResidentMaxTimeToAppear = 7.5f;
 	public float			fResidentCountdownTimer;
-	bool			bnResidentIn = false;	//< is the resident in the room?
+	bool							bnResidentIn = false;	//< is the resident in the room?
 
-	// PROTECTED
-
+	// Window stuff
+	float							fReopenWindowMinTime = 5.0f;
+	float							fReopenWindowMaxTime = 10.0f;
+	public float			fReopenWindowTimer;
 
 	/* ==========================================================================================================
-	 * UNITY METHODS
+	 * UNITY MAIN LOOP
 	 * ==========================================================================================================
 	 */
 
@@ -37,15 +41,25 @@ public class Room : MonoBehaviour {
 	/// </summary>
 	void Awake() {
 
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
+
 		trWindow = FindChildrenByTag("InsideWindow", this.transform);
 		if(trWindow != null) {
 
 			windowScript = trWindow.gameObject.GetComponent<Window>();
 		}
 
-		trResidentSpawnPoint = transform.Find("ResidentSpawn");
-		
-		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
+		// HACK ALERT!!!!
+		if(trResidentWaypoints.Length == 0) {
+			// The waypoint was not populated by the user, so we gonna make the default
+			// 1 - window, 2 - Left Side, 3 - SpawnPoint
+			trWaypoint = FindChildrenByTag("Waypoint", this.transform);
+			trResidentSpawnPoint = transform.Find("ResidentSpawn");
+			trResidentWaypoints = new Transform[3];
+			trResidentWaypoints[0] = trWindow;
+			trResidentWaypoints[1] = trWaypoint;
+			trResidentWaypoints[2] = trResidentSpawnPoint;
+		}
 	}
 	
 	/// <summary>
@@ -73,8 +87,12 @@ public class Room : MonoBehaviour {
 	/// </summary>
 	void TickTimers() {
 
-		if(bnResidentIn == true)
+		fReopenWindowTimer -= Time.deltaTime;
+
+		if(bnResidentIn == true) {
+
 			return;
+		}
 
 		fResidentCountdownTimer -= Time.deltaTime;
 
@@ -82,24 +100,15 @@ public class Room : MonoBehaviour {
 
 			// Regenerate the timer
 			fResidentCountdownTimer = Random.Range(fResidentMinTimeToAppear, fResidentMaxTimeToAppear);
-			// TODO: generate the resident and make him swipe the room
 			EnableResident();
 		}
+
 	}
 
-	/// <summary>
-	/// </summary>
-	public Transform FindChildrenByTag(string stTag, Transform tr) {
-		// Get the window
-		foreach(Transform child in tr) {
-
-			if(child.gameObject.tag == stTag)
-				return child;
-		}
-
-		return null;
-	}
-
+	/* -----------------------------------------------------------------------------------------------------------
+	 * RESIDENT STUFF
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
 	/// Enable the resident object
 	/// </summary>
@@ -134,22 +143,10 @@ public class Room : MonoBehaviour {
 		bnResidentIn = false;
 	}
 
-	/// <summary>
-	///
-	/// </summary>
-	public Transform GetWindowObject() {
-
-		return trWindow;
-	}
-
-	/// <summary>
-	/// The room makes the windows closes. Called from ResidentBehaviour when the dog is caught
-	/// </summary>
-	public void CloseWindow() {
-
-		windowScript.CloseWindow();
-	}
-	
+	/* -----------------------------------------------------------------------------------------------------------
+	 * DOG STUFF
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
 	///
 	/// </summary>
@@ -159,11 +156,95 @@ public class Room : MonoBehaviour {
 		gameScript.dogScript.DogCatched();
 		// Wait a little
 		// Close the window, so the dog can't enter back
-		windowScript.CloseWindow();
+		CloseWindow();
 		// Make the dog appear outside the window
 		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindow);
-		// disable this resident
-		ResidentReachedBackToSpawnPoint();	// FIXME
-		// TODO: when to enable this room again?
+	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * HELPER METHODS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+	/// <summary>
+	///
+	/// </summary>
+	/// <returns>The transform of the window in this room</returns>
+	public Transform GetWindowObject() {
+
+		return trWindow;
+	}
+
+	/// <summary>
+	/// Return the waypoint object
+	/// </summary>
+	/// <param name="nIndex">Index of the waypoint in the array</param>
+	/// <returns>The transform of the waypoint at the index, or null if the index value is invalid</returns>
+	public Transform GetWaypointObject(int nIndex) {
+
+		if(nIndex > trResidentWaypoints.Length)
+			return null;
+
+		return trResidentWaypoints[nIndex];
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns>The total number of waypoints on the array</returns>
+	public int GetNumberOfWaypoints() {
+
+		return trResidentWaypoints.Length;
+	}
+
+	/// <summary>
+	/// The room makes the windows closes. Called from ResidentBehaviour when the dog is caught
+	/// </summary>
+	public void CloseWindow() {
+
+		// Close this side...
+		windowScript.CloseWindow();
+		// ...and the other too ...
+		windowScript.windowOtherSideScript.CloseWindow();
+		// ...and starts the cooldown timer to reopen the window
+		fReopenWindowTimer = Random.Range(fReopenWindowMinTime, fReopenWindowMaxTime);
+	}
+
+	/// <summary>
+	/// The room makes the windows open again. Called from ResidentBehaviour when the window is opened again
+	/// </summary>
+	public void OpenWindow() {
+
+		// Close this side...
+		windowScript.OpenWindow();
+		// ...and the other too ...
+		windowScript.windowOtherSideScript.OpenWindow();
+	}
+
+	public bool CanTheWindowBeReopened() {
+
+		// Is this window already open?
+		if(windowScript.IsTheWindowOpen())
+			return false;
+
+		// No, it's closed. Check the 'cooldown' timer
+		if(fReopenWindowTimer <= 0.0f)
+			return true;
+
+		// None of the above
+		return false;
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public Transform FindChildrenByTag(string stTag, Transform tr) {
+		// Get the window
+		foreach(Transform child in tr) {
+
+			if(child.gameObject.tag == stTag)
+				return child;
+		}
+
+		return null;
 	}
 }

@@ -14,13 +14,13 @@ public class ResidentBehaviour : MonoBehaviour {
 	 */
 	// PUBLIC
 	SimpleMoveRigidBody2D	movementScript;
-	public Transform trTarget = null;
-	public Transform trSpawnPoint = null;
-	public Transform	trWindow;	//< Window object of the room
-	public Room	roomScript = null;
+	public Transform 			trTarget = null;
+	public Transform 			trSpawnPoint = null;
+	public Transform			trWindow;	//< Window object of the room
+	public Transform			trWaypoint;
+	public Room						roomScript = null;
 
-	// PROTECTED
-
+	public int nWaypointIndex = 0;	//< Which waypoint are we?
 
 	/* ==========================================================================================================
 	 * UNITY MAIN LOOP
@@ -31,13 +31,17 @@ public class ResidentBehaviour : MonoBehaviour {
 	/// <\summary>
 	void OnEnable() {
 
-		if(roomScript != null) {
+		nWaypointIndex = 0;
 
+		if(roomScript != null) {
+			
+			// FIXME: is this still needed?
 			trWindow = roomScript.GetWindowObject();
+			trWaypoint = roomScript.GetWaypointObject(nWaypointIndex);
+			// The first target is the first waypoint
+			trTarget = roomScript.GetWaypointObject(nWaypointIndex);
 		}
 
-		// The first target is the window
-		trTarget = trWindow;
 
 		if(movementScript != null) {
 
@@ -99,7 +103,8 @@ public class ResidentBehaviour : MonoBehaviour {
 		if(trWindow == null) {
 
 			trWindow = roomScript.GetWindowObject();
-			trTarget = trWindow;
+			//trWaypoint = roomScript.GetWaypointObject();
+			//trTarget = trWindow;
 		}
 	}
 
@@ -113,27 +118,46 @@ public class ResidentBehaviour : MonoBehaviour {
 
 		// Have we reached a window?
 		if(trTarget.tag == "InsideWindow") {
-			// Now we go back to the spawn point
-			trTarget = trSpawnPoint;
-			StartCoroutine(WaitOnTheWindow(3));
+			// Is this window closed? Can we open it again?
+			if(roomScript.CanTheWindowBeReopened()) {
+
+				roomScript.OpenWindow();
+			}
+
+			// Get the next target
+			trTarget = roomScript.GetWaypointObject(++nWaypointIndex);
+			// Wait a little here...
+			StartCoroutine(WaitHere(3));
 		}
 		else if(trTarget.tag == "Dog") {
+			Debug.Log("dog");
 			// Have we reached the dog
-			movementScript.SetNPCMovementDirection(0);	// Stop
 			GotTheDog(trTarget);
+			// ok, head back straight to the exit
+			nWaypointIndex = roomScript.GetNumberOfWaypoints()-1;
+
+			trTarget = roomScript.GetWaypointObject(nWaypointIndex);
+			StartCoroutine(WaitHere(1));
 		}
 		else if(trTarget.tag == "SpawnPoint") {
 
-			movementScript.SetNPCMovementDirection(0);	// Stop
+			//movementScript.SetNPCMovementDirection(0);	// Stop
+			StartCoroutine(WaitHere(2));
 			// We have reached the spawn point, so disable ourself
 			roomScript.ResidentReachedBackToSpawnPoint();
+		}
+		else {
+			// just a regular waypoint, I guess, so move to the next one
+			trTarget = roomScript.GetWaypointObject(++nWaypointIndex);
+			int nDirection = CheckDirectionToTheTarget();
+			movementScript.SetNPCMovementDirection(nDirection);	// Walk to the target
 		}
 	}
 
 	/// <summary>
-	/// Makes the character stay a little at the window
+	/// Makes the character stay a little at the current position
 	/// <\summary>
-	IEnumerator WaitOnTheWindow(float fWaitTime) {
+	IEnumerator WaitHere(float fWaitTime) {
 
 		movementScript.SetNPCMovementDirection(0);
 		yield return new WaitForSeconds(fWaitTime);
@@ -143,6 +167,10 @@ public class ResidentBehaviour : MonoBehaviour {
 		movementScript.SetNPCMovementDirection(nDirection);	// Walk to the target
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * DOG INTERACTION
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 
 	/// <summary>
 	/// What to do when the dog get out of the field of view (escaped, perhaps?)
@@ -150,11 +178,11 @@ public class ResidentBehaviour : MonoBehaviour {
 	public void LostTheDog(Transform trDog) {
 
 		// The target now is the dog
-		trTarget = trWindow;
+		//trTarget = trWindow;
 	}
 
 	/// <summary>
-	///
+	/// Dog entered our sight
 	/// </summary>
 	public void SpottedTheDog(Transform trDog) {
 
@@ -163,10 +191,11 @@ public class ResidentBehaviour : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// Reached the dog!
 	/// </summary>
 	public void GotTheDog(Transform trDog) {
 
+		// Tell the room that we caught the dog!
 		roomScript.DogCatched();
 	}
 
@@ -182,6 +211,10 @@ public class ResidentBehaviour : MonoBehaviour {
 		return (Math.Sign(trTarget.position.x - transform.position.x));
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * HELPER FUNCTIONS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
 	///
 	/// </summary>

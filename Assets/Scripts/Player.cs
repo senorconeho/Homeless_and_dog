@@ -337,7 +337,7 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// Called when the dog is caught inside an apartment
 	/// </summary>
 	public void ThrowTheDogOutOfTheWindow(Transform trWindow) {
 
@@ -347,6 +347,9 @@ public class Player : MonoBehaviour {
 			this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
 			cameraScript.FocusCameraOnTarget();
 		}
+
+		// Enable back the input
+		movementScript.bnAllowedToGetInput = true;
 	}
 
 	/// <summary>
