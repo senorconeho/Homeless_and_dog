@@ -11,15 +11,17 @@ public class MainGame : MonoBehaviour {
 	static public int	nPlayerLayer = 9;
 	static public int	nItemsLayer = 10;
 	static public int	nBarrelLayer = 11;
-	static public int nWindowsLayer = 12;
-	static public int nBalconyGroundLayer = 13;
-	static public int nItemGroundLayer = 14;
+	static public int	nGroundCheckLayer = 12;
+	static public int nWindowsLayer = 13;
+	static public int nBalconyGroundLayer = 14;
+	static public int nItemGroundLayer = 15;
 
 	// Players types
 	public enum ePlayerType {
 
 		DOG,
-		DUDE
+		DUDE,
+		NPC
 	};
 
 	public enum eGameStatus {

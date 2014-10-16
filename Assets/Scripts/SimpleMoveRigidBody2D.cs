@@ -56,6 +56,12 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	void FixedUpdate ()
 	{
 
+		if(playerType == MainGame.ePlayerType.NPC) {
+
+			DoNPCMovement();
+			return;
+		}
+
 		if (bnAllowedToGetInput) {
 
 			if(playerType == MainGame.ePlayerType.DOG && bnCanMoveHorizontally) {
@@ -104,6 +110,57 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 		//
 		vRigidbodyVelocity = rigidbody2D.velocity;
 	}
+	/* ==========================================================================================================
+	 * NPC STUFF
+	 * ==========================================================================================================
+	 */
+	/// <summary>
+	/// Do the NPC movement
+	/// </summary>
+	public void DoNPCMovement() {
+
+		// fH value come from another script
+		if (animator != null) {
+
+			animator.SetFloat("fSpeed", Mathf.Abs(fH));
+		}
+
+		// Rigidbody stuff
+		if(fH * rigidbody2D.velocity.x < fMaxSpeed) {
+
+			// Add a force to the player
+			rigidbody2D.AddForce(Vector2.right * fH * fMoveForce);
+		}
+
+		// If the player's horizontal velocity is greater than the maxSpeed
+		if(Mathf.Abs(rigidbody2D.velocity.x) > fMaxSpeed) {
+
+			rigidbody2D.velocity = new Vector2(Mathf.Sign(rigidbody2D.velocity.x) * fMaxSpeed,
+					rigidbody2D.velocity.y);
+		}
+
+		// Flip the sprite?
+		if (fH < 0 && !bnFacingLeft) {
+
+			FlipSprite ();
+		} else if (fH > 0 && bnFacingLeft) {
+
+			FlipSprite ();
+		}
+
+		// Update
+		vRigidbodyVelocity = rigidbody2D.velocity;
+	}
+
+	/// <summary>
+	/// Moves the NPC to the left or the right. Actually set the 'fH' value, like the player
+	/// is pressing left or right to move it. Accessed by the ResidentBehaviour script
+	/// </summary>
+	/// <param name="nDirection"> 1 to move to right, -1 to move to the left
+	public void SetNPCMovementDirection(int nDirection) {
+
+		fH = nDirection;
+	}
 
 	/* ==========================================================================================================
 	 * CLASS METHODS
@@ -114,8 +171,6 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	/// </summary>
 	public void FlipSprite ()
 	{
-
-
 		Vector3 v3SpriteScale = trSprite.localScale;
 		v3SpriteScale.x *= -1;
 		trSprite.localScale = v3SpriteScale;

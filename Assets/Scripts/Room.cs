@@ -76,6 +76,7 @@ public class Room : MonoBehaviour {
 			// Regenerate the timer
 			fResidentCountdownTimer = Random.Range(fResidentMinTimeToAppear, fResidentMaxTimeToAppear);
 			// TODO: generate the resident and make him swipe the room
+			EnableResident();
 		}
 	}
 
@@ -90,6 +91,13 @@ public class Room : MonoBehaviour {
 		}
 
 		return null;
+	}
+
+	/// <summary>
+	/// Enable the resident object
+	/// </summary>
+	public void EnableResident() {
+
 	}
 
 }
