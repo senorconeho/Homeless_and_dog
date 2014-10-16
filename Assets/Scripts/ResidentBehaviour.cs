@@ -120,6 +120,7 @@ public class ResidentBehaviour : MonoBehaviour {
 		else if(trTarget.tag == "Dog") {
 			// Have we reached the dog
 			movementScript.SetNPCMovementDirection(0);	// Stop
+			GotTheDog(trTarget);
 		}
 		else if(trTarget.tag == "SpawnPoint") {
 
@@ -164,12 +165,9 @@ public class ResidentBehaviour : MonoBehaviour {
 	/// <summary>
 	///
 	/// </summary>
-	public void SpottedAWindow(Transform trWindow) {
-		// Spotted the window, so walk to it
-		if(trTarget != null)
-			return;	// we already have a target: or the window, or the dog!
+	public void GotTheDog(Transform trDog) {
 
-		trTarget = trWindow;
+		roomScript.DogCatched();
 	}
 
 	/// <summary>

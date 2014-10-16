@@ -326,6 +326,30 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// What happens when the dog is catched inside an apartment
+	/// Called from Room
+	/// </summary>
+	public void DogCatched() {
+		// disable control
+		movementScript.bnAllowedToGetInput = false;
+		// Drop the item, if any
+		DropItem();
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void ThrowTheDogOutOfTheWindow(Transform trWindow) {
+
+		if(trWindow != null) {
+
+			// Throw ourselves out the window
+			this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
+			cameraScript.FocusCameraOnTarget();
+		}
+	}
+
+	/// <summary>
 	///
 	/// <summary>
 	public void ThrowDog() {

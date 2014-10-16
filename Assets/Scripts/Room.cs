@@ -12,6 +12,7 @@ public class Room : MonoBehaviour {
 	 */
 	// PUBLIC
 	public string			stRoomName;		//< Name of the room
+	MainGame					gameScript;
 	Transform					trWindow;			//< Window of the room
 	Window						windowScript;	//< pointer to the window script
 
@@ -33,7 +34,7 @@ public class Room : MonoBehaviour {
 	 */
 
 	/// <summary>
-	/// <\summary>
+	/// </summary>
 	void Awake() {
 
 		trWindow = FindChildrenByTag("InsideWindow", this.transform);
@@ -44,11 +45,12 @@ public class Room : MonoBehaviour {
 
 		trResidentSpawnPoint = transform.Find("ResidentSpawn");
 		
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 	}
 	
 	/// <summary>
 	/// Use this for initialization
-	/// <\summary>
+	/// </summary>
 	void Start () {
 	
 		// Randomize the timer value
@@ -57,7 +59,7 @@ public class Room : MonoBehaviour {
 	
 	/// <summary>
 	/// Update is called once per frame
-	/// <\summary>
+	/// </summary>
 	void Update () {
 	
 		TickTimers();
@@ -68,7 +70,7 @@ public class Room : MonoBehaviour {
 	 * ==========================================================================================================
 	 */
 	/// <summary>
-	/// <\summary>
+	/// </summary>
 	void TickTimers() {
 
 		if(bnResidentIn == true)
@@ -86,7 +88,7 @@ public class Room : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// <\summary>
+	/// </summary>
 	public Transform FindChildrenByTag(string stTag, Transform tr) {
 		// Get the window
 		foreach(Transform child in tr) {
@@ -138,5 +140,30 @@ public class Room : MonoBehaviour {
 	public Transform GetWindowObject() {
 
 		return trWindow;
+	}
+
+	/// <summary>
+	/// The room makes the windows closes. Called from ResidentBehaviour when the dog is caught
+	/// </summary>
+	public void CloseWindow() {
+
+		windowScript.CloseWindow();
+	}
+	
+	/// <summary>
+	///
+	/// </summary>
+	public void DogCatched() {
+
+		// Make the dog drop it's item
+		gameScript.dogScript.DogCatched();
+		// Wait a little
+		// Close the window, so the dog can't enter back
+		windowScript.CloseWindow();
+		// Make the dog appear outside the window
+		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindow);
+		// disable this resident
+		ResidentReachedBackToSpawnPoint();	// FIXME
+		// TODO: when to enable this room again?
 	}
 }
