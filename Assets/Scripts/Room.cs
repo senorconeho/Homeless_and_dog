@@ -16,11 +16,13 @@ public class Room : MonoBehaviour {
 	Window						windowScript;	//< pointer to the window script
 
 	// Resident stuff
-	public Transform	trResidentGenerator;				//< Object pointing where to generate a resident
+	public Transform	trResidentSpawnPoint;				//< Object pointing where to generate a resident
 	public Transform	trResidentPrefab;						//< Prefab of the resident itself
+	Transform	trResident = null;
 	float			fResidentMinTimeToAppear = 3.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
 	float			fResidentMaxTimeToAppear = 7.5f;
 	public float			fResidentCountdownTimer;
+	bool			bnResidentIn = false;	//< is the resident in the room?
 
 	// PROTECTED
 
@@ -40,7 +42,7 @@ public class Room : MonoBehaviour {
 			windowScript = trWindow.gameObject.GetComponent<Window>();
 		}
 
-		trResidentGenerator = transform.Find("ResidentGenerator");
+		trResidentSpawnPoint = transform.Find("ResidentSpawn");
 		
 	}
 	
@@ -68,6 +70,9 @@ public class Room : MonoBehaviour {
 	/// <summary>
 	/// <\summary>
 	void TickTimers() {
+
+		if(bnResidentIn == true)
+			return;
 
 		fResidentCountdownTimer -= Time.deltaTime;
 
@@ -98,6 +103,29 @@ public class Room : MonoBehaviour {
 	/// </summary>
 	public void EnableResident() {
 
+		if(trResident == null) {
+
+			// Generate the resident for the first time
+			trResident = Instantiate(trResidentPrefab, trResidentSpawnPoint.position, trResidentPrefab.rotation) as Transform;
+			ResidentBehaviour residentScript = trResident.gameObject.GetComponent<ResidentBehaviour>();
+			residentScript.SetSpawnPoint(trResidentSpawnPoint);
+			residentScript.SetRoomScript(this);
+		}
+		else {
+
+			// Reactivate the object if it already exists
+			trResident.gameObject.SetActive(true);
+		}
+		bnResidentIn = true;
 	}
 
+	/// <summary>
+	/// Called from ResidentBehaviour
+	/// </summary>
+	public void ResidentReachedBackToSpawnPoint() {
+
+		// Disable the resident object
+		trResident.gameObject.SetActive(false);
+		bnResidentIn = false;
+	}
 }
