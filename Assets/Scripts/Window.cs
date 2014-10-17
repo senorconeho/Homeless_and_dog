@@ -23,6 +23,7 @@ public class Window : MonoBehaviour {
 	public Sprite			spriteWindowClosed;
 
 	SpriteRenderer		spriteRenderer;
+	BoxCollider2D			col;
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
@@ -34,6 +35,7 @@ public class Window : MonoBehaviour {
 
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		windowOtherSideScript = trWindowOtherSide.gameObject.GetComponent<Window>();
+		col = GetComponent<BoxCollider2D>();
 	}
 
 	/// <summary>
@@ -49,11 +51,15 @@ public class Window : MonoBehaviour {
 
 			// Update the sprite
 			spriteRenderer.sprite = spriteWindowOpen;
+			// Enables the collider
+			col.enabled = true ;
 		}
 		else if(windowStatus == eWindowStatusType.CLOSED) {
 
 			// Update the sprite
 			spriteRenderer.sprite = spriteWindowClosed;
+			// Disables the collider
+			col.enabled = false;
 		}
 	}
 
@@ -80,6 +86,8 @@ public class Window : MonoBehaviour {
 			windowStatus = eWindowStatusType.CLOSED;
 			// Update the sprite
 			spriteRenderer.sprite = spriteWindowClosed;
+			// Disables the collider
+			col.enabled = false;
 		}
 	}
 
@@ -93,6 +101,8 @@ public class Window : MonoBehaviour {
 			windowStatus = eWindowStatusType.OPEN;
 			// Update the sprite
 			spriteRenderer.sprite = spriteWindowOpen;
+			// Enables the collider
+			col.enabled = true;
 		}
 	}
 
