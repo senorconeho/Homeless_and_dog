@@ -13,7 +13,16 @@ public class Item : MonoBehaviour {
 	public Transform 			trPickedBy;					//< Who picked us up?
 	public BoxCollider2D	col;
 	public bool						bnCrashed;					//< Have this item crashed on the ground?
+	SpriteRenderer				sr;
 
+	[SerializeField]
+	public AudioClip	sfxItemPicked;	//< item picked by the player
+	[SerializeField]
+	public AudioClip	sfxItemDropped;	//< item dropped by the player
+	[SerializeField]
+	public AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
+	[SerializeField]
+	public AudioClip	sfxItemCrashed;	//< Item crashed on the ground
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
 	 * -----------------------------------------------------------------------------------------------------------
@@ -22,6 +31,7 @@ public class Item : MonoBehaviour {
 	void Start () {
 	
 		col = GetComponent<BoxCollider2D>();
+		sr = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
@@ -47,7 +57,20 @@ public class Item : MonoBehaviour {
 		if(barrelScript != null) {
 
 			barrelScript.AddHealthToFire(fBurnValue);
-			Die();
+			
+			// Play a sound
+			if(sfxItemBurned != null) {
+
+				audio.PlayOneShot(sfxItemBurned);
+				// Disables the collider and sprite renderer, so the object doesn't affect the game until is destroyed
+				col.enabled = false;
+				sr.enabled = false;
+				StartCoroutine(WaitAndThenDie(sfxItemBurned.length));
+			}
+			else {
+				// Not playing anything?
+				Die();
+			}
 		}
 	}
 	
@@ -61,6 +84,10 @@ public class Item : MonoBehaviour {
 		trPickedBy = trPicker;
 		// disable all collisions
 		//col.enabled = false;
+		if(sfxItemPicked != null) {
+
+			audio.PlayOneShot(sfxItemPicked);
+		}
 	}
 
 	/// <summary>
@@ -73,6 +100,10 @@ public class Item : MonoBehaviour {
 		trPickedBy = null;
 		// disable all collisions
 		//col.enabled = true;
+		if(sfxItemDropped != null) {
+
+			audio.PlayOneShot(sfxItemDropped);
+		}
 	}
 
 	/// <summary>
@@ -93,6 +124,15 @@ public class Item : MonoBehaviour {
 
 			Destroy(this.gameObject);
 		}
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	IEnumerator WaitAndThenDie(float fWaitTime) {
+
+		yield return new WaitForSeconds(fWaitTime);
+		Die();
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------
