@@ -99,7 +99,8 @@ public class Item : MonoBehaviour {
 		transform.tag = "Untagged";
 		trPickedBy = null;
 		// disable all collisions
-		//col.enabled = true;
+		col.enabled = false;
+		col.enabled = true;
 		if(sfxItemDropped != null) {
 
 			audio.PlayOneShot(sfxItemDropped);
