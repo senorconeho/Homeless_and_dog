@@ -139,11 +139,12 @@ public class Player : MonoBehaviour {
 
 			if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
 				// FIXME: esta linha pisca no hud ou demora para aparecer
-				hudScript.uiButtonALabel.text = "JUMP OFF";
+				//hudScript.uiButtonALabel.text = "JUMP OFF";
 			}
 			else if(hudScript != null){
 				// Updates the HUD
-				hudScript.uiButtonALabel.text = "JUMP ON";
+				hudScript.SetButtonsText("JUMP ON", null);
+				//hudScript.uiButtonALabel.text = "JUMP ON";
 				bnCollisionDogAndDude = true;
 			}
 		}
@@ -159,11 +160,12 @@ public class Player : MonoBehaviour {
 			return;
 
 		// Dog with dude? 
-		if(playerType == MainGame.ePlayerType.DOG) {
+		if(playerType == MainGame.ePlayerType.DOG && FSMGetCurrentState() != eFSMState.DOG_ON_LAP) {
 
 			if(hudScript != null) {
 				// Updates the HUD
-				hudScript.uiButtonALabel.text = "";
+				//hudScript.uiButtonALabel.text = "";
+				hudScript.SetButtonsText("", null);
 				bnCollisionDogAndDude = false;
 			}
 		}
@@ -188,7 +190,8 @@ public class Player : MonoBehaviour {
 
 		trItemOver = trItem;
 		// Updates the HUD
-		hudScript.uiButtonBLabel.text = "PICK";
+		//hudScript.uiButtonBLabel.text = "PICK";
+		hudScript.SetButtonsText(null, "PICK");
 	}
 
 	/// <summary>
@@ -208,7 +211,8 @@ public class Player : MonoBehaviour {
 		// Updates the HUD
 		if(trItem == trItemOver) {
 
-			hudScript.uiButtonBLabel.text = "";
+			//hudScript.uiButtonBLabel.text = "";
+			hudScript.SetButtonsText(null,"");
 			trItemOver = null;
 		}
 	}
@@ -228,10 +232,12 @@ public class Player : MonoBehaviour {
 		// Are we holding an item?
 		if(trItemPicked != null) {
 
-			hudScript.uiButtonALabel.text = "THROW OUT";
+			//hudScript.uiButtonALabel.text = "THROW OUT";
+			hudScript.SetButtonsText("THROW OUT",null);
 		}
 		else {
-			hudScript.uiButtonALabel.text = "JUMP IN";
+			//hudScript.uiButtonALabel.text = "JUMP IN";
+			hudScript.SetButtonsText("JUMP IN", null);
 		}
 	}
 
@@ -249,7 +255,8 @@ public class Player : MonoBehaviour {
 			trWindowOver = null;
 
 		// Updates the HUD
-		hudScript.uiButtonALabel.text = "";
+		//hudScript.uiButtonALabel.text = "";
+		hudScript.SetButtonsText("",null);
 	}
 
 	/// <summary>
@@ -263,7 +270,8 @@ public class Player : MonoBehaviour {
 			trItemOver = null;
 
 			// Updates the HUD
-			hudScript.uiButtonBLabel.text = "DROP";
+			//hudScript.uiButtonBLabel.text = "DROP";
+			hudScript.SetButtonsText(null,"DROP");
 
 			// Tell the item that we picked it up
 			Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
@@ -297,7 +305,8 @@ public class Player : MonoBehaviour {
 		}
 
 		// Updates the HUD
-		hudScript.uiButtonBLabel.text = "";
+		//hudScript.uiButtonBLabel.text = "";
+		hudScript.SetButtonsText(null,"");
 
 		// When carrying an item, the player will move slowly
 		movementScript.fMaxSpeed = fRunningSpeed;
@@ -314,7 +323,8 @@ public class Player : MonoBehaviour {
 		// 1 - Move the item to the out window location
 		trItemPicked.transform.position = trWindowOutside.transform.position;
 		// Updates the HUD
-		hudScript.uiButtonALabel.text = "";
+		//hudScript.uiButtonALabel.text = "";
+		hudScript.SetButtonsText("",null);
 
 		// 2 - Drop the item
 		DropItem();
@@ -591,7 +601,8 @@ public class Player : MonoBehaviour {
 					// Dog: while on the lap, the dog cannot move
 					movementScript.bnCanMoveHorizontally = false;
 					// Updates the HUD
-					hudScript.uiButtonALabel.text = "JUMP OFF";
+					//hudScript.uiButtonALabel.text = "JUMP OFF";
+					hudScript.SetButtonsText("JUMP OFF", null);
 					// Tell the Dude object that the dog is in his lap
 					gameScript.dudeScript.DogJumpedOnMyLap();
 				}
@@ -600,8 +611,9 @@ public class Player : MonoBehaviour {
 					// Dude: enable the throw
 					trThrowCursor.gameObject.SetActive(true);
 					// Updates the HUD
-					hudScript.uiButtonBLabel.text = "THROW";
-					hudScript.uiButtonALabel.text = "";
+					//hudScript.uiButtonBLabel.text = "THROW";
+					//hudScript.uiButtonALabel.text = "";
+					hudScript.SetButtonsText("","THROW");
 					// Tell the player that he must press the button
 					hudScript.ButtonAAnimate(true);
 					hudScript.ThrowBarActivate();
@@ -684,6 +696,8 @@ public class Player : MonoBehaviour {
 				if(playerType == MainGame.ePlayerType.DOG) {
 					Vector3 vDudePosition = gameScript.trDude.transform.position;
 					transform.position = vDudePosition;
+					// Added so the dog can fall when leaving the dude's lap
+					bnCollisionDogAndDude = false;
 				}
 
 				if(playerType == MainGame.ePlayerType.DUDE) {
@@ -722,7 +736,8 @@ public class Player : MonoBehaviour {
 					// Dog: restore the ability to move
 					movementScript.bnCanMoveHorizontally = true;
 					// Updates the HUD
-					hudScript.uiButtonALabel.text = "";
+					//hudScript.uiButtonALabel.text = "";
+					hudScript.SetButtonsText("", null);
 					// Tell the Dude object that the dog is NOT in his lap anymore
 					gameScript.dudeScript.DogJumpedFromMyLap();
 				}
@@ -730,7 +745,8 @@ public class Player : MonoBehaviour {
 					// Dude: enable the throw
 					trThrowCursor.gameObject.SetActive(false);
 					// Updates the HUD
-					hudScript.uiButtonBLabel.text = "";
+					//hudScript.uiButtonBLabel.text = "";
+					hudScript.SetButtonsText(null, "");
 					hudScript.ThrowBarDeactivate();
 					hudScript.ButtonAAnimate(false);
 				}

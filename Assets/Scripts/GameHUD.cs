@@ -170,4 +170,16 @@ public class GameHUD : MonoBehaviour {
 
 		trSpriteGameOver.gameObject.SetActive(true);
 	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public void SetButtonsText(string stTextA, string stTextB) {
+
+		if(stTextA != null)
+			uiButtonALabel.text = stTextA;
+
+		if(stTextB != null)
+			uiButtonBLabel.text = stTextB;
+	}
 }

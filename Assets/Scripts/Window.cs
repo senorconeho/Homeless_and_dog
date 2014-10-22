@@ -23,6 +23,7 @@ public class Window : MonoBehaviour {
 	public Sprite			spriteWindowClosed;
 
 	SpriteRenderer		spriteRenderer;
+	SpriteRenderer		spriteCurtains;	//< The curtains sprite
 	BoxCollider2D			col;
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -36,6 +37,7 @@ public class Window : MonoBehaviour {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		windowOtherSideScript = trWindowOtherSide.gameObject.GetComponent<Window>();
 		col = GetComponent<BoxCollider2D>();
+		spriteCurtains = transform.Find("Curtains").gameObject.GetComponent<SpriteRenderer>();
 	}
 
 	/// <summary>
@@ -53,6 +55,9 @@ public class Window : MonoBehaviour {
 			spriteRenderer.sprite = spriteWindowOpen;
 			// Enables the collider
 			col.enabled = true ;
+			// Enables the curtains
+			if(spriteCurtains != null)
+				spriteCurtains.enabled = true;
 		}
 		else if(windowStatus == eWindowStatusType.CLOSED) {
 
@@ -60,6 +65,8 @@ public class Window : MonoBehaviour {
 			spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
 			col.enabled = false;
+			// Disables the curtains
+			spriteCurtains.enabled = false;
 		}
 	}
 
@@ -88,6 +95,9 @@ public class Window : MonoBehaviour {
 			spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
 			col.enabled = false;
+			// Disables the curtains
+			if(spriteCurtains != null)
+				spriteCurtains.enabled = false;
 		}
 	}
 
@@ -103,6 +113,9 @@ public class Window : MonoBehaviour {
 			spriteRenderer.sprite = spriteWindowOpen;
 			// Enables the collider
 			col.enabled = true;
+			// Enables the curtains
+			if(spriteCurtains != null)
+				spriteCurtains.enabled = true;
 		}
 	}
 
