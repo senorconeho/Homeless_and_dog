@@ -7,6 +7,7 @@ using System.Collections;
 public class CheckHitBox : MonoBehaviour {
 
 	Player	playerScript = null;
+	BoxCollider2D col;
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
@@ -14,6 +15,8 @@ public class CheckHitBox : MonoBehaviour {
 	 */
 	//
 	void Awake() {
+
+		col = GetComponent<BoxCollider2D>();
 
 		// Get the player script, if any
 		if(this.transform.parent.transform.gameObject.layer == MainGame.nPlayerLayer) {
@@ -83,6 +86,16 @@ public class CheckHitBox : MonoBehaviour {
 	 * PHYSICS
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
+
+	/// <summary>
+	///
+	/// </summary>
+	public void RefreshCollider() {
+
+		col.enabled = false;
+		col.enabled = true;
+	}
+
 
 	/// <summary>
 	///

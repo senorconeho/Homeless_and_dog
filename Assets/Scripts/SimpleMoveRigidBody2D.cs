@@ -23,7 +23,7 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 	// PROTECTED
 	public float fMaxSpeed = 1f;	//< this value could (will) be changed by the Player script
-	float fMoveForce = 20f;
+	public float fMoveForce = 40f;		//< FIXME: expose this on the inspector
 
 	public 	MainGame.ePlayerType playerType;	//< from MainGame
 	float 	fH;	//< Horizontal movement

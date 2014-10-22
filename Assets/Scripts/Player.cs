@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
 	public ThrowCursor						throwCursorScript;	//< The ThrowCursor from the cursor object
 	public SimpleMoveRigidBody2D	movementScript;
 	public MainGame								gameScript;
+	public CheckHitBox						hitBoxScript;
 	public Vector3								vThrowForceDirection;
 
 	Transform							trCamera;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour {
 
 	private Animator animator;
 
+	// Movement stuff
 	float		fCarryingItemSpeed = 0.5f;
 	float		fRunningSpeed = 1.0f;
 	float		fHorizontalSpeedThreshold = 0.1f;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour {
 		movementScript = GetComponent<SimpleMoveRigidBody2D>();
 		animator = this.GetComponent<Animator> ();
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
+		hitBoxScript = transform.Find("HitBox").gameObject.GetComponent<CheckHitBox>();
 
 		// HUD STUFF
 		// Get the objects for each type of player
@@ -135,7 +138,7 @@ public class Player : MonoBehaviour {
 		if(playerType == MainGame.ePlayerType.DOG) {
 
 			if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
-				//
+				// FIXME: esta linha pisca no hud ou demora para aparecer
 				hudScript.uiButtonALabel.text = "JUMP OFF";
 			}
 			else if(hudScript != null){
@@ -326,6 +329,15 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// The dog jumped from the dude's lap
+	/// </summary>
+	public void DogJumpedFromMyLap() {
+
+		// Change to idle or running
+		FSMEnterNewState(eFSMState.IDLE);
+	}
+
+	/// <summary>
 	/// What happens when the dog is catched inside an apartment
 	/// Called from Room
 	/// </summary>
@@ -441,6 +453,7 @@ public class Player : MonoBehaviour {
 
 					// Jump off the lap of the dude
 					FSMEnterNewState(eFSMState.ON_AIR);
+					// FIXME: tell the dude to change from DOG_ON_LAP
 				}
 				else if(trWindowOver != null) { // Touching a window
 
@@ -503,11 +516,11 @@ public class Player : MonoBehaviour {
 
 				if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
 					// Pump the throw bar
-					//if((Time.time - fLastKeyUp) > 0.15f) {
+					if((Time.time - fLastKeyUp) > 0.05f) {
 
 						fThrowBarValue += 16 * Time.deltaTime;
 						fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
-					//}
+					}
 				}
 				fLastKeyUp = Time.time;
 			}
@@ -700,8 +713,18 @@ public class Player : MonoBehaviour {
 
 			case eFSMState.DOG_ON_LAP:
 				if(playerType == MainGame.ePlayerType.DOG) {
+					// TESTING: disable the collider from the dog
+					if(hitBoxScript != null) {
+
+						hitBoxScript.RefreshCollider();
+					}
+
 					// Dog: restore the ability to move
 					movementScript.bnCanMoveHorizontally = true;
+					// Updates the HUD
+					hudScript.uiButtonALabel.text = "";
+					// Tell the Dude object that the dog is NOT in his lap anymore
+					gameScript.dudeScript.DogJumpedFromMyLap();
 				}
 				if(playerType == MainGame.ePlayerType.DUDE) {
 					// Dude: enable the throw
