@@ -28,7 +28,7 @@ public class ResidentBehaviour : MonoBehaviour {
 	 */
 
 	/// <summary>
-	/// <\summary>
+	/// </summary>
 	void OnEnable() {
 
 		nWaypointIndex = 0;
@@ -51,14 +51,14 @@ public class ResidentBehaviour : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// <\summary>
+	/// </summary>
 	void OnDisable() {
 
 		trTarget = null;	// Clear the target
 	}
 
 	/// <summary>
-	/// <\summary>
+	/// </summary>
 	void Awake() {
 
 		// Get the movement script
@@ -67,7 +67,7 @@ public class ResidentBehaviour : MonoBehaviour {
 	
 	/// <summary>
 	/// Update is called once per frame
-	/// <\summary>
+	/// </summary>
 	void Update () {
 	
 		if(trTarget != null) {
@@ -130,7 +130,6 @@ public class ResidentBehaviour : MonoBehaviour {
 			StartCoroutine(WaitHere(3));
 		}
 		else if(trTarget.tag == "Dog") {
-			Debug.Log("dog");
 			// Have we reached the dog
 			GotTheDog(trTarget);
 			// ok, head back straight to the exit
@@ -156,7 +155,7 @@ public class ResidentBehaviour : MonoBehaviour {
 
 	/// <summary>
 	/// Makes the character stay a little at the current position
-	/// <\summary>
+	/// </summary>
 	IEnumerator WaitHere(float fWaitTime) {
 
 		movementScript.SetNPCMovementDirection(0);
@@ -195,6 +194,7 @@ public class ResidentBehaviour : MonoBehaviour {
 	/// </summary>
 	public void GotTheDog(Transform trDog) {
 
+		// TODO: make the screen black for 1s before the dog is shown on the outside
 		// Tell the room that we caught the dog!
 		roomScript.DogCatched();
 	}

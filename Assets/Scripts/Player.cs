@@ -140,11 +140,11 @@ public class Player : MonoBehaviour {
 			if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
 				// FIXME: esta linha pisca no hud ou demora para aparecer
 				//hudScript.uiButtonALabel.text = "JUMP OFF";
+				//hudScript.SetButtonsText("JUMP OFF", null);
 			}
 			else if(hudScript != null){
 				// Updates the HUD
 				hudScript.SetButtonsText("JUMP ON", null);
-				//hudScript.uiButtonALabel.text = "JUMP ON";
 				bnCollisionDogAndDude = true;
 			}
 		}
@@ -164,7 +164,6 @@ public class Player : MonoBehaviour {
 
 			if(hudScript != null) {
 				// Updates the HUD
-				//hudScript.uiButtonALabel.text = "";
 				hudScript.SetButtonsText("", null);
 				bnCollisionDogAndDude = false;
 			}
@@ -190,7 +189,6 @@ public class Player : MonoBehaviour {
 
 		trItemOver = trItem;
 		// Updates the HUD
-		//hudScript.uiButtonBLabel.text = "PICK";
 		hudScript.SetButtonsText(null, "PICK");
 	}
 
@@ -211,7 +209,6 @@ public class Player : MonoBehaviour {
 		// Updates the HUD
 		if(trItem == trItemOver) {
 
-			//hudScript.uiButtonBLabel.text = "";
 			hudScript.SetButtonsText(null,"");
 			trItemOver = null;
 		}
@@ -232,11 +229,9 @@ public class Player : MonoBehaviour {
 		// Are we holding an item?
 		if(trItemPicked != null) {
 
-			//hudScript.uiButtonALabel.text = "THROW OUT";
 			hudScript.SetButtonsText("THROW OUT",null);
 		}
 		else {
-			//hudScript.uiButtonALabel.text = "JUMP IN";
 			hudScript.SetButtonsText("JUMP IN", null);
 		}
 	}
@@ -255,7 +250,6 @@ public class Player : MonoBehaviour {
 			trWindowOver = null;
 
 		// Updates the HUD
-		//hudScript.uiButtonALabel.text = "";
 		hudScript.SetButtonsText("",null);
 	}
 
@@ -270,7 +264,6 @@ public class Player : MonoBehaviour {
 			trItemOver = null;
 
 			// Updates the HUD
-			//hudScript.uiButtonBLabel.text = "DROP";
 			hudScript.SetButtonsText(null,"DROP");
 
 			// Tell the item that we picked it up
@@ -305,7 +298,6 @@ public class Player : MonoBehaviour {
 		}
 
 		// Updates the HUD
-		//hudScript.uiButtonBLabel.text = "";
 		hudScript.SetButtonsText(null,"");
 
 		// When carrying an item, the player will move slowly
@@ -323,7 +315,6 @@ public class Player : MonoBehaviour {
 		// 1 - Move the item to the out window location
 		trItemPicked.transform.position = trWindowOutside.transform.position;
 		// Updates the HUD
-		//hudScript.uiButtonALabel.text = "";
 		hudScript.SetButtonsText("",null);
 
 		// 2 - Drop the item
@@ -353,7 +344,7 @@ public class Player : MonoBehaviour {
 	/// </summary>
 	public void DogCatched() {
 		// disable control
-		movementScript.bnAllowedToGetInput = false;
+		MovementAllowToGetInput(false);
 		// Drop the item, if any
 		DropItem();
 	}
@@ -368,10 +359,10 @@ public class Player : MonoBehaviour {
 			// Throw ourselves out the window
 			this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
 			cameraScript.FocusCameraOnTarget();
-		}
 
-		// Enable back the input
-		movementScript.bnAllowedToGetInput = true;
+			// Trying to 'toss' the dog out
+			rigidbody2D.AddForce(new Vector2(-1,1), ForceMode2D.Impulse);
+		}
 	}
 
 	/// <summary>
@@ -400,11 +391,21 @@ public class Player : MonoBehaviour {
 	}
 	
 	/// <summary>
+	/// Activate the Game Over status
 	/// </summary>
 	public void ActivateGameOver() {
 
 		hudScript.ShowGameOver();
-		movementScript.bnAllowedToGetInput = false;
+		MovementAllowToGetInput(false);
+	}
+
+	/// <summary>
+	/// Change the movement script to apply the player's input on the character movement or not
+	/// </summary>
+	/// <param name="bnStatus">True to allow to get input and move the character; false otherwise
+	public void MovementAllowToGetInput(bool bnStatus) {
+
+		movementScript.bnAllowedToGetInput = bnStatus;
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -416,9 +417,6 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	void CheckInput() {
 
-		//if(!movementScript.bnAllowedToGetInput)
-		//	return;
-
 		// --------------------------------------------------------
 		// DOG STUFF
 		// --------------------------------------------------------
@@ -429,7 +427,7 @@ public class Player : MonoBehaviour {
 
 				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
 					// Allow the player to move around
-					movementScript.bnAllowedToGetInput = true;
+					MovementAllowToGetInput(true);
 					// Hud
 					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
@@ -496,7 +494,7 @@ public class Player : MonoBehaviour {
 
 				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
 					// Allow the player to move around
-					movementScript.bnAllowedToGetInput = true;
+					MovementAllowToGetInput(true);
 					// Hud
 					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
@@ -601,7 +599,6 @@ public class Player : MonoBehaviour {
 					// Dog: while on the lap, the dog cannot move
 					movementScript.bnCanMoveHorizontally = false;
 					// Updates the HUD
-					//hudScript.uiButtonALabel.text = "JUMP OFF";
 					hudScript.SetButtonsText("JUMP OFF", null);
 					// Tell the Dude object that the dog is in his lap
 					gameScript.dudeScript.DogJumpedOnMyLap();
@@ -611,8 +608,6 @@ public class Player : MonoBehaviour {
 					// Dude: enable the throw
 					trThrowCursor.gameObject.SetActive(true);
 					// Updates the HUD
-					//hudScript.uiButtonBLabel.text = "THROW";
-					//hudScript.uiButtonALabel.text = "";
 					hudScript.SetButtonsText("","THROW");
 					// Tell the player that he must press the button
 					hudScript.ButtonAAnimate(true);
@@ -736,7 +731,6 @@ public class Player : MonoBehaviour {
 					// Dog: restore the ability to move
 					movementScript.bnCanMoveHorizontally = true;
 					// Updates the HUD
-					//hudScript.uiButtonALabel.text = "";
 					hudScript.SetButtonsText("", null);
 					// Tell the Dude object that the dog is NOT in his lap anymore
 					gameScript.dudeScript.DogJumpedFromMyLap();
@@ -745,7 +739,6 @@ public class Player : MonoBehaviour {
 					// Dude: enable the throw
 					trThrowCursor.gameObject.SetActive(false);
 					// Updates the HUD
-					//hudScript.uiButtonBLabel.text = "";
 					hudScript.SetButtonsText(null, "");
 					hudScript.ThrowBarDeactivate();
 					hudScript.ButtonAAnimate(false);
@@ -755,21 +748,5 @@ public class Player : MonoBehaviour {
 				//Debug.LogError("I shouldn't be here.");
 				break;
 		}
-	}
-
-	/* ====================================================================================================
-	 * DEBUG STUFF
-	 * ====================================================================================================
-	 */
-
-	/// <summary>
-	///
-	/// </summary>
-	public void OnDrawGizmos() {
-
-		//if(playerType == MainGame.ePlayerType.DUDE) {
-		//	Gizmos.color = Color.red;
-		//	Gizmos.DrawRay(gameScript.trDog.position, vThrowForceDirection);
-		//}
 	}
 }
