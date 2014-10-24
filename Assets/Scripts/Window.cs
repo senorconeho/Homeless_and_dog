@@ -19,11 +19,16 @@ public class Window : MonoBehaviour {
 
 	public eWindowStatusType windowStatus;
 
+	[SerializeField]
 	public Sprite			spriteWindowOpen;
+	[SerializeField]
 	public Sprite			spriteWindowClosed;
+	[SerializeField]
+	public Sprite			spriteWindowClosedLightOn;
 
 	SpriteRenderer		spriteRenderer;
 	SpriteRenderer		spriteCurtains;	//< The curtains sprite
+	SpriteRenderer		spriteLightOnReflectionOnWall;
 	BoxCollider2D			col;
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -38,6 +43,15 @@ public class Window : MonoBehaviour {
 		windowOtherSideScript = trWindowOtherSide.gameObject.GetComponent<Window>();
 		col = GetComponent<BoxCollider2D>();
 		spriteCurtains = transform.Find("Curtains").gameObject.GetComponent<SpriteRenderer>();
+
+		// Outside window only
+		Transform trLightOnWall = transform.Find("LightOnWall");
+
+		if(trLightOnWall != null)
+			spriteLightOnReflectionOnWall = trLightOnWall.gameObject.GetComponent<SpriteRenderer>();
+
+		if(spriteLightOnReflectionOnWall != null)
+			spriteLightOnReflectionOnWall.enabled = false;
 	}
 
 	/// <summary>
