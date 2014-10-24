@@ -11,26 +11,26 @@ public class Room : MonoBehaviour {
 	 * ==========================================================================================================
 	 */
 	// PUBLIC
-	public string				stRoomName;		//< Name of the room
+	BasicRoom						basicRoomScript;
 	MainGame						gameScript;
-	Transform						trWindow;			//< Window of the room
+	Transform						trWindow;													//< Window of the room
 	Transform 					trWaypoint;
-	Window							windowScript;	//< pointer to the window script
-	public Transform[]	trResidentWaypoints;	//< Waypoints array
+	Window							windowScript;											//< pointer to the window script
+	public Transform[]	trResidentWaypoints;							//< Waypoints array
 
 	// Resident stuff
-	public Transform	trResidentSpawnPoint;				//< Object pointing where to generate a resident
-	public Transform	trResidentPrefab;						//< Prefab of the resident itself
-	Transform					trResident = null;
+	public Transform	trResidentSpawnPoint;								//< Object pointing where to generate a resident
+	public Transform	trResidentPrefab;										//< Prefab of the resident itself
+	Transform					trResident = null;									//< 
 	float							fResidentMinTimeToAppear = 3.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
-	float							fResidentMaxTimeToAppear = 7.5f;
-	public float			fResidentCountdownTimer;
-	bool							bnResidentIn = false;	//< is the resident in the room?
+	float							fResidentMaxTimeToAppear = 7.5f;		//< Max time to the resident reappear
+	public float			fResidentCountdownTimer;						//< Resident 'appearance' timer
+	bool							bnResidentIn = false;								//< is the resident in the room?
 
 	// Window stuff
-	float							fReopenWindowMinTime = 5.0f;
-	float							fReopenWindowMaxTime = 10.0f;
-	public float			fReopenWindowTimer;
+	float							fReopenWindowMinTime = 5.0f;				//< Min time to reopen a closed window
+	float							fReopenWindowMaxTime = 10.0f;				//< Max time to reopen a closed window
+	public float			fReopenWindowTimer;									//< Reopen timer
 
 	/* ==========================================================================================================
 	 * UNITY MAIN LOOP
@@ -42,6 +42,7 @@ public class Room : MonoBehaviour {
 	void Awake() {
 
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
+		basicRoomScript = gameObject.GetComponent<BasicRoom>();
 
 		trWindow = FindChildrenByTag("InsideWindow", this.transform);
 		if(trWindow != null) {
@@ -123,7 +124,6 @@ public class Room : MonoBehaviour {
 			residentScript.SetSpawnPoint(trResidentSpawnPoint);
 			residentScript.SetRoomScript(this);
 			trResident.gameObject.SetActive(true);
-
 		}
 		else {
 
@@ -140,12 +140,11 @@ public class Room : MonoBehaviour {
 
 		// Disable the resident object
 		trResident.gameObject.SetActive(false);
-	//	bnResidentIn = false;
 		SetResidentInTheRoom(false);
 	}
 
 	/// <summary>
-	///
+	/// 
 	/// </summary>
 	public void SetResidentInTheRoom(bool bnIsInTheRoom) {
 
@@ -182,7 +181,7 @@ public class Room : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 	/// <summary>
-	///
+	/// Return the transform of the window in this room
 	/// </summary>
 	/// <returns>The transform of the window in this room</returns>
 	public Transform GetWindowObject() {
@@ -204,7 +203,7 @@ public class Room : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 
+	///  Return the number of the waypoints in the room
 	/// </summary>
 	/// <returns>The total number of waypoints on the array</returns>
 	public int GetNumberOfWaypoints() {
@@ -236,6 +235,10 @@ public class Room : MonoBehaviour {
 		windowScript.windowOtherSideScript.OpenWindow();
 	}
 
+	/// <summary>
+	/// Check if the 'reopen' timer of the window is over, so it can be reopened 
+	/// </summary>
+	/// <returns>True if the window can be reopened, false otherwise</returns>
 	public bool CanTheWindowBeReopened() {
 
 		// Is this window already open?
@@ -251,8 +254,11 @@ public class Room : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// From a give transform, search a child with a particular tag
 	/// </summary>
+	/// <param name="stTag">Tag of the object to be found</param>
+	/// <param name="tr">Transform of the parent object to search the child with the provided tag</param>
+	/// <returns>Transform of the child with the provided tag, null if none is found</returns>
 	public Transform FindChildrenByTag(string stTag, Transform tr) {
 		// Get the window
 		foreach(Transform child in tr) {
@@ -277,7 +283,7 @@ public class Room : MonoBehaviour {
 		// 1 - already done in Player
 		// 2 - Make the dog appear outside the window
 		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindow);
-		// 3 - wait...
+		// 3 - wait... ANIMATION!!!
 		yield return new WaitForSeconds(fWaitTime);
 		// and then close the window, so the dog can't enter back
 		CloseWindow();

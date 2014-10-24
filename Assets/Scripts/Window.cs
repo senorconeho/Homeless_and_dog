@@ -8,8 +8,10 @@ public class Window : MonoBehaviour {
 
 	Player						dogScript = null;
 	MainGame					gameScript = null;
-	public Transform	trWindowOtherSide;		//< The other 'side' of this window
+	public Transform	trWindowOtherSide;			//< The other 'side' of this window
 	public Window			windowOtherSideScript;
+	public Transform	trBasicRoom;
+	public BasicRoom	basicRoomScript;	//< the basic room which this window belongs
 
 	public enum eWindowStatusType {
 
@@ -46,14 +48,31 @@ public class Window : MonoBehaviour {
 		col = GetComponent<BoxCollider2D>();
 		spriteCurtains = transform.Find("Curtains").gameObject.GetComponent<SpriteRenderer>();
 
-		// Outside window only
-		Transform trLightOnWall = transform.Find("LightOnWall");
+		// HACK!!!
+		if(transform.tag == "OutsideWindow") {
+			// Street: have only outside windows, and in it's hierarchy:
+			// Street
+			// - Balcony
+			// -- Window
+			// So we need to get the parent of our parent to reach the main object
+			trBasicRoom = this.transform.parent.transform.parent;
+			basicRoomScript = trBasicRoom.gameObject.GetComponent<BasicRoom>();
 
-		if(trLightOnWall != null)
-			spriteLightOnReflectionOnWall = trLightOnWall.gameObject.GetComponent<SpriteRenderer>();
 
-		if(spriteLightOnReflectionOnWall != null)
-			spriteLightOnReflectionOnWall.enabled = false;
+			// Outside window only
+			Transform trLightOnWall = transform.Find("LightOnWall");
+
+			if(trLightOnWall != null)
+				spriteLightOnReflectionOnWall = trLightOnWall.gameObject.GetComponent<SpriteRenderer>();
+
+			if(spriteLightOnReflectionOnWall != null)
+				spriteLightOnReflectionOnWall.enabled = false;
+		}
+		else {
+
+			trBasicRoom = this.transform.parent;
+			basicRoomScript = trBasicRoom.gameObject.GetComponent<BasicRoom>();
+		}
 	}
 
 	/// <summary>
@@ -118,7 +137,7 @@ public class Window : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 
+	/// Open the window
 	/// </summary>
 	public void OpenWindow() {
 

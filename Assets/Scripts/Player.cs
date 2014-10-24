@@ -237,7 +237,7 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 
+	/// Not 'touching' the window anymore
 	/// <summary>
 	/// <param name="trWindow">The Transform of the window</param>
 	public void OverWindowExit(Transform trWindow) {
@@ -356,13 +356,39 @@ public class Player : MonoBehaviour {
 
 		if(trWindow != null) {
 
-			// Throw ourselves out the window
-			this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
-			cameraScript.FocusCameraOnTarget();
+			// Throw ourselves out the window, back into the street
+			// TRANSPORT
+			MoveThroughWindow(trWindow);
+			//this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
+			//cameraScript.FocusCameraOnTarget();
 
 			// Trying to 'toss' the dog out
 			rigidbody2D.AddForce(new Vector2(-1,1), ForceMode2D.Impulse);
 		}
+	}
+
+	/// <summary>
+	/// Makes the character move through a window, reappearing on the other side (actually, another room)
+	/// </summary>
+	/// <param name="trWindow"> Transform of the window </param>
+	public void MoveThroughWindow(Transform trWindow) {
+
+		// Get the 'other side' object
+		Window windowScript = trWindow.gameObject.GetComponent<Window>();
+		Transform trOtherSide = windowScript.trWindowOtherSide;
+		BasicRoom otherSideBasicRoomScript = windowScript.windowOtherSideScript.basicRoomScript; //< The BasicRoom script for the window on the other side
+
+		// Move the character
+		this.transform.position = trOtherSide.transform.position;	// FIXME
+		// Trigger the 'entered the room'
+		otherSideBasicRoomScript.EnteredRoom();
+		//
+		//cameraScript.AdjustHeightForNewRoom(windowScript.windowOtherSideScript.trBasicRoom);
+		cameraScript.SetCurrentBasicRoom(windowScript.windowOtherSideScript.trBasicRoom, otherSideBasicRoomScript);
+		// Updates the camera limits
+		cameraScript.UpdateLimits(otherSideBasicRoomScript.GetLeftLimit(), otherSideBasicRoomScript.GetRightLimit());
+		// Update the focus of the camera
+		cameraScript.FocusCameraOnTarget();
 	}
 
 	/// <summary>
@@ -476,8 +502,10 @@ public class Player : MonoBehaviour {
 						else if(windowScript.IsTheWindowOpen()){
 
 							// Throw ourselves out the window
-							this.transform.position = windowScript.trWindowOtherSide.transform.position;
-							cameraScript.FocusCameraOnTarget();
+							// TRANSPORT
+							MoveThroughWindow(trWindowOver);
+							//this.transform.position = windowScript.trWindowOtherSide.transform.position;
+							//cameraScript.FocusCameraOnTarget();
 						}
 					}
 				}
