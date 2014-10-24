@@ -130,7 +130,7 @@ public class Room : MonoBehaviour {
 			// Reactivate the object if it already exists
 			trResident.gameObject.SetActive(true);
 		}
-		bnResidentIn = true;
+		SetResidentInTheRoom(true);
 	}
 
 	/// <summary>
@@ -140,7 +140,26 @@ public class Room : MonoBehaviour {
 
 		// Disable the resident object
 		trResident.gameObject.SetActive(false);
-		bnResidentIn = false;
+	//	bnResidentIn = false;
+		SetResidentInTheRoom(false);
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void SetResidentInTheRoom(bool bnIsInTheRoom) {
+
+		bnResidentIn = bnIsInTheRoom;
+
+		if(bnResidentIn) {
+
+			// Turn on the lights
+			windowScript.LightTurnOn();
+		}
+		else {
+
+			windowScript.LightTurnOff();
+		}
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------

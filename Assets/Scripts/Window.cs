@@ -24,6 +24,8 @@ public class Window : MonoBehaviour {
 	[SerializeField]
 	public Sprite			spriteWindowClosed;
 	[SerializeField]
+	public Sprite			spriteWindowOpenLightOn;
+	[SerializeField]
 	public Sprite			spriteWindowClosedLightOn;
 
 	SpriteRenderer		spriteRenderer;
@@ -133,6 +135,45 @@ public class Window : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Change the sprite for the lit up representation
+	/// </summary>
+	public void LightTurnOn() {
+
+		if(windowStatus == eWindowStatusType.CLOSED) {
+
+			spriteRenderer.sprite = spriteWindowClosedLightOn;
+		}
+		else {
+			spriteRenderer.sprite = spriteWindowOpenLightOn;
+		}
+
+		if(transform.tag == "OutsideWindow") {
+
+			// Enable the reflection
+			spriteLightOnReflectionOnWall.enabled = true;
+		}
+	}
+
+	/// <summary>
+	/// Change the sprite for the lit up representation
+	/// </summary>
+	public void LightTurnOff() {
+
+		if(windowStatus == eWindowStatusType.CLOSED) {
+
+			spriteRenderer.sprite = spriteWindowClosed;
+		}
+		else {
+			spriteRenderer.sprite = spriteWindowOpen;
+		}
+
+		if(transform.tag == "OutsideWindow") {
+
+			// Enable the reflection
+			spriteLightOnReflectionOnWall.enabled = false;
+		}
+	}
 	/* -----------------------------------------------------------------------------------------------------------
 	 * PHYSICS
 	 * -----------------------------------------------------------------------------------------------------------
