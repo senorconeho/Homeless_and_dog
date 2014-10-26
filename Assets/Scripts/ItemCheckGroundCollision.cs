@@ -35,6 +35,9 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 	///
 	/// </summary>
 	void OnCollisionEnter2D(Collision2D collision) {
+		
+		if(itemScript.bnPickedUp == true)
+			return;
 
 		if(collision.transform.gameObject.layer == MainGame.nGroundLayer) {
 
@@ -42,7 +45,7 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 
 				CrashedWithTheGround();
 				// DEBUG
-				Debug.Log("collision with ground! " + collision.relativeVelocity.magnitude);
+				Debug.Log("collision with ground! " + collision.relativeVelocity.magnitude + " " + collision.transform);
 			}
 		}
 	}
