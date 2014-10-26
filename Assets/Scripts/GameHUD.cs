@@ -55,21 +55,31 @@ public class GameHUD : MonoBehaviour {
 		uiCenterScreenLabel = trUI.Find("Label_CenterScreen").gameObject.GetComponent<UILabel>();
 
 		// Get the buttons labels
-		uiButtonALabel = trUI.Find("Label_A").gameObject.GetComponent<UILabel>();
-		uiButtonBLabel = trUI.Find("Label_B").gameObject.GetComponent<UILabel>();
-		uiButtonAAnimation = trUI.Find("ButtonA/Sprite_ButtonA").gameObject.GetComponent<UISpriteAnimation>();
-		uiButtonBAnimation = trUI.Find("ButtonB/Sprite_ButtonB").gameObject.GetComponent<UISpriteAnimation>();
+		Transform trButtonALabel = trUI.Find("Label_A");
+		if(trButtonALabel != null) {
 
+			uiButtonALabel = trButtonALabel.gameObject.GetComponent<UILabel>();
+			uiButtonALabel.text = "";
+		}
 
-		// Clean the buttons
-		uiButtonALabel.text = "";
-		uiButtonBLabel.text = "";
+		Transform trButtonBLabel = trUI.Find("Label_B");
+		if(trButtonBLabel != null) {
+			uiButtonBLabel = trButtonBLabel.gameObject.GetComponent<UILabel>();
+			uiButtonBLabel.text = "";
+		}
 
-		// Stops any animation
-		if(uiButtonAAnimation != null)
+		Transform trButtonASprite = trUI.Find("ButtonA/Sprite_ButtonA");
+		if(trButtonASprite != null) {
+			uiButtonAAnimation = trButtonASprite.gameObject.GetComponent<UISpriteAnimation>();
 			uiButtonAAnimation.enabled = false;
-		if(uiButtonBAnimation != null)
+		}
+
+		Transform trButtonBSprite = trUI.Find("ButtonB/Sprite_ButtonB");
+		if(trButtonBSprite != null) {
+			uiButtonBAnimation = trButtonBSprite.gameObject.GetComponent<UISpriteAnimation>();
 			uiButtonBAnimation.enabled = false;
+		}
+
 
 		// For the dude only: find the throw bar object
 		trThrowBar = trUI.Find("ThrowBar");
@@ -89,17 +99,10 @@ public class GameHUD : MonoBehaviour {
 
 		// Find the "Game Over" sprite
 		trSpriteGameOver = trUI.Find("SpriteGameOver");
-		trSpriteGameOver.gameObject.SetActive(false);
+		if(trSpriteGameOver != null)
+			trSpriteGameOver.gameObject.SetActive(false);
 	}
 	
-	/// <summary>
-	/// Update is called once per frame
-	/// </summary>
-	void Update () {
-	
-	}
-
-
 	/* -----------------------------------------------------------------------------------------------------------
 	 * 
 	 * -----------------------------------------------------------------------------------------------------------
