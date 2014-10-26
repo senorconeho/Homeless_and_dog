@@ -269,7 +269,7 @@ public class Player : MonoBehaviour {
 			// Tell the item that we picked it up
 			Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
 			//itemScript.PickedUp(this.transform);
-			itemScript.PickedUp(trCarrier);
+			itemScript.PickedUp(trCarrier, this);
 
 			// When carrying an item, the player will move slowly
 			//movementScript.fMaxSpeed = fCarryingItemSpeed;
@@ -302,6 +302,26 @@ public class Player : MonoBehaviour {
 
 		// When carrying an item, the player will move slowly
 		movementScript.fMaxSpeed = fRunningSpeed;
+	}
+
+	/// <summary>
+	/// Item was thrown in the fire (this is almost like the 'drop')
+	/// </summary>
+	public void BurnItem() {
+		trItemPicked = null;
+
+		// Change the animation
+		if (animator != null) {
+
+			animator.SetBool("bnPickedItem", false);
+		}
+
+		// Updates the HUD
+		hudScript.SetButtonsText(null,"");
+
+		// When carrying an item, the player will move slowly
+		movementScript.fMaxSpeed = fRunningSpeed;
+
 	}
 
 	/// <summary>

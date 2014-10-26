@@ -11,6 +11,7 @@ public class Item : MonoBehaviour {
 	public bool						bnPickedUp = false;	//< Is this item picked by somebody?
 	public float 					fBurnValue = 0.6f;	//< how much adds to the flame when dropped in the barrel (0..1 max)
 	public Transform 			trPickedBy;					//< Who picked us up?
+	public Player					pickedByScript;
 	public BoxCollider2D	col;
 	public bool						bnCrashed;					//< Have this item crashed on the ground?
 	SpriteRenderer				sr;
@@ -57,6 +58,15 @@ public class Item : MonoBehaviour {
 		if(barrelScript != null) {
 
 			barrelScript.AddHealthToFire(fBurnValue);
+
+			// Was somebody holding me?
+			if(bnPickedUp) {
+
+				if(trPickedBy != null && pickedByScript != null) {
+
+					pickedByScript.BurnItem();
+				}
+			}
 			
 			// Play a sound
 			if(sfxItemBurned != null) {
@@ -77,11 +87,12 @@ public class Item : MonoBehaviour {
 	/// <summary>
 	/// What to do when this item is picked by someone
 	/// </summary>
-	public void PickedUp(Transform trPicker) {
+	public void PickedUp(Transform trPicker, Player pickerScript) {
 
 		bnPickedUp = true;
 		transform.tag = "Picked";
 		trPickedBy = trPicker;
+		pickedByScript = pickerScript;
 		// disable all collisions
 		//col.enabled = false;
 		if(sfxItemPicked != null) {
@@ -98,6 +109,7 @@ public class Item : MonoBehaviour {
 		bnPickedUp = false;
 		transform.tag = "Untagged";
 		trPickedBy = null;
+		pickedByScript = null;
 		// disable all collisions
 		col.enabled = false;
 		col.enabled = true;
@@ -123,6 +135,7 @@ public class Item : MonoBehaviour {
 
 		if(gameObject != null) {
 
+			// FIXME: should I check if someone is holding me?
 			Destroy(this.gameObject);
 		}
 	}

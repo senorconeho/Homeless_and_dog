@@ -34,7 +34,9 @@ public class MainGame : MonoBehaviour {
 
 	public eGameStatus gameStatus = eGameStatus.GAME_START_SCREEN;
 
+	[SerializeField]
 	public Transform 		trDog;
+	[SerializeField]
 	public Transform		trDude;
 	public Player				dudeScript;
 	public Player				dogScript;
@@ -45,6 +47,8 @@ public class MainGame : MonoBehaviour {
 
 	public float				fNoiseMade = 0.0f;
 
+	public Font					fontInGame;
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -52,6 +56,10 @@ public class MainGame : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		if(fontInGame != null) {
+			// Make the font use the 'point' filter. This can't be done in the inspector
+			fontInGame.material.mainTexture.filterMode = FilterMode.Point;
+		}
 	}
 	
 	// Update is called once per frame
