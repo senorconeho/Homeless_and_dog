@@ -15,6 +15,7 @@ public class GameHUD : MonoBehaviour {
 	public UISlider						uiThrowBar;
 	public Transform					trSpriteGameOver;
 	public UILabel						uiCenterScreenLabel;
+	public UILabel						uiBottomScreenLabel;
 	public Transform 					trNoiseBar;
 	public UISlider						uiNoiseBar;
 
@@ -53,6 +54,9 @@ public class GameHUD : MonoBehaviour {
 
 		// Get the center screen label
 		uiCenterScreenLabel = trUI.Find("Label_CenterScreen").gameObject.GetComponent<UILabel>();
+		uiCenterScreenLabel.text = "";
+		uiBottomScreenLabel = trUI.Find("Label_BottomScreen").gameObject.GetComponent<UILabel>();
+		uiBottomScreenLabel.text = "";
 
 		// Get the buttons labels
 		Transform trButtonALabel = trUI.Find("Label_A");
@@ -184,5 +188,13 @@ public class GameHUD : MonoBehaviour {
 
 		if(stTextB != null)
 			uiButtonBLabel.text = stTextB;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public void SetBottomScreenText(string stText) {
+
+		uiBottomScreenLabel.text = stText;
 	}
 }
