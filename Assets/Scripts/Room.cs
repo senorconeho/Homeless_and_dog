@@ -22,8 +22,8 @@ public class Room : MonoBehaviour {
 	public Transform	trResidentSpawnPoint;								//< Object pointing where to generate a resident
 	public Transform	trResidentPrefab;										//< Prefab of the resident itself
 	Transform					trResident = null;									//< 
-	float							fResidentMinTimeToAppear = 3.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
-	float							fResidentMaxTimeToAppear = 7.5f;		//< Max time to the resident reappear
+	float							fResidentMinTimeToAppear = 8.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
+	float							fResidentMaxTimeToAppear = 17.5f;		//< Max time to the resident reappear
 	public float			fResidentCountdownTimer;						//< Resident 'appearance' timer
 	bool							bnResidentIn = false;								//< is the resident in the room?
 
