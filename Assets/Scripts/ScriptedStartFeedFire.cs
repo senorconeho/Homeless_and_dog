@@ -20,13 +20,15 @@ using System.Collections;
 public class ScriptedStartFeedFire : MonoBehaviour {
 
 	public Transform	trBarrel;
-	public Barrel			barrelScript;
-	public MainGame		gameScript;
+	Barrel			barrelScript;
+	MainGame		gameScript;
 
+	public Transform	prefabItem;
 	public Transform 	trSpawnPoint;
 	public Transform	trItemPoint;
 
 	public Transform	trCharacter;	//< Dog or dude
+	Player	playerScript;
 	
 	// From the ResidentBehaviour script
 	SimpleMoveRigidBody2D		movementScript;
@@ -38,7 +40,7 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * MAIN UNITY LOOP
-	 * -----------------------------------------------------------------------------------------------------------
+	 * ------------------------------------------------------------------k-----------------------------------------
 	 */
 
 	/// <summary>
@@ -57,6 +59,7 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 
 		if(trCharacter != null) {
 
+			playerScript = trCharacter.gameObject.GetComponent<Player>();
 			movementScript = trCharacter.gameObject.GetComponent<SimpleMoveRigidBody2D>();
 		}
 	}
@@ -70,13 +73,6 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 		// Create the character path
 		trWaypoints =  new Transform[] { trItemPoint, trBarrel, trSpawnPoint };
 
-		trTarget = trWaypoints[0];
-
-		if(movementScript != null) {
-
-			int nDirection = CheckDirectionToTheTarget();
-			movementScript.SetNPCMovementDirection(nDirection);	// Walk to the target
-		}
 	}
 	
 	/// <summary>
@@ -84,43 +80,52 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	/// </summary>
 	void Update () {
 	
-		if(trTarget != null) {
-			// We have a target, so walk to it
-			if(isEqual(trCharacter.position.x, trTarget.position.x)) {
-
-				CheckTarget();
+		if(barrelScript.GetFireHealth() < 0.9f) {
+			GetAnItemAndFeedTheFire();
+		}
+			if(trTarget != null) {
+				// We have a target, so walk to it
+				CheckCurrentTarget();
 			}
-		}	
 	}
 
-	/// <summary>
-	///
-	/// </summary>
-	void CheckTarget() {
+	void CheckCurrentTarget() {
 
 		if(trTarget == null)
 			return;
 
-		// Have we reached an item?
-		if(trTarget.tag == "Item") {
+		if(trTarget.tag == "Item") {	// 1 - find and pick the item
 
-			// Get the next target
-			trTarget = GetWaypointObject(++nWaypointIndex);
-			// Wait a little here...
-			StartCoroutine(WaitHere(3));
-		}
-		else if(trTarget.tag == "Barrel") {
-			// Deployed the item on the fire
-			trTarget = GetWaypointObject(++nWaypointIndex);
-			StartCoroutine(WaitHere(1));
-		}
-		else if(trTarget.tag == "SpawnPoint") {
+			// Reached the item
+			if(playerScript.trItemOver != null) {
 
-			movementScript.SetNPCMovementDirection(0);	// Stop
-			nWaypointIndex = 0;
-			trTarget = trWaypoints[nWaypointIndex];
-	//		trTarget = GetWaypointObject(nWaypointIndex);
-			StartCoroutine(WaitHere(2));
+				movementScript.SetNPCMovementDirection(0);
+				// Pick the item...
+				playerScript.PickItem();
+				// Pick an item? Regenerate!
+				GenerateItem();
+				// ... and proceed to the the next target: the barrel
+				trTarget = GetWaypointObject(++nWaypointIndex);
+				SetMovementToTarget();
+			}
+		}
+		else if(trTarget.tag == "Barrel") {	// 2 - Bring the item to the fire
+
+			if(playerScript.trItemPicked == null) {
+
+				trTarget = GetWaypointObject(++nWaypointIndex);
+				SetMovementToTarget();
+			}
+		}
+		else if(trTarget.tag == "SpawnPoint") { // Move back to the start point
+
+			if(isEqual(trCharacter.transform.position.x, trTarget.transform.position.x)) {
+				movementScript.SetNPCMovementDirection(0);	// Stop
+
+				// resets the target and waypoint
+				nWaypointIndex = 0;
+				trTarget = null;	
+			}
 		}
 	}
 
@@ -151,6 +156,20 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
+	void GetAnItemAndFeedTheFire() {
+
+		if(trTarget != null)
+			return;
+
+		trTarget = trWaypoints[0];
+
+		if(movementScript != null) {
+
+			int nDirection = CheckDirectionToTheTarget();
+			movementScript.SetNPCMovementDirection(nDirection);	// Walk to the target
+		}
+	}
+
 	/// <summary>
 	/// Makes the character stay a little at the current position
 	/// </summary>
@@ -158,6 +177,14 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 
 		movementScript.SetNPCMovementDirection(0);
 		yield return new WaitForSeconds(fWaitTime);
+
+		SetMovementToTarget();
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	void SetMovementToTarget() {
 
 		// Change movement direction
 		int nDirection = CheckDirectionToTheTarget();
@@ -180,11 +207,22 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	 * HELPER FUNCTIONS
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
+
+	void GenerateItem() {
+
+		if(prefabItem != null) {
+
+			Transform tr = Instantiate(prefabItem, trItemPoint.position, prefabItem.transform.rotation) as Transform;
+			trItemPoint = tr;
+			trWaypoints[0] = trItemPoint;
+		}
+	}
+
 	/// <summary>
 	///
 	/// </summary>
 	bool isEqual(float a, float b) {
 
-		return(Mathf.Abs(a - b) < 0.05f);
+		return(Mathf.Abs(a - b) < 0.01f);
 	}
 }

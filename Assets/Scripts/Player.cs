@@ -179,17 +179,17 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	public void OverItemEnter(Transform trItem) {
 
-		// ignore all collisions when not playing
-		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
-			return;
 
 		// Do we have an item already?
 		if(trItemPicked != null)
 			return;
 
 		trItemOver = trItem;
-		// Updates the HUD
-		hudScript.SetButtonsText(null, "PICK");
+
+		if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+			// Updates the HUD
+			hudScript.SetButtonsText(null, "PICK");
+		}
 	}
 
 	/// <summary>
@@ -199,7 +199,6 @@ public class Player : MonoBehaviour {
 	public void OverItemExit(Transform trItem) {
 
 		// ignore all collisions when not playing
-		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
 			return;
 
 		// Do we have an item already?
@@ -209,7 +208,9 @@ public class Player : MonoBehaviour {
 		// Updates the HUD
 		if(trItem == trItemOver) {
 
-			hudScript.SetButtonsText(null,"");
+			if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+				hudScript.SetButtonsText(null,"");
+			}
 			trItemOver = null;
 		}
 	}
@@ -256,15 +257,17 @@ public class Player : MonoBehaviour {
 	/// <summary>
 	///
 	/// </summary>
-	void PickItem() {
+	public void PickItem() {
 
 		if(trItemOver != null && trItemPicked == null) {
 
 			trItemPicked = trItemOver;
 			trItemOver = null;
 
-			// Updates the HUD
-			hudScript.SetButtonsText(null,"DROP");
+			if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+				// Updates the HUD
+				hudScript.SetButtonsText(null,"DROP");
+			}
 
 			// Tell the item that we picked it up
 			Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
@@ -317,7 +320,9 @@ public class Player : MonoBehaviour {
 		}
 
 		// Updates the HUD
-		hudScript.SetButtonsText(null,"");
+		if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+			hudScript.SetButtonsText(null,"");
+		}
 
 		// When carrying an item, the player will move slowly
 		movementScript.fMaxSpeed = fRunningSpeed;
