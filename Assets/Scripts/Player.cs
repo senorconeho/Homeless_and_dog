@@ -198,9 +198,6 @@ public class Player : MonoBehaviour {
 	/// <param name="trItem">The Transform of the item</param>
 	public void OverItemExit(Transform trItem) {
 
-		// ignore all collisions when not playing
-			return;
-
 		// Do we have an item already?
 		if(trItemPicked != null)
 			return;
@@ -259,6 +256,7 @@ public class Player : MonoBehaviour {
 	/// </summary>
 	public void PickItem() {
 
+		// FIXME: and if the item cannot be picked? How about just trigger the item animation and bail out?
 		if(trItemOver != null && trItemPicked == null) {
 
 			trItemPicked = trItemOver;

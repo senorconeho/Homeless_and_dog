@@ -68,7 +68,6 @@ public class CheckHitBox : MonoBehaviour {
 			// ... an item
 			if(trCol.gameObject.layer == MainGame.nItemsLayer) {
 			
-				// FIXME: what if the item is picked by another player?	
 				// is this item not picked yet?
 				if(trCol.tag != "Picked") {
 

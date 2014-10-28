@@ -19,28 +19,25 @@ using System.Collections;
 /// </summary>
 public class ScriptedStartFeedFire : MonoBehaviour {
 
-	public Transform	trBarrel;
-	Barrel			barrelScript;
-	MainGame		gameScript;
+	MainGame					gameScript;		//< Main game script
+	public Transform	trBarrel;			//< Transform of the barrel (placed on the center of the screen)
+	Barrel						barrelScript;	//< Script of the barrel (to check the fire level)
 
-	public Transform	prefabItem;
-	public Transform 	trSpawnPoint;
-	public Transform	trItemPoint;
+	public Transform	prefabItem;		//< item placed on each corner of the screen (will be regenerated when picked)	
+	public Transform 	trSpawnPoint;	//< where the character should wait until the fire drop it's level
+	public Transform	trItemPoint;	//< put the item here. The next one will be generated in the same place
 
-	public Transform	trCharacter;	//< Dog or dude
-	Player	playerScript;
-	
-	// From the ResidentBehaviour script
-	SimpleMoveRigidBody2D		movementScript;
-	public Transform 				trTarget = null;
+	public Transform	trCharacter;							//< Dog or dude
+	Player	playerScript;												//< player script
+	SimpleMoveRigidBody2D		movementScript;			//< movement script
+	public Transform 				trTarget = null;		//< current target	
 
-	public int 							nWaypointIndex = 0;	//< Which waypoint are we?
-	public Transform[]			trWaypoints;
-
+	public Transform[]			trWaypoints;				//< Array of waypoints (will be populated in the code)
+	public int 							nWaypointIndex = 0;	//< Index of the current waypoint
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * MAIN UNITY LOOP
-	 * ------------------------------------------------------------------k-----------------------------------------
+	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
 	/// <summary>
@@ -51,19 +48,20 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 		// Get the main game object
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 
+		// Find the 'barrel'
 		trBarrel = GameObject.Find("Barrel").transform;
 		if(trBarrel != null) {
 
 			barrelScript = trBarrel.gameObject.GetComponent<Barrel>();
 		}
 
+		// Get the player related stuff
 		if(trCharacter != null) {
 
 			playerScript = trCharacter.gameObject.GetComponent<Player>();
 			movementScript = trCharacter.gameObject.GetComponent<SimpleMoveRigidBody2D>();
 		}
 	}
-
 
 	/// <summary>
 	/// Use this for initialization
@@ -72,7 +70,6 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	
 		// Create the character path
 		trWaypoints =  new Transform[] { trItemPoint, trBarrel, trSpawnPoint };
-
 	}
 	
 	/// <summary>
@@ -80,15 +77,19 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	/// </summary>
 	void Update () {
 	
-		if(barrelScript.GetFireHealth() < 0.9f) {
+		if(barrelScript.GetFireHealth() < 0.9f) {	// FIXME
 			GetAnItemAndFeedTheFire();
 		}
-			if(trTarget != null) {
-				// We have a target, so walk to it
-				CheckCurrentTarget();
-			}
+
+		if(trTarget != null) {
+			// We have a target, so walk to it
+			CheckCurrentTarget();
+		}
 	}
 
+	/// <summary>
+	/// Check which target we have reached and what to do next
+	/// </summary>
 	void CheckCurrentTarget() {
 
 		if(trTarget == null)
@@ -156,11 +157,15 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
+	/// <summary>
+	/// Pick the item and walk torwards the fire barrel
+	/// </summary>
 	void GetAnItemAndFeedTheFire() {
 
 		if(trTarget != null)
 			return;
 
+		// Reset the target to the first waypoint
 		trTarget = trWaypoints[0];
 
 		if(movementScript != null) {
@@ -182,7 +187,7 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// Calculate the direction of movement and sets the character on motion
 	/// </summary>
 	void SetMovementToTarget() {
 
@@ -208,6 +213,9 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
+	/// <summary>
+	/// Regenerate the item just picked, so the screen could loop forever
+	/// </summary>
 	void GenerateItem() {
 
 		if(prefabItem != null) {

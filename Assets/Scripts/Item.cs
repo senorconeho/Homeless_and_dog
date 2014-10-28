@@ -24,6 +24,8 @@ public class Item : MonoBehaviour {
 	public AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
 	[SerializeField]
 	public AudioClip	sfxItemCrashed;	//< Item crashed on the ground
+
+	public Animation	clipPickAnimation;	//< animation to be played when this item is picked
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
 	 * -----------------------------------------------------------------------------------------------------------
@@ -89,6 +91,10 @@ public class Item : MonoBehaviour {
 	/// </summary>
 	public void PickedUp(Transform trPicker, Player pickerScript) {
 
+		if(clipPickAnimation != null) {
+
+			// TODO: make the player wait until the end of animation
+		}
 		bnPickedUp = true;
 		transform.tag = "Picked";
 		trPickedBy = trPicker;
