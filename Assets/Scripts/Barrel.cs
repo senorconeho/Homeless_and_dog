@@ -25,7 +25,10 @@ public class Barrel : MonoBehaviour {
 
 		// Get the scripts
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
-		musicScript = GameObject.Find("MusicManager").gameObject.GetComponent<MusicManager>();
+		GameObject goMusicManager = GameObject.Find("MusicManager");
+
+		if(goMusicManager != null)
+			musicScript = goMusicManager.GetComponent<MusicManager>();
 
 		fBurnSpeed = 1f/fBurnTime;
 
@@ -86,6 +89,15 @@ public class Barrel : MonoBehaviour {
 				musicScript.AdjustMusicPitch(fNewPitch);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Get the current fire health
+	/// </summary>
+	/// <returns> A float with the current fire health </returns>
+	public float GetFireHealth() {
+
+		return fFireHealth;
 	}
 
 	/// <summary>

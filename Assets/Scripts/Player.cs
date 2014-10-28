@@ -473,7 +473,7 @@ public class Player : MonoBehaviour {
 
 				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
 					// Allow the player to move around
-					MovementAllowToGetInput(true);
+					//MovementAllowToGetInput(true);
 					// Hud
 					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
@@ -542,7 +542,7 @@ public class Player : MonoBehaviour {
 
 				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
 					// Allow the player to move around
-					MovementAllowToGetInput(true);
+					//MovementAllowToGetInput(true);
 					// Hud
 					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
