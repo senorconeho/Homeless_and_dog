@@ -38,6 +38,7 @@ public class MainGame : MonoBehaviour {
 	public Transform 		trDog;
 	[SerializeField]
 	public Transform		trDude;
+
 	public Player				dudeScript;
 	public Player				dogScript;
 	public GameHUD			hudDudeScript;

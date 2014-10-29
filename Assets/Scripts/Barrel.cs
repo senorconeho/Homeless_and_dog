@@ -10,7 +10,8 @@ using System.Collections;
 public class Barrel : MonoBehaviour {
 
 	public float 			fFireHealth = 1;
-	public float 			fBurnTime = 15;	//< How many seconds to burn all the fire?
+	float 						fBurnTime;
+	public float 			fDefaultBurnTime = 15;	//< How many seconds to burn and extinguish all the fire?
 	float 						fBurnSpeed = 1;
 	public Transform 	trFireFlame;
 	Vector3 					vFireFlameStartPosition;
@@ -30,12 +31,14 @@ public class Barrel : MonoBehaviour {
 		if(goMusicManager != null)
 			musicScript = goMusicManager.GetComponent<MusicManager>();
 
+		fBurnTime = fDefaultBurnTime;
 		fBurnSpeed = 1f/fBurnTime;
 
 		if(trFireFlame != null) {
 		
 			vFireFlameStartPosition = trFireFlame.position;
 		}
+
 	}
 	
 	/// <summary>
@@ -98,6 +101,27 @@ public class Barrel : MonoBehaviour {
 	public float GetFireHealth() {
 
 		return fFireHealth;
+	}
+
+	/// <summary>
+	/// Restore the fire rate to it's default value
+	/// </summary>
+	public void RestoreDefaultFireRate() {
+
+		fBurnTime = fDefaultBurnTime;
+		// Updates the burn speed
+		fBurnSpeed = 1f/fBurnTime;
+	}
+
+	/// <summary>
+	/// Set the fire rate, changing the time to extinguish the fire
+	/// </summary>
+	/// <param name="fNewTime"> New time, in seconds, to burn all the fire </param>
+	public void SetFireRate(float fNewTime) {
+
+		fBurnTime = fNewTime;
+		// Updates the burn speed
+		fBurnSpeed = 1f/fBurnTime;
 	}
 
 	/// <summary>
