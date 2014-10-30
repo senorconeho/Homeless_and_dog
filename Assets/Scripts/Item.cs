@@ -16,6 +16,8 @@ public class Item : MonoBehaviour {
 	public bool						bnCrashed;					//< Have this item crashed on the ground?
 	SpriteRenderer				sr;
 
+	public MainGame.eItemTypes	itemType;			//<
+
 	[SerializeField]
 	public AudioClip	sfxItemPicked;	//< item picked by the player
 	[SerializeField]

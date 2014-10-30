@@ -24,6 +24,7 @@ public class MainGame : MonoBehaviour {
 		NPC
 	};
 
+	// Possible game status
 	public enum eGameStatus {
 
 		GAME_START_SCREEN, 
@@ -33,6 +34,17 @@ public class MainGame : MonoBehaviour {
 	};
 
 	public eGameStatus gameStatus = eGameStatus.GAME_START_SCREEN;
+
+	// Possible item types
+	public enum eItemTypes {
+	
+		ITEM_DOG,		//< For animation purposes, the dog is an item too (it can be carryied by the dude)	
+		ITEM_CHAIR,
+		ITEM_GARBAGE,
+		ITEM_LAMP,
+		ITEM_PILLOW_BOOK_PAPER,
+		ITEM_SHOES
+	}
 
 	[SerializeField]
 	public Transform 		trDog;
