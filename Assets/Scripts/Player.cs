@@ -813,6 +813,14 @@ public class Player : MonoBehaviour {
 
 					FSMEnterNewState(eFSMState.IDLE);
 				}
+
+				// If the player is carrying the dog, updates the throw bar
+				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingDog) {
+
+					fThrowBarValue -= Time.deltaTime;
+					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
+					hudScript.ThrowBarUpdate(fThrowBarValue);
+				}
 				break;
 
 			case eFSMState.RUNNING_CARRYING_ITEM:
@@ -825,6 +833,13 @@ public class Player : MonoBehaviour {
 				}
 				else if(trItemPicked == null && !bnCarryingDog) {
 						FSMEnterNewState(eFSMState.RUNNING);
+				}
+				// If the player is carrying the dog, updates the throw bar
+				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingDog) {
+
+					fThrowBarValue -= Time.deltaTime;
+					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
+					hudScript.ThrowBarUpdate(fThrowBarValue);
 				}
 				break;
 
