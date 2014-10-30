@@ -95,6 +95,15 @@ public class Item : MonoBehaviour {
 
 			// TODO: make the player wait until the end of animation
 		}
+		
+		// If we're picked by the homeless dude, the object don't follow it, rather we player
+		// another special animation
+		if(pickerScript.playerType == MainGame.ePlayerType.DUDE) {
+
+			// Disable the sprite renderer, because the item is already draw in the animation
+			sr.enabled = false;
+		}
+
 		bnPickedUp = true;
 		transform.tag = "Picked";
 		trPickedBy = trPicker;
@@ -111,6 +120,12 @@ public class Item : MonoBehaviour {
 	/// What to do when this item is dropped by someone
 	/// </summary>
 	public void Dropped(Transform trPicker) {
+
+		if(pickedByScript.playerType == MainGame.ePlayerType.DUDE) {
+
+			// Disable the sprite renderer, because the item is already draw in the animation
+			sr.enabled = true;
+		}
 
 		bnPickedUp = false;
 		transform.tag = "Untagged";

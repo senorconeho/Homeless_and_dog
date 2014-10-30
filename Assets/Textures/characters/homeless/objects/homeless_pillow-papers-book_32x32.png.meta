@@ -1,20 +1,20 @@
 fileFormatVersion: 2
-guid: dde95c9a48942ec4492807f454cffb7d
+guid: 4f58744b66ff1504599b5cc2449a14c0
 TextureImporter:
   fileIDToRecycleName:
-    21300000: homeless_garbage_32x32
-    21300002: homeless_garbage_32x32_0
-    21300004: homeless_garbage_32x32_1
-    21300006: homeless_garbage_32x32_2
-    21300008: homeless_garbage_32x32_3
-    21300010: homeless_garbage_32x32_4
-    21300012: homeless_garbage_32x32_5
-    21300014: homeless_garbage_32x32_6
-    21300016: homeless_garbage_32x32_7
-    21300018: homeless_garbage_32x32_8
-    21300020: homeless_garbage_32x32_9
-    21300022: homeless_garbage_32x32_10
-    21300024: homeless_garbage_32x32_11
+    21300000: homeless_pillow-papers-book_32x32
+    21300002: homeless_pillow-papers-book_32x32_0
+    21300004: homeless_pillow-papers-book_32x32_1
+    21300006: homeless_pillow-papers-book_32x32_2
+    21300008: homeless_pillow-papers-book_32x32_3
+    21300010: homeless_pillow-papers-book_32x32_4
+    21300012: homeless_pillow-papers-book_32x32_5
+    21300014: homeless_pillow-papers-book_32x32_6
+    21300016: homeless_pillow-papers-book_32x32_7
+    21300018: homeless_pillow-papers-book_32x32_8
+    21300020: homeless_pillow-papers-book_32x32_9
+    21300022: homeless_pillow-papers-book_32x32_10
+    21300024: homeless_pillow-papers-book_32x32_11
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -56,7 +56,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: homeless_garbage_32x32_0
+    - name: homeless_pillow-papers-book_32x32_0
       rect:
         serializedVersion: 2
         x: 0
@@ -66,7 +66,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_1
+    - name: homeless_pillow-papers-book_32x32_1
       rect:
         serializedVersion: 2
         x: 32
@@ -76,7 +76,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_2
+    - name: homeless_pillow-papers-book_32x32_2
       rect:
         serializedVersion: 2
         x: 64
@@ -86,7 +86,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_3
+    - name: homeless_pillow-papers-book_32x32_3
       rect:
         serializedVersion: 2
         x: 96
@@ -96,7 +96,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_4
+    - name: homeless_pillow-papers-book_32x32_4
       rect:
         serializedVersion: 2
         x: 0
@@ -106,7 +106,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_5
+    - name: homeless_pillow-papers-book_32x32_5
       rect:
         serializedVersion: 2
         x: 32
@@ -116,7 +116,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_6
+    - name: homeless_pillow-papers-book_32x32_6
       rect:
         serializedVersion: 2
         x: 64
@@ -126,7 +126,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_7
+    - name: homeless_pillow-papers-book_32x32_7
       rect:
         serializedVersion: 2
         x: 96
@@ -136,7 +136,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_8
+    - name: homeless_pillow-papers-book_32x32_8
       rect:
         serializedVersion: 2
         x: 0
@@ -146,7 +146,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_9
+    - name: homeless_pillow-papers-book_32x32_9
       rect:
         serializedVersion: 2
         x: 32
@@ -156,7 +156,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_10
+    - name: homeless_pillow-papers-book_32x32_10
       rect:
         serializedVersion: 2
         x: 64
@@ -166,7 +166,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: homeless_garbage_32x32_11
+    - name: homeless_pillow-papers-book_32x32_11
       rect:
         serializedVersion: 2
         x: 96

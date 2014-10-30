@@ -26,6 +26,7 @@ public class Player : MonoBehaviour {
 	CameraFollowTarget2D	cameraScript;
 
 	private Animator animator;
+	private Animator	animatorOriginal;
 
 	// Movement stuff
 	float		fCarryingItemSpeed = 0.5f;
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour {
 		STATE_NULL 					/// null
 	};
 	public eFSMState currentState;
+	AnimationClipOverrides animationOverridesScript;
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
@@ -61,6 +63,7 @@ public class Player : MonoBehaviour {
 		hudScript = GetComponent<GameHUD>();
 		movementScript = GetComponent<SimpleMoveRigidBody2D>();
 		animator = this.GetComponent<Animator> ();
+		animatorOriginal = animator;
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 		hitBoxScript = transform.Find("HitBox").gameObject.GetComponent<CheckHitBox>();
 
@@ -75,6 +78,9 @@ public class Player : MonoBehaviour {
 				throwCursorScript = trThrowCursor.gameObject.GetComponent<ThrowCursor>();
 				trThrowCursor.gameObject.SetActive(false);
 			}
+
+			// Get the script to change the animations for each item carried
+			animationOverridesScript = GetComponent<AnimationClipOverrides>();
 		}
 
 	}
@@ -274,6 +280,13 @@ public class Player : MonoBehaviour {
 
 			// When carrying an item, the player will move slowly
 			//movementScript.fMaxSpeed = fCarryingItemSpeed;
+			
+			// Override the animation if needed
+			if(animationOverridesScript != null) {
+
+				//animationOverridesScript.Init(animator, trItemPicked.name);
+				animationOverridesScript.ChangeAnimation(animator, trItemPicked.name);
+			}
 		}
 	}
 
@@ -285,6 +298,14 @@ public class Player : MonoBehaviour {
 		if(trItemPicked == null) 
 			return;
 
+		//HACK
+			// Override the animation if needed
+			if(animationOverridesScript != null) {
+
+				//animationOverridesScript.Init(animator, trItemPicked.name);
+				animationOverridesScript.RestoreAnimation(animator);
+			}
+		
 		// Tell the item that we are dropping it
 		Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
 		//itemScript.Dropped(this.transform);
