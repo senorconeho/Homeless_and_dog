@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: 568a1f27b89c88b45bc0194f15f704fb
+guid: 74ea3e3951773194a90d144b8ce04dd1
 TextureImporter:
   fileIDToRecycleName:
-    21300000: window_closing_32x32
-    21300002: window_closing_32x32_0
-    21300004: window_closing_32x32_1
-    21300006: window_closing_32x32_2
-    21300008: window_closing_32x32_3
-    21300010: window_closing_32x32_4
-    21300012: window_closing_32x32_5
+    21300000: window_closing_lights_32x32
+    21300002: window_closing_lights_32x32_0
+    21300004: window_closing_lights_32x32_1
+    21300006: window_closing_lights_32x32_2
+    21300008: window_closing_lights_32x32_3
+    21300010: window_closing_lights_32x32_4
+    21300012: window_closing_lights_32x32_5
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -41,7 +41,7 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 7
+  alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
@@ -50,7 +50,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: window_closing_32x32_0
+    - name: window_closing_lights_32x32_0
       rect:
         serializedVersion: 2
         x: 0
@@ -60,7 +60,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: window_closing_32x32_1
+    - name: window_closing_lights_32x32_1
       rect:
         serializedVersion: 2
         x: 32
@@ -70,7 +70,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: window_closing_32x32_2
+    - name: window_closing_lights_32x32_2
       rect:
         serializedVersion: 2
         x: 64
@@ -80,7 +80,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: window_closing_32x32_3
+    - name: window_closing_lights_32x32_3
       rect:
         serializedVersion: 2
         x: 0
@@ -90,7 +90,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: window_closing_32x32_4
+    - name: window_closing_lights_32x32_4
       rect:
         serializedVersion: 2
         x: 32
@@ -100,7 +100,7 @@ TextureImporter:
       alignment: 7
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: window_closing_32x32_5
+    - name: window_closing_lights_32x32_5
       rect:
         serializedVersion: 2
         x: 64
