@@ -11,7 +11,7 @@ public class Barrel : MonoBehaviour {
 
 	public float 			fFireHealth = 1;
 	float 						fBurnTime;
-	public float 			fDefaultBurnTime = 15;	//< How many seconds to burn and extinguish all the fire?
+	float 						fDefaultBurnTime;	//< How many seconds to burn and extinguish all the fire?
 	float 						fBurnSpeed = 1;
 	public Transform 	trFireFlame;
 	Vector3 					vFireFlameStartPosition;
@@ -122,6 +122,24 @@ public class Barrel : MonoBehaviour {
 		fBurnTime = fNewTime;
 		// Updates the burn speed
 		fBurnSpeed = 1f/fBurnTime;
+
+		if(fDefaultBurnTime == 0.0f)
+			fDefaultBurnTime = fBurnTime;
+	}
+
+	public float GetFireRate() {
+
+		return fBurnTime;
+	}
+
+	/// <summary>
+	/// Set this barrel's fire level
+	/// </summary>
+	/// <param name="fNewLevel">A float with the new level, between 0 and 1</param>
+	public void SetFireLevel(float fNewLevel) {
+
+		fNewLevel = Mathf.Clamp01(fNewLevel);
+		fFireHealth = fNewLevel;
 	}
 
 	/// <summary>
