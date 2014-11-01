@@ -30,6 +30,7 @@ public class MainGame : MonoBehaviour {
 		GAME_START_SCREEN, 
 		GAME_PLAY,				// Game executing
 		GAME_PAUSE,				// Game paused: ignore input from the player
+		GAME_WON_LEVEL,
 		GAME_OVER
 	};
 
@@ -62,10 +63,23 @@ public class MainGame : MonoBehaviour {
 
 	public Font					fontInGame;
 
+	public Transform		uiPrefab;
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
+
+	void Awake() {
+
+		if(uiPrefab != null) {
+			Transform trUI = Instantiate(uiPrefab, Vector3.zero, uiPrefab.rotation) as Transform;
+			trUI.name = uiPrefab.name;
+		}
+			
+	}
+
+
 	// Use this for initialization
 	void Start () {
 	
@@ -75,11 +89,6 @@ public class MainGame : MonoBehaviour {
 		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	/* -----------------------------------------------------------------------------------------------------------
 	 *                 
 	 * -----------------------------------------------------------------------------------------------------------
@@ -106,6 +115,17 @@ public class MainGame : MonoBehaviour {
 		// Activate the message on the screens
 		dudeScript.ActivateGameOver();
 		dogScript.ActivateGameOver();
+	}
+
+	/// <summary>
+	/// </summary>
+	public void ChangeStatusToGameWonLevel() {
+
+		// Change the status
+		gameStatus = eGameStatus.GAME_WON_LEVEL;
+		// Activate the message on the screens
+		dudeScript.ActivateGameWonLevel();
+		dogScript.ActivateGameWonLevel();
 	}
 
 	/// <summary>

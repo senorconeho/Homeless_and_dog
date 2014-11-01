@@ -46,7 +46,15 @@ public class Barrel : MonoBehaviour {
 	/// </summary>
 	void Update () {
 
-		if(fFireHealth > 0) {
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+			return;
+
+		if(fFireHealth >= 1.0f) {
+
+			// Change the current game state: we won!
+			gameScript.ChangeStatusToGameWonLevel();
+		}
+		else if(fFireHealth > 0) {
 				
 			fFireHealth -= Time.deltaTime * fBurnSpeed;
 			fFireHealth = Mathf.Clamp01(fFireHealth);

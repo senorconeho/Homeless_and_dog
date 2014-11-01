@@ -540,6 +540,16 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// The player won this level
+	/// </summary>
+	public void ActivateGameWonLevel() {
+
+		// TODO: make the players sit around the fire
+		// or play some cutscene
+		MovementAllowToGetInput(false);
+	}
+
+	/// <summary>
 	/// Change the movement script to apply the player's input on the character movement or not
 	/// </summary>
 	/// <param name="bnStatus">True to allow to get input and move the character; false otherwise
