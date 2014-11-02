@@ -24,7 +24,7 @@ public class AnimationClipOverrides : MonoBehaviour {
 	private class AnimationOverrideItem {
 
 		public MainGame.eItemTypes itemType;
-		public AnimatorOverrideController overrideController;
+		[HideInInspector] public AnimatorOverrideController overrideController;
 		public AnimationClipOverride[] clipOverrides = new AnimationClipOverride[2];	// only 2 states: idle and run
 	}
 

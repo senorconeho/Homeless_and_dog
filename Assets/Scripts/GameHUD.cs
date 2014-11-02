@@ -6,20 +6,20 @@ using System.Collections;
 /// <summary>
 public class GameHUD : MonoBehaviour {
 
-	public Transform 	trUI;	//< Drop the panel transform here
-	public UILabel						uiButtonALabel;
-	public UILabel						uiButtonBLabel;
-	public UISpriteAnimation	uiButtonAAnimation;
-	public UISpriteAnimation	uiButtonBAnimation;
-	public Transform					trThrowBar;
-	public UISlider						uiThrowBar;
-	public Transform					trSpriteGameOver;
-	public UILabel						uiCenterScreenLabel;
-	public UILabel						uiBottomScreenLabel;
-	public Transform 					trNoiseBar;
-	public UISlider						uiNoiseBar;
+	[SerializeField]	public Transform 	trUI;	//< Drop the panel transform here
+	UILabel						uiButtonALabel;
+	UILabel						uiButtonBLabel;
+	UISpriteAnimation	uiButtonAAnimation;
+	UISpriteAnimation	uiButtonBAnimation;
+	Transform					trThrowBar;
+	UISlider					uiThrowBar;
+	Transform					trSpriteGameOver;
+	[HideInInspector] public UILabel		uiCenterScreenLabel;
+	UILabel						uiBottomScreenLabel;
+	Transform 				trNoiseBar;
+	UISlider					uiNoiseBar;
 
-	Player	playerScript;			//< Pointer to the player script
+	Player						playerScript;			//< Pointer to the player script
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP

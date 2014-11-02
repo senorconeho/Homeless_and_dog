@@ -7,7 +7,7 @@ using System.Collections;
 public class RainControl : MonoBehaviour {
 
 	Animator[]	lightningAnimators;
-	public Transform		trThunder;
+	Transform		trThunder;
 	[SerializeField]
 	public AudioClip		sfxThunder;
 	public float				fThunderMinTime;

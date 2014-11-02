@@ -9,9 +9,9 @@ public class Window : MonoBehaviour {
 	Player						dogScript = null;
 	MainGame					gameScript = null;
 	public Transform	trWindowOtherSide;			//< The other 'side' of this window
-	public Window			windowOtherSideScript;
-	public Transform	trBasicRoom;
-	public BasicRoom	basicRoomScript;	//< the basic room which this window belongs
+	[HideInInspector] public Window			windowOtherSideScript;
+	[HideInInspector] public Transform	trBasicRoom;
+	[HideInInspector] public BasicRoom	basicRoomScript;	//< the basic room which this window belongs
 
 	public enum eWindowStatusType {
 

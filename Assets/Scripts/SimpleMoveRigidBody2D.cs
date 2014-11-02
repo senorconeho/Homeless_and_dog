@@ -14,18 +14,18 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	// PUBLIC
 	private bool bnFacingLeft = false;
 	private Animator animator;
-	public Transform trSprite;
+	[HideInInspector] public Transform trSprite;
 
-	public Vector2 vRigidbodyVelocity;
+	Vector2 vRigidbodyVelocity;
 	// PRIVATE
-	public bool bnAllowedToGetInput = true;
-	public bool	bnCanMoveHorizontally = true;	//< cannot move while on the air
+	[HideInInspector] public bool bnAllowedToGetInput = true;
+	[HideInInspector] public bool	bnCanMoveHorizontally = true;	//< cannot move while on the air
 
 	// PROTECTED
 	public float fMaxSpeed = 1f;	//< this value could (will) be changed by the Player script
-	public float fMoveForce = 40f;		//< FIXME: expose this on the inspector
+	public float fMoveForce = 40f;		
 
-	public 	MainGame.ePlayerType playerType;	//< from MainGame
+	[HideInInspector] public 	MainGame.ePlayerType playerType;	//< from MainGame
 	float 	fH;	//< Horizontal movement
 
 	/* ==========================================================================================================

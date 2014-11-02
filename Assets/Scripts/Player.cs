@@ -7,21 +7,21 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
 	public MainGame.ePlayerType		playerType;	//< (from MainGame)
+	public Transform							trCarrier;					//< Put the object that indicates where the items must be placed (usually CarrierPosition)
 	//public bool										bnPickedUp = false;
 	//public bool										bnCarryingItem = false;
-	public bool										bnCarryingDog = false;
-	public bool										bnCollisionDogAndDude = false;
-	public GameHUD								hudScript;					//< The in-game HUD
-	public Transform							trItemPicked;				//< Have we picked some item?
-	public Transform							trItemOver;					//< Transform of the item we are over
-	public Transform							trWindowOver;				//< 
-	public Transform							trCarrier;					//< Put the object that indicates where the items must be placed (usually CarrierPosition)
-	public Transform							trThrowCursor; 			//< Transform of the 'ThrowCursor' object. Only need for the homeless dude
-	public ThrowCursor						throwCursorScript;	//< The ThrowCursor from the cursor object
-	public SimpleMoveRigidBody2D	movementScript;
-	public MainGame								gameScript;
-	public CheckHitBox						hitBoxScript;
-	public Vector3								vThrowForceDirection;
+	[HideInInspector] public bool										bnCarryingDog = false;
+	[HideInInspector] public bool										bnCollisionDogAndDude = false;
+	[HideInInspector] public GameHUD								hudScript;					//< The in-game HUD
+	[HideInInspector] public Transform							trItemPicked;				//< Have we picked some item?
+	[HideInInspector] public Transform							trItemOver;					//< Transform of the item we are over
+	[HideInInspector] public Transform							trWindowOver;				//< 
+	[HideInInspector] public Transform							trThrowCursor; 			//< Transform of the 'ThrowCursor' object. Only need for the homeless dude
+	[HideInInspector] public ThrowCursor						throwCursorScript;	//< The ThrowCursor from the cursor object
+	[HideInInspector] public SimpleMoveRigidBody2D	movementScript;
+	[HideInInspector] public MainGame								gameScript;
+	[HideInInspector] public CheckHitBox						hitBoxScript;
+	[HideInInspector] public Vector3								vThrowForceDirection;
 
 	Transform							trCamera;
 	CameraFollowTarget2D	cameraScript;
@@ -50,7 +50,7 @@ public class Player : MonoBehaviour {
 		DOG_ON_LAP,							// 6 - Dude: ready to throw the dog; Dog: cannot move
 		STATE_NULL 					/// null
 	};
-	public eFSMState currentState;
+	[HideInInspector] public eFSMState currentState;
 	AnimationClipOverrides animationOverridesScript;
 	SpriteRenderer sr;
 

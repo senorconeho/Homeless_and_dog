@@ -52,33 +52,22 @@ public class MainGame : MonoBehaviour {
 	[SerializeField]
 	public Transform		trDude;
 
-	public Player				dudeScript;
-	public Player				dogScript;
-	public GameHUD			hudDudeScript;
-	public GameHUD			hudDogScript;
-	public bool					bnDogEnteredTheGame = false;
-	public bool					bnDudeEnteredTheGame = false;
+	[HideInInspector] public Player				dudeScript;
+	[HideInInspector] public Player				dogScript;
+	[HideInInspector] public GameHUD			hudDudeScript;
+	[HideInInspector] public GameHUD			hudDogScript;
+	[HideInInspector] public bool					bnDogEnteredTheGame = false;
+	[HideInInspector] public bool					bnDudeEnteredTheGame = false;
 
 	public float				fNoiseMade = 0.0f;
 
 	public Font					fontInGame;
 
-	public Transform		uiPrefab;
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-
-	void Awake() {
-
-		if(uiPrefab != null) {
-			Transform trUI = Instantiate(uiPrefab, Vector3.zero, uiPrefab.rotation) as Transform;
-			trUI.name = uiPrefab.name;
-		}
-			
-	}
-
 
 	// Use this for initialization
 	void Start () {
