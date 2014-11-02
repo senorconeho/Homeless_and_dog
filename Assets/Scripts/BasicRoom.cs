@@ -8,8 +8,8 @@ using System.Collections;
 public class BasicRoom : MonoBehaviour {
 
 	public string	stRoomName;		//< Name of the room to be shown on the screen when the player enter it
-	public Transform	trLeftLimit;
-	public Transform	trRightLimit;
+	[HideInInspector] public Transform	trLeftLimit;
+	[HideInInspector] public Transform	trRightLimit;
 
 	// Use this for initialization
 	public void Start () {

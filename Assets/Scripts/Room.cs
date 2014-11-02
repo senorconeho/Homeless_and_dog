@@ -16,21 +16,21 @@ public class Room : MonoBehaviour {
 	Transform						trWindow;													//< Window of the room
 	Transform 					trWaypoint;
 	Window							windowScript;											//< pointer to the window script
-	public Transform[]	trResidentWaypoints;							//< Waypoints array
+	[HideInInspector] public Transform[]	trResidentWaypoints;							//< Waypoints array
 
 	// Resident stuff
-	public Transform	trResidentSpawnPoint;								//< Object pointing where to generate a resident
-	public Transform	trResidentPrefab;										//< Prefab of the resident itself
+	[HideInInspector] public Transform	trResidentSpawnPoint;								//< Object pointing where to generate a resident
+	[SerializeField] public Transform	trResidentPrefab;										//< Prefab of the resident itself
 	Transform					trResident = null;									//< 
-	float							fResidentMinTimeToAppear = 8.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
-	float							fResidentMaxTimeToAppear = 17.5f;		//< Max time to the resident reappear
-	public float			fResidentCountdownTimer;						//< Resident 'appearance' timer
+	public float							fResidentMinTimeToAppear = 8.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
+	public float							fResidentMaxTimeToAppear = 17.5f;		//< Max time to the resident reappear
+	float			fResidentCountdownTimer;						//< Resident 'appearance' timer
 	bool							bnResidentIn = false;								//< is the resident in the room?
 
 	// Window stuff
 	float							fReopenWindowMinTime = 5.0f;				//< Min time to reopen a closed window
 	float							fReopenWindowMaxTime = 10.0f;				//< Max time to reopen a closed window
-	public float			fReopenWindowTimer;									//< Reopen timer
+	float			fReopenWindowTimer;									//< Reopen timer
 
 	/* ==========================================================================================================
 	 * UNITY MAIN LOOP
