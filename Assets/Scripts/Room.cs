@@ -173,7 +173,7 @@ public class Room : MonoBehaviour {
 		// Make the dog drop it's item
 		gameScript.dogScript.DogCatched();
 		// Wait a little
-		StartCoroutine(DogCatchedAnimation(1.5f));
+		StartCoroutine(DogCatchedAnimation(0.5f));
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------

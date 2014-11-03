@@ -12,6 +12,7 @@ public class Window : MonoBehaviour {
 	[HideInInspector] public Window			windowOtherSideScript;
 	[HideInInspector] public Transform	trBasicRoom;
 	[HideInInspector] public BasicRoom	basicRoomScript;	//< the basic room which this window belongs
+	public Animator animator;
 
 	public enum eWindowStatusType {
 
@@ -58,6 +59,7 @@ public class Window : MonoBehaviour {
 			trBasicRoom = this.transform.parent.transform.parent;
 			basicRoomScript = trBasicRoom.gameObject.GetComponent<BasicRoom>();
 
+			animator = GetComponent<Animator>();
 
 			// Outside window only
 			Transform trLightOnWall = transform.Find("LightOnWall");
@@ -83,11 +85,15 @@ public class Window : MonoBehaviour {
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 		dogScript = gameScript.dogScript; 
 
+		if(animator != null) {
+
+				animator.SetInteger("windowStatus", (int)windowStatus);
+		}
 		// Update the window sprite
 		if(windowStatus == eWindowStatusType.OPEN) {
 
 			// Update the sprite
-			spriteRenderer.sprite = spriteWindowOpen;
+			//spriteRenderer.sprite = spriteWindowOpen;
 			// Enables the collider
 			col.enabled = true ;
 			// Enables the curtains
@@ -97,7 +103,7 @@ public class Window : MonoBehaviour {
 		else if(windowStatus == eWindowStatusType.CLOSED) {
 
 			// Update the sprite
-			spriteRenderer.sprite = spriteWindowClosed;
+			//spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
 			col.enabled = false;
 			// Disables the curtains
@@ -127,12 +133,17 @@ public class Window : MonoBehaviour {
 
 			windowStatus = eWindowStatusType.CLOSED;
 			// Update the sprite
-			spriteRenderer.sprite = spriteWindowClosed;
+			//spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
 			col.enabled = false;
 			// Disables the curtains
 			if(spriteCurtains != null)
 				spriteCurtains.enabled = false;
+			
+			if(animator != null) {
+
+				animator.SetInteger("windowStatus", (int)windowStatus);
+			}
 		}
 	}
 
@@ -145,33 +156,51 @@ public class Window : MonoBehaviour {
 
 			windowStatus = eWindowStatusType.OPEN;
 			// Update the sprite
-			spriteRenderer.sprite = spriteWindowOpen;
+		//	spriteRenderer.sprite = spriteWindowOpen;
 			// Enables the collider
 			col.enabled = true;
 			// Enables the curtains
 			if(spriteCurtains != null)
 				spriteCurtains.enabled = true;
+
+			if(animator != null) {
+
+				animator.SetInteger("windowStatus", (int)windowStatus);
+			}
 		}
 	}
 
 	/// <summary>
-	/// Change the sprite for the lit up representation
+	/// Change the sprite for the lit up representation. It only works for the outside window (no point
+	/// drawing a lit window in the inside)
 	/// </summary>
 	public void LightTurnOn() {
 
-		if(windowStatus == eWindowStatusType.CLOSED) {
+		if(animator != null) {
 
-			spriteRenderer.sprite = spriteWindowClosedLightOn;
-		}
-		else {
-			spriteRenderer.sprite = spriteWindowOpenLightOn;
+			animator.SetBool("bnLightIsOn", true);
 		}
 
 		if(transform.tag == "OutsideWindow") {
 
+			//if(windowStatus == eWindowStatusType.CLOSED) {
+
+			//	spriteRenderer.sprite = spriteWindowClosedLightOn;
+			//}
+			//else {
+			//	spriteRenderer.sprite = spriteWindowOpenLightOn;
+			//}
 			// Enable the reflection
 			spriteLightOnReflectionOnWall.enabled = true;
+
 		}
+		else {
+
+			// Inside window: call the script on the other side of the window
+			windowOtherSideScript.LightTurnOn();
+			
+		}
+
 	}
 
 	/// <summary>
@@ -179,18 +208,30 @@ public class Window : MonoBehaviour {
 	/// </summary>
 	public void LightTurnOff() {
 
-		if(windowStatus == eWindowStatusType.CLOSED) {
+		if(animator != null) {
 
-			spriteRenderer.sprite = spriteWindowClosed;
+			animator.SetBool("bnLightIsOn", false);
 		}
-		else {
-			spriteRenderer.sprite = spriteWindowOpen;
-		}
+
+		//if(windowStatus == eWindowStatusType.CLOSED) {
+
+		//	spriteRenderer.sprite = spriteWindowClosed;
+		//}
+		//else {
+		//	spriteRenderer.sprite = spriteWindowOpen;
+		//}
 
 		if(transform.tag == "OutsideWindow") {
 
 			// Enable the reflection
 			spriteLightOnReflectionOnWall.enabled = false;
+
+		}
+		else {
+
+			// Inside window: call the script on the other side of the window
+			windowOtherSideScript.LightTurnOff();
+			
 		}
 	}
 	/* -----------------------------------------------------------------------------------------------------------
