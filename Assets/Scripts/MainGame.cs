@@ -47,9 +47,7 @@ public class MainGame : MonoBehaviour {
 		ITEM_SHOES
 	}
 
-	[SerializeField]
 	public Transform 		trDog;
-	[SerializeField]
 	public Transform		trDude;
 
 	[HideInInspector] public Player				dudeScript;
@@ -63,19 +61,46 @@ public class MainGame : MonoBehaviour {
 
 	public Font					fontInGame;
 
+	public Transform		trDogCamera;
+	public Transform		trDudeCamera;
+	public CameraFollowTarget2D dogCameraScript;
+	public CameraFollowTarget2D dudeCameraScript;
+
+	PlayerSpawner	playerSpawnerScript;
+
+
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
-	// Use this for initialization
-	void Start () {
-	
+	void Awake() {
+
+		// Find the game cameras
+		trDogCamera = transform.Find("/Cameras/CameraDog");
+		trDudeCamera = transform.Find("/Cameras/CameraDude");
+
+		dogCameraScript = trDogCamera.gameObject.GetComponent<CameraFollowTarget2D>();
+		dudeCameraScript = trDudeCamera.gameObject.GetComponent<CameraFollowTarget2D>();
+
+		playerSpawnerScript = GetComponent<PlayerSpawner>();
+
 		if(fontInGame != null) {
 			// Make the font use the 'point' filter. This can't be done in the inspector
 			fontInGame.material.mainTexture.filterMode = FilterMode.Point;
 		}
+	}
+
+	// Use this for initialization
+	void Start () {
+	
+		// Spawn the players in the game
+		playerSpawnerScript.SpawnPlayers();
+		StartCoroutine(SetupDog());
+		StartCoroutine(SetupDude());
+
+
 	}
 	
 	/* -----------------------------------------------------------------------------------------------------------
@@ -124,6 +149,25 @@ public class MainGame : MonoBehaviour {
 
 		return gameStatus;
 	}
+
+	/// <summary>
+	/// Supposedly we already have the scripts, cameras, etc
+	/// </summary>
+	IEnumerator SetupDog() {
+
+		yield return new WaitForSeconds(.250f);
+
+		dogCameraScript.trTarget = trDog;
+		dogScript.RegisterCamera(trDogCamera, dogCameraScript);
+	}
+
+	 IEnumerator SetupDude() {
+
+		yield return new WaitForSeconds(.250f);
+		dudeCameraScript.trTarget = trDude;
+		dudeScript.RegisterCamera(trDudeCamera, dudeCameraScript);
+	}
+
 
 	/// <summary>
 	/// On the start screen, the dog entered the game

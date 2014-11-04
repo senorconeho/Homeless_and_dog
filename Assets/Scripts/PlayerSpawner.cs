@@ -13,7 +13,9 @@ public class PlayerSpawner : MonoBehaviour {
 	// PUBLIC
 	[SerializeField]	public Transform	dogPrefab;
 	[SerializeField]	public Transform	dudePrefab;
-	public MainGame.ePlayerType playerType;
+	Transform	trDogSpawnPoint;
+	Transform	trDudeSpawnPoint;
+	MainGame	gameScript;
 
 	// PROTECTED
 
@@ -25,40 +27,27 @@ public class PlayerSpawner : MonoBehaviour {
 
 	/// <summary>
 	/// <\summary>
-	void Awake() {
+	public void SpawnPlayers() {
 
-		if(playerType == MainGame.ePlayerType.DOG && dogPrefab != null) {
+		gameScript = GetComponent<MainGame>();
+
+		// Find the spawn points
+		trDogSpawnPoint = GameObject.Find("DogSpawner").transform;
+		trDudeSpawnPoint = GameObject.Find("HomelessSpawner").transform;
+
+		if(dogPrefab != null) {
 
 			// Instantiate the dog object in the game
-			Instantiate(dogPrefab, transform.position, dogPrefab.rotation);
+			Transform trDog = Instantiate(dogPrefab, trDogSpawnPoint.position, dogPrefab.rotation) as Transform;
+			trDog.name = "Dog";	// Remove the 'clone' from the object's name
+			gameScript.trDog = trDog;
 		}
-		if(playerType == MainGame.ePlayerType.DUDE && dudePrefab != null) {
+		if(dudePrefab != null) {
 
 			// Instantiate the dog object in the game
-			Instantiate(dudePrefab, transform.position, dudePrefab.rotation);
+			Transform trDude = Instantiate(dudePrefab, trDudeSpawnPoint.position, dudePrefab.rotation) as Transform;
+			trDude.name = "Homeless";
+			gameScript.trDude = trDude;
 		}
-
 	}
-	
-	/// <summary>
-	/// Use this for initialization
-	/// <\summary>
-	void Start () {
-	
-	}
-	
-	/// <summary>
-	/// Update is called once per frame
-	/// <\summary>
-	void Update () {
-	
-	}
-
-	/* ==========================================================================================================
-	 * CLASS METHODS
-	 * ==========================================================================================================
-	 */
-	/// <summary>
-	/// <\summary>
-
 }

@@ -35,12 +35,12 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		cam = gameObject.GetComponent<Camera>();	
 		tr = this.transform;
 
-		if(trTarget != null) {
+		//if(trTarget != null) {
 
-			// Tell the player that we are they camera
-			Player playerScript = trTarget.gameObject.GetComponent<Player>();
-			playerScript.RegisterCamera(this.transform, this);
-		}
+		//	// Tell the player that we are they camera
+		//	Player playerScript = trTarget.gameObject.GetComponent<Player>();
+		//	playerScript.RegisterCamera(this.transform, this);
+		//}
 	}
 	
 	// Update is called once per frame
@@ -156,6 +156,16 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	 * 
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
+
+	public void SetCameraTarget(Transform trTarget) {
+
+		if(trTarget != null) {
+
+			// Tell the player that we are they camera
+			Player playerScript = trTarget.gameObject.GetComponent<Player>();
+			playerScript.RegisterCamera(this.transform, this);
+		}
+	}
 
 	/// <summary>
 	///

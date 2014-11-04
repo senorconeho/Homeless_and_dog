@@ -547,6 +547,8 @@ public class Player : MonoBehaviour {
 		// TODO: make the players sit around the fire
 		// or play some cutscene
 		MovementAllowToGetInput(false);
+		// Move the character to the spawn point
+		//transform.position = ;
 	}
 
 	/// <summary>
