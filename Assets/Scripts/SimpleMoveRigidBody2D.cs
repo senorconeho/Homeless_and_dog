@@ -22,7 +22,7 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	[HideInInspector] public bool	bnCanMoveHorizontally = true;	//< cannot move while on the air
 
 	// PROTECTED
-	public float fMaxSpeed = 1f;	//< this value could (will) be changed by the Player script
+	public float fMaxSpeed;	//< this value could (will) be changed by the Player script
 	public float fMoveForce = 40f;		
 
 	[HideInInspector] public 	MainGame.ePlayerType playerType;	//< from MainGame

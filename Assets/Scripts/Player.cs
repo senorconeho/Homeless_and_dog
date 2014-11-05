@@ -21,7 +21,8 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public SimpleMoveRigidBody2D	movementScript;
 	[HideInInspector] public MainGame								gameScript;
 	[HideInInspector] public CheckHitBox						hitBoxScript;
-	[HideInInspector] public Vector3								vThrowForceDirection;
+	public Vector3								vThrowForceDirection;
+	[HideInInspector] public Transform trThrowPosition;
 
 	Transform							trCamera;
 	CameraFollowTarget2D	cameraScript;
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour {
 	// Throw bar stuff
 	float		fThrowBarValue = 0.0f;
 	float		fLastKeyUp = 0.0f;
+	public float fMaxThrowForce = 10.0f; // FIXME: make public and tweakable
 
 	/// Enumeration with all the possible states
 	public enum eFSMState { 
@@ -84,6 +86,8 @@ public class Player : MonoBehaviour {
 
 			// Get the script to change the animations for each item carried
 			animationOverridesScript = GetComponent<AnimationClipOverrides>();
+
+			trThrowPosition = transform.Find("ThrowPosition");
 		}
 
 	}
@@ -114,11 +118,6 @@ public class Player : MonoBehaviour {
 		// FIXME
 		CheckInput();
 		FSMExecuteCurrentState();
-		if(throwCursorScript != null) {
-			float fAngle = throwCursorScript.GetCurrentAngle() * Mathf.Deg2Rad;
-			vThrowForceDirection = new Vector3(Mathf.Sign(this.transform.localScale.x) * Mathf.Cos(fAngle), Mathf.Sin(fAngle), 0.0f) * 5f;
-			//vThrowForceDirection = throwCursorScript.GetCursorDirection() * 5f;
-		}
 	}
 
 	/// <summary>
@@ -504,17 +503,20 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// Throw method for the homeless dude
 	/// <summary>
 	public void ThrowDog() {
 
-		float fMaxThrowForce = 10.0f;
-		float fAngle = throwCursorScript.GetCurrentAngle() * Mathf.Deg2Rad;
+		//float fAngle = throwCursorScript.GetCurrentAngle() * Mathf.Deg2Rad;
 
-		vThrowForceDirection = new Vector3(Mathf.Sign(this.transform.localScale.x) * Mathf.Cos(fAngle), Mathf.Sin(fAngle), 0.0f) * fMaxThrowForce;
+		//vThrowForceDirection = new Vector3(Mathf.Sign(this.transform.localScale.x) * Mathf.Cos(fAngle), Mathf.Sin(fAngle), 0.0f);
+	 	//vThrowForceDirection = vThrowForceDirection.normalized * fMaxThrowForce;
 		//vThrowForceDirection = throwCursorScript.GetCursorDirection() * fMaxThrowForce;
 
-		gameScript.dogScript.ThrowDog(vThrowForceDirection);
+		vThrowForceDirection = trThrowCursor.position - trThrowPosition.position;
+
+		gameScript.dogScript.ThrowDog(vThrowForceDirection.normalized);
+		
 		// Change the FSM
 		FSMEnterNewState(eFSMState.IDLE);
 	}
@@ -527,7 +529,12 @@ public class Player : MonoBehaviour {
 		// Restore the sprite renderer
 		sr.enabled = true;
 		FSMEnterNewState(eFSMState.ON_AIR);
-		rigidbody2D.AddForce(vThrowForce, ForceMode2D.Impulse);
+	//	rigidbody2D.AddForce(vThrowForce, ForceMode2D.Impulse);
+			rigidbody2D.AddForce(vThrowForce * fMaxThrowForce); // fMaxThrowForce now is set on the dog prefab
+
+		// DEBUG
+		Debug.DrawRay(transform.position, vThrowForce, Color.red, 1.0f, false);
+
 	}
 	
 	/// <summary>
@@ -863,7 +870,7 @@ public class Player : MonoBehaviour {
 
 			case eFSMState.DOG_ON_LAP:
 				if(playerType == MainGame.ePlayerType.DOG) {
-					Vector3 vDudePosition = gameScript.trDude.transform.position;
+					Vector3 vDudePosition = gameScript.dudeScript.trThrowPosition.transform.position;
 					transform.position = vDudePosition;
 					// Added so the dog can fall when leaving the dude's lap
 					bnCollisionDogAndDude = false;

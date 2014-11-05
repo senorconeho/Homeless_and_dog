@@ -123,6 +123,9 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 			if(isEqual(trCharacter.transform.position.x, trTarget.transform.position.x)) {
 				movementScript.SetNPCMovementDirection(0);	// Stop
 
+				// TODO: make the NPC enjoy the fire
+
+
 				// resets the target and waypoint
 				nWaypointIndex = 0;
 				trTarget = null;	
