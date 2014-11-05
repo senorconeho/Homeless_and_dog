@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public SimpleMoveRigidBody2D	movementScript;
 	[HideInInspector] public MainGame								gameScript;
 	[HideInInspector] public CheckHitBox						hitBoxScript;
-	public Vector3								vThrowForceDirection;
+	public Vector2								vThrowForceDirection;
 	[HideInInspector] public Transform trThrowPosition;
 
 	Transform							trCamera;
@@ -31,8 +31,9 @@ public class Player : MonoBehaviour {
 	private Animator animatorOriginal;
 
 	// Movement stuff
-	float		fCarryingItemSpeed = 0.5f;
-	float		fRunningSpeed = 1.0f;
+	public float		fCarryingItemSpeed = 0.5f;
+	public float		fRunningSpeed = 1.0f;
+	public float		fAirSpeed = 10.0f;
 	float		fHorizontalSpeedThreshold = 0.1f;
 	float		fVerticalSpeedThreshold = 0.3f;
 	
@@ -62,6 +63,10 @@ public class Player : MonoBehaviour {
 	 */
 	// 
 	void Awake() {
+
+		// HACK
+
+
 
 		// Get the HUD script
 		hudScript = GetComponent<GameHUD>();
@@ -373,7 +378,7 @@ public class Player : MonoBehaviour {
 
 		if(playerType == MainGame.ePlayerType.DOG) {
 			//// Dog: while on the lap, the dog cannot move
-			//movementScript.bnCanMoveHorizontally = false;
+			//movementScript.bnPlayerCanControl = false;
 			//// Updates the HUD
 			//hudScript.SetButtonsText("JUMP OFF", null);
 			//// Tell the Dude object that the dog is in his lap
@@ -416,7 +421,7 @@ public class Player : MonoBehaviour {
 			}
 
 			// Dog: restore the ability to move
-			movementScript.bnCanMoveHorizontally = true;
+			movementScript.bnPlayerCanControl = true;
 			// Updates the HUD
 			hudScript.SetButtonsText("", null);
 			// Tell the Dude object that the dog is NOT in his lap anymore
@@ -513,9 +518,11 @@ public class Player : MonoBehaviour {
 	 	//vThrowForceDirection = vThrowForceDirection.normalized * fMaxThrowForce;
 		//vThrowForceDirection = throwCursorScript.GetCursorDirection() * fMaxThrowForce;
 
-		vThrowForceDirection = trThrowCursor.position - trThrowPosition.position;
+		Vector3 vDir = trThrowCursor.position - trThrowPosition.position;
 
-		gameScript.dogScript.ThrowDog(vThrowForceDirection.normalized);
+		vThrowForceDirection = new Vector2(vDir.x, vDir.y).normalized;
+
+		gameScript.dogScript.ThrowDog(vThrowForceDirection);
 		
 		// Change the FSM
 		FSMEnterNewState(eFSMState.IDLE);
@@ -529,11 +536,11 @@ public class Player : MonoBehaviour {
 		// Restore the sprite renderer
 		sr.enabled = true;
 		FSMEnterNewState(eFSMState.ON_AIR);
-	//	rigidbody2D.AddForce(vThrowForce, ForceMode2D.Impulse);
-			rigidbody2D.AddForce(vThrowForce * fMaxThrowForce); // fMaxThrowForce now is set on the dog prefab
+		vThrowForceDirection = vThrowForce * fMaxThrowForce;
+		rigidbody2D.AddForce(vThrowForceDirection); // fMaxThrowForce now is set on the dog prefab
 
 		// DEBUG
-		Debug.DrawRay(transform.position, vThrowForce, Color.red, 1.0f, false);
+		Debug.DrawRay(transform.position, vThrowForceDirection, Color.red, 1.0f, false);
 
 	}
 	
@@ -755,19 +762,22 @@ public class Player : MonoBehaviour {
 				break;
 
 			case eFSMState.ON_AIR:
-				movementScript.bnCanMoveHorizontally = false;
+				movementScript.fMaxSpeed = fAirSpeed;
+				movementScript.bnPlayerCanControl = false;
+				movementScript.bnOnAir = true;
 				break;
 
 			case eFSMState.DOG_ON_LAP:
 				if(playerType == MainGame.ePlayerType.DOG) {
 					bnCarryingDog = true;
 					// Dog: while on the lap, the dog cannot move
-					movementScript.bnCanMoveHorizontally = false;
+					movementScript.bnPlayerCanControl = false;
 					// Updates the HUD
 					hudScript.SetButtonsText("JUMP OFF", null);
 					// Tell the Dude object that the dog is in his lap
 					gameScript.dudeScript.DogJumpedOnMyLap();
-					sr.enabled = false;
+					sr.enabled = false; // Disable the sprite, because it's already in the homeless animation
+					movementScript.SetRigidbodyKinematic(true); // Make it kinematic
 				}
 
 				//if(playerType == MainGame.ePlayerType.DUDE) {
@@ -898,7 +908,8 @@ public class Player : MonoBehaviour {
 		switch(FSMGetCurrentState()) {
 
 			case eFSMState.ON_AIR:
-				movementScript.bnCanMoveHorizontally = true;
+				movementScript.bnPlayerCanControl = true;
+				movementScript.bnOnAir = false;
 				break;
 
 			case eFSMState.DOG_ON_LAP:
@@ -906,11 +917,11 @@ public class Player : MonoBehaviour {
 					// TESTING: disable the collider from the dog
 					if(hitBoxScript != null) {
 
-						hitBoxScript.RefreshCollider();
+						//hitBoxScript.RefreshCollider();
 					}
 
 					// Dog: restore the ability to move
-					movementScript.bnCanMoveHorizontally = true;
+					movementScript.bnPlayerCanControl = true;
 					// Updates the HUD
 					hudScript.SetButtonsText("", null);
 					// Tell the Dude object that the dog is NOT in his lap anymore
@@ -918,6 +929,7 @@ public class Player : MonoBehaviour {
 					bnCarryingDog = false;
 					// Restore the sprite renderer
 					sr.enabled = true;
+					movementScript.SetRigidbodyKinematic(false);
 				}
 				//if(playerType == MainGame.ePlayerType.DUDE) {
 				//	// Dude: enable the throw

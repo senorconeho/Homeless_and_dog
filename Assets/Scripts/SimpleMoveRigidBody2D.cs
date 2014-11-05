@@ -16,17 +16,17 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	private Animator animator;
 	[HideInInspector] public Transform trSprite;
 
-	Vector2 vRigidbodyVelocity;
+	public Vector2 vRigidbodyVelocity;
 	// PRIVATE
 	[HideInInspector] public bool bnAllowedToGetInput = true;
-	[HideInInspector] public bool	bnCanMoveHorizontally = true;	//< cannot move while on the air
+	[HideInInspector] public bool	bnPlayerCanControl = true;	//< cannot move while on the air
 
-	// PROTECTED
 	public float fMaxSpeed;	//< this value could (will) be changed by the Player script
 	public float fMoveForce = 40f;		
 
 	[HideInInspector] public 	MainGame.ePlayerType playerType;	//< from MainGame
 	float 	fH;	//< Horizontal movement
+	public bool bnOnAir = false;
 
 	/* ==========================================================================================================
 	 * UNITY METHODS
@@ -62,12 +62,21 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 			return;
 		}
 
+		if(bnOnAir) {
+
+			if(Mathf.Abs(rigidbody2D.velocity.x) > fMaxSpeed) {
+
+				rigidbody2D.velocity = new Vector2(Mathf.Sign(rigidbody2D.velocity.x) * fMaxSpeed,
+						rigidbody2D.velocity.y);
+			}
+		}
+		else
 		if (bnAllowedToGetInput) {
 
-			if(playerType == MainGame.ePlayerType.DOG && bnCanMoveHorizontally) {
+			if(playerType == MainGame.ePlayerType.DOG && bnPlayerCanControl) {
 				fH = Input.GetAxis ("Horizontal");
 			}
-			else if(playerType == MainGame.ePlayerType.DUDE && bnCanMoveHorizontally) {
+			else if(playerType == MainGame.ePlayerType.DUDE && bnPlayerCanControl) {
 
 				fH = Input.GetAxis ("Horizontal_2");
 			}
@@ -194,6 +203,12 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	{
 
 		bnAllowedToGetInput = true;
+	}
+
+
+	public void SetRigidbodyKinematic(bool bnStatus) {
+
+		rigidbody2D.isKinematic = bnStatus;
 	}
 }
 
