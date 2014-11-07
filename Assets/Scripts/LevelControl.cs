@@ -20,9 +20,14 @@ public class LevelControl : MonoBehaviour {
 	Transform					trBarrel;
 	Barrel 						barrelScript;
 	RainControl				rainScript;
+	MainGame					gameScript;
 
 
 	void Awake() {
+
+		// Get the main game script
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
+		gameScript.RegisterLevelController(this.transform, this);
 
 		// Get the barrel placement object
 		trBarrelSpawner = transform.Find("BarrelSpawner");
@@ -66,5 +71,10 @@ public class LevelControl : MonoBehaviour {
 			// Is raining? So the fires extinguishes faster...
 			barrelScript.SetFireRate( barrelScript.GetFireRate() * (1-fRainIntensityOverFire) );
 		}
+	}
+
+	public Transform GetBarrel() {
+
+		return trBarrel;
 	}
 }

@@ -50,4 +50,14 @@ public class PlayerSpawner : MonoBehaviour {
 			gameScript.trDude = trDude;
 		}
 	}
+
+	public Transform GetDudeSpawnPoint() {
+
+		return trDudeSpawnPoint;
+	}
+
+	public Transform GetDogSpawnPoint() {
+
+		return trDogSpawnPoint;
+	}
 }

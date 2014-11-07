@@ -51,6 +51,7 @@ public class Player : MonoBehaviour {
 		THROW,									// 4 - Dude: throwing the dog
 		ON_AIR,									// 5 - Dog: on air (falling or being throwed)
 		DOG_ON_LAP,							// 6 - Dude: ready to throw the dog; Dog: cannot move
+		SIT,										// 7 - Sitted by the fire
 		STATE_NULL 					/// null
 	};
 	[HideInInspector] public eFSMState currentState;
@@ -562,7 +563,28 @@ public class Player : MonoBehaviour {
 		// or play some cutscene
 		MovementAllowToGetInput(false);
 		// Move the character to the spawn point
-		//transform.position = ;
+		Transform trSpawner = gameScript.GetPlayerSpawner(playerType);
+		
+		FSMEnterNewState(eFSMState.SIT);
+		movementScript.HaltCharacter();
+
+		if(trSpawner != null)
+			transform.position = trSpawner.position;
+
+
+
+		// And if we set the camera target as the barrel?
+		cameraScript.SetCameraTarget(gameScript.GetBarrel());
+		movementScript.FaceObject(gameScript.GetBarrel());
+
+		cameraScript.FocusCameraOnTarget(); // FIXME: 
+		cameraScript.ZoomInCharacters();
+
+		// TODO
+		// - Disable most of the hud and show the won message
+		// - 
+		
+
 	}
 
 	/// <summary>
@@ -791,6 +813,9 @@ public class Player : MonoBehaviour {
 				//}
 				break;
 
+			case eFSMState.SIT:
+				break;
+
 			default:
 				Debug.LogError("I shouldn't be here.");
 				break;
@@ -894,6 +919,9 @@ public class Player : MonoBehaviour {
 				//}
 				break;
 
+			case eFSMState.SIT:
+				break;
+
 			default:
 				Debug.LogError("I shouldn't be here.");
 				break;
@@ -906,6 +934,21 @@ public class Player : MonoBehaviour {
 	public void FSMLeaveCurrentState() {
 
 		switch(FSMGetCurrentState()) {
+
+			case eFSMState.IDLE:
+				break;
+
+			case eFSMState.RUNNING:
+
+				break;
+			case eFSMState.IDLE_CARRYING_ITEM:
+
+				break;
+			case eFSMState.RUNNING_CARRYING_ITEM:
+				break;
+
+			case eFSMState.THROW:
+				break;
 
 			case eFSMState.ON_AIR:
 				movementScript.bnPlayerCanControl = true;
@@ -940,8 +983,12 @@ public class Player : MonoBehaviour {
 				//	hudScript.ButtonAAnimate(false);
 				//}
 				break;
+
+			case eFSMState.SIT:
+				break;
+
 			default:
-				//Debug.LogError("I shouldn't be here.");
+				Debug.LogError("FSM Exit state: I shouldn't be here.");
 				break;
 		}
 	}

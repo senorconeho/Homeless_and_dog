@@ -67,6 +67,8 @@ public class MainGame : MonoBehaviour {
 	public CameraFollowTarget2D dudeCameraScript;
 
 	PlayerSpawner	playerSpawnerScript;
+	LevelControl	levelControlScript;
+
 
 
 
@@ -195,5 +197,35 @@ public class MainGame : MonoBehaviour {
 			// TODO: start game!
 			Application.LoadLevel(Application.loadedLevel+1);
 		}
+	}
+
+	/// <summary>
+	/// Return the object that holds the spawner for a particular type of player. Useful to use it as waypoint
+	/// or character placement in game
+	/// </summary>
+	/// <param name="playerType">An ePlayerType enum with the type of the player</param>
+	/// <returns></returns>
+	public Transform GetPlayerSpawner(ePlayerType playerType) {
+
+		Transform rv = null;
+
+		if(playerType == ePlayerType.DOG)
+			rv = playerSpawnerScript.GetDogSpawnPoint();
+		if(playerType == ePlayerType.DUDE)
+			rv = playerSpawnerScript.GetDudeSpawnPoint();
+
+		return rv;
+	}
+	/// <summary>
+	/// Called from LevelControl: register itself with the main game manager
+	/// </summary>
+	public void RegisterLevelController(Transform trLevelController, LevelControl levelControllerScript) {
+
+		levelControlScript = levelControllerScript;
+	}
+
+	public Transform GetBarrel() {
+
+		return levelControlScript.GetBarrel();
 	}
 }

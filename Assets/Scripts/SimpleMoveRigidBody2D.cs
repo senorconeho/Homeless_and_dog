@@ -210,5 +210,27 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 		rigidbody2D.isKinematic = bnStatus;
 	}
+
+	public void HaltCharacter() {
+
+		rigidbody2D.velocity = Vector2.zero;
+	}
+
+	/// <summary>
+	/// Flip the sprite (if needed) so it face the object provided
+	/// </summary>
+	/// <param name="trObject">Object to be faced</param>
+	public void FaceObject(Transform trObject) {
+
+		// check if the object is on our left or right
+		if(transform.position.x > trObject.position.x && !bnFacingLeft) { // Object is at our left
+
+			FlipSprite();
+		}
+		else if(transform.position.x < trObject.position.x && bnFacingLeft ) {
+
+			FlipSprite();
+		}
+	}
 }
 
