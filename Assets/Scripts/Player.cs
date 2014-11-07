@@ -580,9 +580,12 @@ public class Player : MonoBehaviour {
 		cameraScript.FocusCameraOnTarget(); // FIXME: 
 		cameraScript.ZoomInCharacters();
 
+		// Change the hud
+		hudScript.ShowLevelWon();
+
 		// TODO
-		// - Disable most of the hud and show the won message
-		// - 
+		// Change the music
+		// wait for a keypress to jump to the next level
 		
 
 	}
