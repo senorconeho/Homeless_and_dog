@@ -30,7 +30,7 @@ public class MainGame : MonoBehaviour {
 		GAME_START_SCREEN, 
 		GAME_PLAY,				// Game executing
 		GAME_PAUSE,				// Game paused: ignore input from the player
-		GAME_WON_LEVEL,
+		GAME_WON_LEVEL_SCREEN,
 		GAME_OVER
 	};
 
@@ -69,9 +69,6 @@ public class MainGame : MonoBehaviour {
 	PlayerSpawner	playerSpawnerScript;
 	LevelControl	levelControlScript;
 
-
-
-
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -101,8 +98,6 @@ public class MainGame : MonoBehaviour {
 		playerSpawnerScript.SpawnPlayers();
 		StartCoroutine(SetupDog());
 		StartCoroutine(SetupDude());
-
-
 	}
 	
 	/* -----------------------------------------------------------------------------------------------------------
@@ -138,7 +133,7 @@ public class MainGame : MonoBehaviour {
 	public void ChangeStatusToGameWonLevel() {
 
 		// Change the status
-		gameStatus = eGameStatus.GAME_WON_LEVEL;
+		gameStatus = eGameStatus.GAME_WON_LEVEL_SCREEN;
 		// Activate the message on the screens
 		dudeScript.ActivateGameWonLevel();
 		dogScript.ActivateGameWonLevel();
@@ -153,20 +148,37 @@ public class MainGame : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Return the next level to be played, relative to the current level
+	/// </summary>
+	/// <returns> </returns>
+	public int GetNextLevel() {
+
+		// FIXME
+		int nNextLevel = 2;
+
+		return nNextLevel;
+	}
+
+	/// <summary>
 	/// Supposedly we already have the scripts, cameras, etc
 	/// </summary>
 	IEnumerator SetupDog() {
 
-		yield return new WaitForSeconds(.250f);
+		// FIXME
+		yield return new WaitForSeconds(.050f);
 
-		dogCameraScript.trTarget = trDog;
+		dogCameraScript.SetCameraTarget(trDog);
 		dogScript.RegisterCamera(trDogCamera, dogCameraScript);
 	}
 
+	/// <summary>
+	/// Supposedly we already have the scripts, cameras, etc
+	/// </summary>
 	 IEnumerator SetupDude() {
 
-		yield return new WaitForSeconds(.250f);
-		dudeCameraScript.trTarget = trDude;
+		// FIXME
+		yield return new WaitForSeconds(.050f);
+		dudeCameraScript.SetCameraTarget(trDude);
 		dudeScript.RegisterCamera(trDudeCamera, dudeCameraScript);
 	}
 

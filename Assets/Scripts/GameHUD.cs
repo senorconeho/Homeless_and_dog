@@ -186,7 +186,7 @@ public class GameHUD : MonoBehaviour {
 	}
 
 	/// <summary>
-	///
+	/// Activate the 'Level Won' state
 	/// </summary>
 	public void ShowLevelWon() {
 
@@ -252,6 +252,10 @@ public class GameHUD : MonoBehaviour {
 		trButtonBLabel.gameObject.SetActive(bnNewStatus);
 	}
 
+	/// <summary>
+	/// Enable or disable the noise bar on the screen
+	/// </summary>
+	/// <param name="bnNewStatus"> A boolean, true to activate the object, false otherwise </param>
 	public void ActivateNoiseBar(bool bnNewStatus) {
 
 		trNoiseBar.gameObject.SetActive(bnNewStatus);

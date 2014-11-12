@@ -205,12 +205,17 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 		bnAllowedToGetInput = true;
 	}
 
-
+	/// <summary>
+	///
+	/// </summary>
 	public void SetRigidbodyKinematic(bool bnStatus) {
 
 		rigidbody2D.isKinematic = bnStatus;
 	}
 
+	/// <summary>
+	///
+	/// </summary>
 	public void HaltCharacter() {
 
 		rigidbody2D.velocity = Vector2.zero;

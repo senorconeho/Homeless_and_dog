@@ -36,7 +36,6 @@ public class CameraFollowTarget2D : MonoBehaviour {
 
 		cam = gameObject.GetComponent<Camera>();	
 		tr = this.transform;
-
 	}
 	
 	// Update is called once per frame
@@ -45,11 +44,11 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		// update the camera position. The 'x' value is the left ('start') of the screen	
 		//vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
 	//	vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
-		if(Input.GetMouseButtonUp(1)) {
+		//if(Input.GetMouseButtonUp(1)) {
 
-			nZoomDirection *= -1;
-			bnZoomIn = true;
-		}
+		//	nZoomDirection *= -1;
+		//	bnZoomIn = true;
+		//}
 	}
 
 	/// <summary>
@@ -102,6 +101,8 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
+	/// <summary>
+	/// </summary>
 	public void SetCameraTarget(Transform trNewTarget) {
 
 		if(trNewTarget != null) {
@@ -113,6 +114,10 @@ public class CameraFollowTarget2D : MonoBehaviour {
 
 			if(playerScript != null)
 				playerScript.RegisterCamera(this.transform, this);
+		}
+		else {
+
+			Debug.LogWarning(this.transform + "Target null");
 		}
 	}
 
@@ -164,6 +169,7 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		//	vTargetPosition.x = fHalfScreenWidth; 
 		//	this.transform.position = vTargetPosition;
 		//}
+		
 		if(tr.position.x < (trLeftScenarioLimit.position.x + fHalfScreenWidth)) {
 
 			Vector3 vNewPosition = new Vector3((trLeftScenarioLimit.position.x + fHalfScreenWidth), tr.position.y, tr.position.z);
@@ -187,6 +193,8 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		trRightScenarioLimit = trRight;
 	}
 
+	/// <summary>
+	/// </summary>
 	public void ZoomInCharacters() {
 
 		camera.orthographicSize = .3f;

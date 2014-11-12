@@ -73,6 +73,10 @@ public class LevelControl : MonoBehaviour {
 		}
 	}
 
+
+	/// <summary>
+	///
+	/// </summary>
 	public Transform GetBarrel() {
 
 		return trBarrel;

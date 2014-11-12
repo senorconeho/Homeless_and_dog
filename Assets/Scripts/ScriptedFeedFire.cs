@@ -17,7 +17,7 @@ using System.Collections;
 /// - the character will move back to the start point and turn itself to the barrel
 /// - Repeat
 /// </summary>
-public class ScriptedStartFeedFire : MonoBehaviour {
+public class ScriptedFeedFire : MonoBehaviour {
 
 	MainGame					gameScript;		//< Main game script
 	public Transform	trBarrel;			//< Transform of the barrel (placed on the center of the screen)
@@ -25,7 +25,8 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 
 	public Transform	prefabItem;		//< item placed on each corner of the screen (will be regenerated when picked)	
 	public Transform 	trSpawnPoint;	//< where the character should wait until the fire drop it's level
-	public Transform	trItemPoint;	//< put the item here. The next one will be generated in the same place
+	public Transform	trItem;	//< put the item here. The next one will be generated in the same place
+	public ItemSpawner	itemSpawnerScript;
 
 	public Transform	trCharacter;							//< Dog or dude
 	Player	playerScript;												//< player script
@@ -55,24 +56,22 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 			barrelScript = trBarrel.gameObject.GetComponent<Barrel>();
 		}
 
-		StartCoroutine(DelayedStart());
-	}
+		trCharacter = this.transform;
+		playerScript = GetComponent<Player>();
+		movementScript = GetComponent<SimpleMoveRigidBody2D>();
+		trSpawnPoint = playerScript.trSpawnPoint;
 
-	/// <summary>
-	/// <\summary>
-	IEnumerator DelayedStart() {
+		GameObject goItemSpawner = FindNearestItemSpawner();
+		itemSpawnerScript = goItemSpawner.GetComponent<ItemSpawner>();
 
-		// FIXME
-		yield return new WaitForSeconds(.250f);
-
-		trCharacter = gameScript.trDog;
-		playerScript = gameScript.dogScript;
-		movementScript = gameScript.dogScript.movementScript;
+		// Generate the item
+		itemSpawnerScript.GenerateItem();
+		trItem = itemSpawnerScript.GetItemGenerated();
 
 		// Create the character path
-		trWaypoints =  new Transform[] { trItemPoint, trBarrel, trSpawnPoint };
-	}
+		trWaypoints =  new Transform[] { trItem, trBarrel, trSpawnPoint };
 
+	}
 
 	/// <summary>
 	/// Update is called once per frame
@@ -107,7 +106,7 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 				// Pick the item...
 				playerScript.PickItem();
 				// Pick an item? Regenerate!
-				GenerateItem();
+				itemSpawnerScript.GenerateItem();
 				// ... and proceed to the the next target: the barrel
 				trTarget = GetWaypointObject(++nWaypointIndex);
 				SetMovementToTarget();
@@ -219,18 +218,29 @@ public class ScriptedStartFeedFire : MonoBehaviour {
 	 * HELPER FUNCTIONS
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-
+	
 	/// <summary>
-	/// Regenerate the item just picked, so the screen could loop forever
 	/// </summary>
-	void GenerateItem() {
+	GameObject FindNearestItemSpawner() {
 
-		if(prefabItem != null) {
+		GameObject[] goItemSpawnPoints;
+		float fDistance = Mathf.Infinity;
+		GameObject goNearest = null;
 
-			Transform tr = Instantiate(prefabItem, trItemPoint.position, prefabItem.transform.rotation) as Transform;
-			trItemPoint = tr;
-			trWaypoints[0] = trItemPoint;
+		goItemSpawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+		
+		foreach(GameObject go in goItemSpawnPoints) {
+
+			float fCurrentDistance = (go.transform.position - this.transform.position).sqrMagnitude;
+
+			if(fCurrentDistance < fDistance) {
+
+				fDistance = fCurrentDistance;
+				goNearest = go;
+			}
 		}
+
+		return goNearest;
 	}
 
 	/// <summary>

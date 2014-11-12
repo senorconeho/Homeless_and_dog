@@ -19,6 +19,11 @@ public class Barrel : MonoBehaviour {
 	MainGame 					gameScript;
 	MusicManager			musicScript;
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * UNITY'S METHODS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+
 	/// <summary>
 	/// Use this for initialization
 	/// </summary>
@@ -38,7 +43,14 @@ public class Barrel : MonoBehaviour {
 		
 			vFireFlameStartPosition = trFireFlame.position;
 		}
+	}
 
+	/// <summary>
+	///
+	/// </summary>
+	void Start() {
+
+		UpdateFlameHeight();
 	}
 	
 	/// <summary>
@@ -46,10 +58,11 @@ public class Barrel : MonoBehaviour {
 	/// </summary>
 	void Update () {
 
-		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
+		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY &&
+				gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_START_SCREEN)
 			return;
 
-		if(fFireHealth >= 1.0f) {
+		if(fFireHealth >= 1.0f && gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY)  {
 
 			// Change the current game state: we won!
 			gameScript.ChangeStatusToGameWonLevel();
@@ -60,12 +73,7 @@ public class Barrel : MonoBehaviour {
 			fFireHealth = Mathf.Clamp01(fFireHealth);
 
 			// Move the flame down
-			if(trFireFlame != null) {
-			
-				trFireFlame.transform.position = new Vector3(vFireFlameStartPosition.x, 
-						vFireFlameStartPosition.y + 0.16f * fFireHealth,
-						0f);	
-			}
+			UpdateFlameHeight();
 
 			UpdateMusicPitchFromFireLevel();
 		}
@@ -75,6 +83,24 @@ public class Barrel : MonoBehaviour {
 		}
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * CLASS METHODS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+
+	/// <summary>
+	/// Adds 'health' to this fire
+	/// </summary>
+	public void UpdateFlameHeight() {
+
+		if(trFireFlame != null) {
+
+			trFireFlame.transform.position = new Vector3(vFireFlameStartPosition.x, 
+					vFireFlameStartPosition.y + 0.16f * fFireHealth,
+					0f);	
+		}
+	}
+	
 	/// <summary>
 	/// Adds 'health' to this fire
 	/// </summary>
@@ -135,6 +161,8 @@ public class Barrel : MonoBehaviour {
 			fDefaultBurnTime = fBurnTime;
 	}
 
+	/// <summary>
+	/// <\summary>
 	public float GetFireRate() {
 
 		return fBurnTime;
@@ -149,6 +177,11 @@ public class Barrel : MonoBehaviour {
 		fNewLevel = Mathf.Clamp01(fNewLevel);
 		fFireHealth = fNewLevel;
 	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * COLLISION STUFF
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 
 	/// <summary>
 	///
