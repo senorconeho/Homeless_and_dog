@@ -35,4 +35,21 @@ public class ItemSpawner : MonoBehaviour {
 
 		return trItemGenerated;
 	}
+
+	/// <summary>
+	/// Instantiate a new item and return it
+	/// </summary>
+	/// <returns> Transform of the item instantiated, null if something went wrong</returns>
+	public Transform GenerateNewItem() {
+
+		Transform trItem = null;
+
+		if(prefabItem != null) {
+
+			trItem = Instantiate(prefabItem, trSpawnPoint.position, prefabItem.transform.rotation) as Transform;
+		}
+
+		return trItem;
+	}
+
 }

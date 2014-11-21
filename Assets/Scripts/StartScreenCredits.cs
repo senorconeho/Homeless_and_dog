@@ -49,7 +49,13 @@ public class StartScreenCredits : MonoBehaviour {
 		nCreditIdx = Random.Range(0, stCredits.Length-1);
 
 		StartCoroutine(SetupCameras()); // Need to wait a little because the MainGame script forces the camera to the players
-		//StartCoroutine(WaitAndChangeCredits(fChangeTextTime));
+		StartCoroutine(DelayedStart());
+	}
+
+	IEnumerator DelayedStart() {
+
+			yield return new WaitForSeconds(0.5f);
+			StartCoroutine(WaitAndChangeCredits(fChangeTextTime));
 	}
 
 	/* ==========================================================================================================
@@ -81,25 +87,28 @@ public class StartScreenCredits : MonoBehaviour {
 
 		while(true) {
 
-			if(gameScript.hudDudeScript == null || gameScript.hudDogScript == null)
+			if(gameScript.hudDudeScript == null || gameScript.hudDogScript == null) {
 				continue;
-
-			gameScript.hudDudeScript.SetBottomScreenText(stText);
-			gameScript.hudDogScript.SetBottomScreenText(stText);
-			yield return new WaitForSeconds(fWaitTime);
-
-			bnShowStartMessage =!bnShowStartMessage;
-
-			if(!bnShowStartMessage) {
-				stText = stCredits[nCreditIdx];
-
-				// Skip to the next credit
-				nCreditIdx++;
-				if(nCreditIdx > stCredits.Length-1)
-					nCreditIdx = 0;
 			}
-			else
-				stText = stStartMessage;
+
+			if(gameScript.hudDudeScript != null && gameScript.hudDogScript != null) {
+				gameScript.hudDudeScript.SetBottomScreenText(stText);
+				gameScript.hudDogScript.SetBottomScreenText(stText);
+			}
+				yield return new WaitForSeconds(fWaitTime);
+
+				bnShowStartMessage =!bnShowStartMessage;
+
+				if(!bnShowStartMessage) {
+					stText = stCredits[nCreditIdx];
+
+					// Skip to the next credit
+					nCreditIdx++;
+					if(nCreditIdx > stCredits.Length-1)
+						nCreditIdx = 0;
+				}
+				else
+					stText = stStartMessage;
+			}
 		}
-	}
 }

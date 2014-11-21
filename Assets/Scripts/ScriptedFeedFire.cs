@@ -19,17 +19,16 @@ using System.Collections;
 /// </summary>
 public class ScriptedFeedFire : MonoBehaviour {
 
-	MainGame					gameScript;		//< Main game script
-	public Transform	trBarrel;			//< Transform of the barrel (placed on the center of the screen)
-	Barrel						barrelScript;	//< Script of the barrel (to check the fire level)
+	MainGame								gameScript;		//< Main game script
+	Transform								trBarrel;			//< Transform of the barrel (placed on the center of the screen)
+	Barrel									barrelScript;	//< Script of the barrel (to check the fire level)
 
-	public Transform	prefabItem;		//< item placed on each corner of the screen (will be regenerated when picked)	
-	public Transform 	trSpawnPoint;	//< where the character should wait until the fire drop it's level
-	public Transform	trItem;	//< put the item here. The next one will be generated in the same place
-	public ItemSpawner	itemSpawnerScript;
+	public Transform 				trSpawnPoint;				//< where the character starts and wait until the fire drop it's level
+	public Transform				trItem;							//< put the item here. The next one will be generated in the same place
+	ItemSpawner							itemSpawnerScript;	//< script of the item spawner object
 
-	public Transform	trCharacter;							//< Dog or dude
-	Player	playerScript;												//< player script
+	Transform								trCharacter;				//< Dog or dude
+	Player									playerScript;				//< player script
 	SimpleMoveRigidBody2D		movementScript;			//< movement script
 	public Transform 				trTarget = null;		//< current target	
 
@@ -65,12 +64,12 @@ public class ScriptedFeedFire : MonoBehaviour {
 		itemSpawnerScript = goItemSpawner.GetComponent<ItemSpawner>();
 
 		// Generate the item
-		itemSpawnerScript.GenerateItem();
-		trItem = itemSpawnerScript.GetItemGenerated();
+		//itemSpawnerScript.GenerateItem();
+		//trItem = itemSpawnerScript.GetItemGenerated();
+		trItem = itemSpawnerScript.GenerateNewItem();
 
 		// Create the character path
 		trWaypoints =  new Transform[] { trItem, trBarrel, trSpawnPoint };
-
 	}
 
 	/// <summary>
@@ -105,8 +104,11 @@ public class ScriptedFeedFire : MonoBehaviour {
 				movementScript.SetNPCMovementDirection(0);
 				// Pick the item...
 				playerScript.PickItem();
-				// Pick an item? Regenerate!
-				itemSpawnerScript.GenerateItem();
+				// Picked an item? Regenerate!
+				trItem = itemSpawnerScript.GenerateNewItem();
+				// Update the waypoint array
+				trWaypoints[0] = trItem;
+
 				// ... and proceed to the the next target: the barrel
 				trTarget = GetWaypointObject(++nWaypointIndex);
 				SetMovementToTarget();
@@ -227,7 +229,7 @@ public class ScriptedFeedFire : MonoBehaviour {
 		float fDistance = Mathf.Infinity;
 		GameObject goNearest = null;
 
-		goItemSpawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+		goItemSpawnPoints = GameObject.FindGameObjectsWithTag("ItemSpawn");
 		
 		foreach(GameObject go in goItemSpawnPoints) {
 

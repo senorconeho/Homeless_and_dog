@@ -325,8 +325,6 @@ public class Player : MonoBehaviour {
 	/// </summary>
 	public void PickItem() {
 
-		Debug.Log(this.transform.name + " PickItem");
-
 		// FIXME: and if the item cannot be picked? How about just trigger the item animation and bail out?
 		if(trItemOver != null && trItemPicked == null) {
 

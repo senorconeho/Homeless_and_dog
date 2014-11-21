@@ -69,6 +69,13 @@ public class MainGame : MonoBehaviour {
 	PlayerSpawner	playerSpawnerScript;
 	LevelControl	levelControlScript;
 
+	public Color[] gameboyColorPalette = new Color[] { 
+		new Color(8/255f, 24/255f, 32/255f),
+		new Color(48/255f, 104/255f, 80/255f),
+		new Color(136/255f, 195/255f, 112/255f),
+		new Color(224/255f, 248/255f, 208/255f)
+ 	};
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -88,6 +95,7 @@ public class MainGame : MonoBehaviour {
 		if(fontInGame != null) {
 			// Make the font use the 'point' filter. This can't be done in the inspector
 			fontInGame.material.mainTexture.filterMode = FilterMode.Point;
+			fontInGame.material.color = gameboyColorPalette[3];
 		}
 	}
 
