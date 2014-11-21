@@ -23,7 +23,8 @@ public class GameHUD : MonoBehaviour {
 	UILabel						uiTopScreenLabel;
 	Transform 				trNoiseBar;
 	UISlider					uiNoiseBar;
-	Transform					trFirelLabel;
+	Transform					trFireLevel;
+	Transform					trFireLabel;
 	UILabel						uiFireLevelLabel;
 
 	Player						playerScript;			//< Pointer to the player script
@@ -116,10 +117,14 @@ public class GameHUD : MonoBehaviour {
 		}
 
 		// Global HUD: get the fire level to be shown on the HUD
-		trFirelLabel = trUI.Find("FireLevel/FireLabel");
-		if(trFirelLabel != null) {
+		trFireLevel = trUI.Find("FireLevel");
 
-			uiFireLevelLabel = trFirelLabel.gameObject.GetComponent<UILabel>();
+		if(trFireLevel != null) {
+			trFireLabel = trFireLevel.Find("FireLabel");
+		}
+		if(trFireLabel != null) {
+
+			uiFireLevelLabel = trFireLabel.gameObject.GetComponent<UILabel>();
 		}
 		else {
 
@@ -225,6 +230,9 @@ public class GameHUD : MonoBehaviour {
 		ActivateButtonLabels(false); // Disable the buttons labels
 		SetTopScreenText("Survived for another day..."); // Set the message
 		ActivateNoiseBar(false); // Disable the noise stuff
+		ActivateFireLevel(false); // Disable the fire level meter
+
+		// TODO: disable the thunder sound
 	}
 
 	/// <summary>
@@ -290,5 +298,15 @@ public class GameHUD : MonoBehaviour {
 	public void ActivateNoiseBar(bool bnNewStatus) {
 
 		trNoiseBar.gameObject.SetActive(bnNewStatus);
+	}
+
+	/// <summary>
+	/// Enable or disable the fire level on the screen
+	/// </summary>
+	/// <param name="bnNewStatus"> A boolean, true to activate the object, false otherwise </param>
+	public void ActivateFireLevel(bool bnNewStatus) {
+
+		if(trFireLevel != null)
+			trFireLevel.gameObject.SetActive(bnNewStatus);
 	}
 }

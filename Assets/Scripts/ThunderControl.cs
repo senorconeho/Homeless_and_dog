@@ -31,14 +31,6 @@ public class ThunderControl : MonoBehaviour {
 
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-		// DEBUG
-		if(Input.GetMouseButtonUp(0))
-			DoTheRoar();
-	}
-
 	/// <summary>
 	/// Play the lightning animation and play the thunder sound effect
 	/// </summary>

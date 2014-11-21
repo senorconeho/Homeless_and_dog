@@ -145,6 +145,9 @@ public class MainGame : MonoBehaviour {
 		// Activate the message on the screens
 		dudeScript.ActivateGameWonLevel();
 		dogScript.ActivateGameWonLevel();
+
+		// Stop the rain effects
+		levelControlScript.StopThunderEffects();
 	}
 
 	/// <summary>

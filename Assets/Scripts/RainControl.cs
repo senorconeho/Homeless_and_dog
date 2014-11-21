@@ -81,6 +81,17 @@ public class RainControl : MonoBehaviour {
 			DoTheRoar();
 			yield return new WaitForSeconds(fTime);
 		 	fTime = Random.Range(fThunderMinTime, fThunderMaxTime);
+			
+			if(bnPlayThunder == false) {
+
+				break;
+			}
 		}
+	}
+
+	public void StopTimedThunder() {
+
+		bnPlayThunder = false;
+		StopCoroutine(TimedThunder());
 	}
 }

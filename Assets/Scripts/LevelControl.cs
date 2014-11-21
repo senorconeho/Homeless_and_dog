@@ -81,4 +81,12 @@ public class LevelControl : MonoBehaviour {
 
 		return trBarrel;
 	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void StopThunderEffects() {
+
+		rainScript.StopTimedThunder();
+	}
 }
