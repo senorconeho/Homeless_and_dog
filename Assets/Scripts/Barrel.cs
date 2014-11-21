@@ -76,6 +76,7 @@ public class Barrel : MonoBehaviour {
 			UpdateFlameHeight();
 
 			UpdateMusicPitchFromFireLevel();
+			UpdateFireLevelInHUD();
 		}
 		else {
 
@@ -99,6 +100,20 @@ public class Barrel : MonoBehaviour {
 					vFireFlameStartPosition.y + 0.16f * fFireHealth,
 					0f);	
 		}
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void UpdateFireLevelInHUD() {
+
+		string stFireLevel;
+		int nFireLevel = (int) (fFireHealth *100);
+
+		stFireLevel = "x " + nFireLevel + "%";
+
+		gameScript.hudDudeScript.FireLevelUpdate(stFireLevel);
+		gameScript.hudDogScript.FireLevelUpdate(stFireLevel);
 	}
 	
 	/// <summary>

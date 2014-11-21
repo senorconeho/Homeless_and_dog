@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 378930c39d46a6342bdda49e7da8f762
+guid: 8df1beeac03ff61419dacdbea60b0f50
 TextureImporter:
   fileIDToRecycleName:
-    21300000: HUDStuff
+    21300000: icon_fire_8x12
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -18,18 +18,18 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: .25
     normalMapFilter: 0
-  isReadable: 0
+  isReadable: 1
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
-  textureFormat: -3
-  maxTextureSize: 64
+  textureFormat: 5
+  maxTextureSize: 4096
   textureSettings:
     filterMode: 0
-    aniso: 4
+    aniso: 1
     mipBias: -1
     wrapMode: 1
-  nPOTScale: 1
+  nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1

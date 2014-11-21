@@ -23,6 +23,8 @@ public class GameHUD : MonoBehaviour {
 	UILabel						uiTopScreenLabel;
 	Transform 				trNoiseBar;
 	UISlider					uiNoiseBar;
+	Transform					trFirelLabel;
+	UILabel						uiFireLevelLabel;
 
 	Player						playerScript;			//< Pointer to the player script
 
@@ -107,12 +109,30 @@ public class GameHUD : MonoBehaviour {
 			uiNoiseBar = trNoiseBar.gameObject.GetComponent<UISlider>();
 			uiNoiseBar.sliderValue = 0.0f;
 		}
+		else {
+
+			// DEBUG
+			Debug.LogError(transform.name + " unable to find the NoiseBar");
+		}
+
+		// Global HUD: get the fire level to be shown on the HUD
+		trFirelLabel = trUI.Find("FireLevel/FireLabel");
+		if(trFirelLabel != null) {
+
+			uiFireLevelLabel = trFirelLabel.gameObject.GetComponent<UILabel>();
+		}
+		else {
+
+			// DEBUG
+			Debug.LogError(transform.name + " unable to find the FireLevel");
+		}
 
 		// Find the "Game Over" sprite
 		trSpriteGameOver = trUI.Find("SpriteGameOver");
 		if(trSpriteGameOver != null)
 			trSpriteGameOver.gameObject.SetActive(false);
 	}
+
 	
 	/* -----------------------------------------------------------------------------------------------------------
 	 * 
@@ -175,6 +195,17 @@ public class GameHUD : MonoBehaviour {
 
 			uiNoiseBar.sliderValue = fValue;
 		}
+	}
+
+	/// <summary>
+	/// Updates the label which shown the current fire level
+	/// </summary>
+	public void FireLevelUpdate(string stText) {
+
+		if(uiFireLevelLabel == null)
+			return;
+
+		uiFireLevelLabel.text = stText;
 	}
 
 	/// <summary>
