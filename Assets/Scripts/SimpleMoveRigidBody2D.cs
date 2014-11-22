@@ -18,14 +18,14 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 	public Vector2 vRigidbodyVelocity;
 	// PRIVATE
-	[HideInInspector] public bool bnAllowedToGetInput = true;
-	[HideInInspector] public bool	bnPlayerCanControl = true;	//< cannot move while on the air
+	public bool bnAllowedToGetInput = true;
+	public bool	bnPlayerCanControl = true;	//< cannot move while on the air
 
 	public float fMaxSpeed;	//< this value could (will) be changed by the Player script
 	public float fMoveForce = 40f;		
 
-	[HideInInspector] public 	MainGame.ePlayerType playerType;	//< from MainGame
-	float 	fH;	//< Horizontal movement
+	public 	MainGame.ePlayerType playerType;	//< from MainGame
+	public float 	fH;	//< Horizontal movement
 	public bool bnOnAir = false;
 
 	/* ==========================================================================================================

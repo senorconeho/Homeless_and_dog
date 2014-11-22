@@ -35,6 +35,8 @@ public class ScriptedFeedFire : MonoBehaviour {
 	public Transform[]			trWaypoints;				//< Array of waypoints (will be populated in the code)
 	public int 							nWaypointIndex = 0;	//< Index of the current waypoint
 
+	public float						fFireLevelThresholdToPickStuff = 0.65f;	//< In what level shoud the character pick something to feed the fire?
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * MAIN UNITY LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -77,7 +79,7 @@ public class ScriptedFeedFire : MonoBehaviour {
 	/// </summary>
 	void Update () {
 	
-		if(barrelScript.GetFireHealth() < 0.9f) {	// FIXME
+		if(barrelScript.GetFireHealth() < fFireLevelThresholdToPickStuff) {
 
 			GetAnItemAndFeedTheFire();
 		}

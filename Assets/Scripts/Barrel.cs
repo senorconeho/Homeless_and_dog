@@ -201,9 +201,9 @@ public class Barrel : MonoBehaviour {
 	/// <summary>
 	///
 	/// </summary>
-	public void OnTriggerEnter2D(Collider2D col) {
+	//public void OnTriggerEnter2D(Collider2D col) {
 
-		if(col.gameObject.layer == MainGame.nPlayerLayer)
-			Debug.Log(this.transform + " Health: " + fFireHealth * 100);
-	}
+	//	if(col.gameObject.layer == MainGame.nPlayerLayer)
+	//		Debug.Log(this.transform + " Health: " + fFireHealth * 100);
+	//}
 }

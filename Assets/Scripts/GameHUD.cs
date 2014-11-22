@@ -110,11 +110,6 @@ public class GameHUD : MonoBehaviour {
 			uiNoiseBar = trNoiseBar.gameObject.GetComponent<UISlider>();
 			uiNoiseBar.sliderValue = 0.0f;
 		}
-		else {
-
-			// DEBUG
-			Debug.LogError(transform.name + " unable to find the NoiseBar");
-		}
 
 		// Global HUD: get the fire level to be shown on the HUD
 		trFireLevel = trUI.Find("FireLevel");
@@ -125,11 +120,6 @@ public class GameHUD : MonoBehaviour {
 		if(trFireLabel != null) {
 
 			uiFireLevelLabel = trFireLabel.gameObject.GetComponent<UILabel>();
-		}
-		else {
-
-			// DEBUG
-			Debug.LogError(transform.name + " unable to find the FireLevel");
 		}
 
 		// Find the "Game Over" sprite
