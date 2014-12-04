@@ -31,11 +31,16 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	 * UNITY
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-	// Use this for initialization
-	void Start () {
+
+	void Awake() {
 
 		cam = gameObject.GetComponent<Camera>();	
 		tr = this.transform;
+	}
+
+	// Use this for initialization
+	void Start () {
+
 	}
 	
 	// Update is called once per frame
@@ -62,6 +67,7 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		if(bnZoomIn) {
 
 			camera.orthographicSize += Time.deltaTime * nZoomDirection;
+			// FIXME
 			if(camera.orthographicSize < 0.01f) { camera.orthographicSize = 0.01f; bnZoomIn = false; }
 			if(camera.orthographicSize > 0.72f) { camera.orthographicSize = 0.72f; bnZoomIn = false; }
 		}
@@ -197,7 +203,7 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	/// </summary>
 	public void ZoomInCharacters() {
 
-		camera.orthographicSize = .3f;
+		camera.orthographicSize *= .5f;
 		Vector3 vTargetPosition = new Vector3(transform.position.x, .41f, transform.position.z);
 		transform.position = vTargetPosition;
 	}

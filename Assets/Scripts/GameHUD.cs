@@ -209,6 +209,11 @@ public class GameHUD : MonoBehaviour {
 	public void ShowGameOver() {
 
 		trSpriteGameOver.gameObject.SetActive(true);
+		SetBottomScreenText("Press start to play again");
+		ActivateButtonIcons(false); // Disable the buttons icons
+		ActivateButtonLabels(false); // Disable the buttons labels
+		ActivateNoiseBar(false); // Disable the noise stuff
+		ActivateFireLevel(false); // Disable the fire level meter
 	}
 
 	/// <summary>

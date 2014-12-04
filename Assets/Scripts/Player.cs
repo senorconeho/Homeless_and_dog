@@ -653,6 +653,13 @@ public class Player : MonoBehaviour {
 					// Load the next level
 					Application.LoadLevel(gameScript.GetNextLevel());
 				}
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_OVER) {
+
+					// TODO: show a way to reload the level or to go back to main menu
+					//
+					// Restart this level...
+					Application.LoadLevel(Application.loadedLevel);
+				}
 			}
 
 
@@ -724,6 +731,11 @@ public class Player : MonoBehaviour {
 				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_WON_LEVEL_SCREEN) {
 					// Load the next level
 					Application.LoadLevel(gameScript.GetNextLevel());
+				}
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_OVER) {
+
+					// Restart this level...
+					Application.LoadLevel(Application.loadedLevel);
 				}
 			}
 
