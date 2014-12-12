@@ -48,10 +48,10 @@ public class CheckVisionBox : MonoBehaviour {
 		// Check if we hit the dog
 		if(col.transform.tag == "Dog") {
 			// DEBUG
-			Debug.Log("STARTED Collision with the dog");
+			//Debug.Log("STARTED Collision with the dog");
 			// Gotcha!
 			if(residentScript != null) {
-				Debug.Log("Spotted");
+				//Debug.Log("Spotted");
 				//residentScript.SpottedTheDog(col.transform);
 				// FIXME
 				residentScript.GotTheDog(col.transform);
@@ -72,10 +72,10 @@ public class CheckVisionBox : MonoBehaviour {
 		// Check if we hit the dog
 		if(col.transform.tag == "Dog") {
 			// Gotcha!
-			Debug.Log("EXITED Collision with the dog");
+			//Debug.Log("EXITED Collision with the dog");
 			if(residentScript != null) {
 
-				Debug.Log("Lost");
+				//Debug.Log("Lost");
 				residentScript.LostTheDog(col.transform);
 			}
 		}

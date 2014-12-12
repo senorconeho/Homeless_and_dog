@@ -173,7 +173,7 @@ public class Room : MonoBehaviour {
 		// Make the dog drop it's item
 		gameScript.dogScript.DogCatched();
 		// Wait a little
-		StartCoroutine(DogCatchedAnimation(0.5f));
+		StartCoroutine(DogCatchedAnimation(1.5f));
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -273,18 +273,18 @@ public class Room : MonoBehaviour {
 	/// <summary>
 	/// The dog was caught:
 	/// 1 - Disables the dog movement
-	/// 2 - Throw it of the window
+	/// 2 - Throw it out the window
 	/// 3 - Wait a little and then closes the window
 	/// 4 - Restore movement; the games keep on
 	/// </summary>
 	/// <param name="fWaitTime">Time (in seconds) to wait until close the window and restore control to the player</param>
 	IEnumerator DogCatchedAnimation(float fWaitTime) {
 
+		// 3 - wait... ANIMATION!!!
+		yield return new WaitForSeconds(fWaitTime);
 		// 1 - already done in Player
 		// 2 - Make the dog appear outside the window
 		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindow);
-		// 3 - wait... ANIMATION!!!
-		yield return new WaitForSeconds(fWaitTime);
 		// and then close the window, so the dog can't enter back
 		CloseWindow();
 		// 4 - 
