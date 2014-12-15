@@ -41,6 +41,9 @@ public class PlayerSpawner : MonoBehaviour {
 			Transform trDog = Instantiate(dogPrefab, trDogSpawnPoint.position, dogPrefab.rotation) as Transform;
 			trDog.name = "Dog";	// Remove the 'clone' from the object's name
 			gameScript.trDog = trDog;
+
+			Player playerScript = trDog.gameObject.GetComponent<Player>();
+			playerScript.trSpawnPoint = trDogSpawnPoint;
 		}
 		if(dudePrefab != null) {
 
@@ -48,6 +51,23 @@ public class PlayerSpawner : MonoBehaviour {
 			Transform trDude = Instantiate(dudePrefab, trDudeSpawnPoint.position, dudePrefab.rotation) as Transform;
 			trDude.name = "Homeless";
 			gameScript.trDude = trDude;
+
+			Player playerScript = trDude.gameObject.GetComponent<Player>();
+			playerScript.trSpawnPoint = trDudeSpawnPoint;
 		}
+	}
+
+	/// <summary>
+	/// <\summary>
+	public Transform GetDudeSpawnPoint() {
+
+		return trDudeSpawnPoint;
+	}
+
+	/// <summary>
+	/// <\summary>
+	public Transform GetDogSpawnPoint() {
+
+		return trDogSpawnPoint;
 	}
 }

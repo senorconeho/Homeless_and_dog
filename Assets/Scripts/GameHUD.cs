@@ -7,6 +7,10 @@ using System.Collections;
 public class GameHUD : MonoBehaviour {
 
 	[SerializeField]	public Transform 	trUI;	//< Drop the panel transform here
+	Transform					trButtonALabel;
+	Transform					trButtonBLabel;
+	Transform					trButtonASprite;
+	Transform					trButtonBSprite;
 	UILabel						uiButtonALabel;
 	UILabel						uiButtonBLabel;
 	UISpriteAnimation	uiButtonAAnimation;
@@ -16,8 +20,12 @@ public class GameHUD : MonoBehaviour {
 	Transform					trSpriteGameOver;
 	[HideInInspector] public UILabel		uiCenterScreenLabel;
 	UILabel						uiBottomScreenLabel;
+	UILabel						uiTopScreenLabel;
 	Transform 				trNoiseBar;
 	UISlider					uiNoiseBar;
+	Transform					trFireLevel;
+	Transform					trFireLabel;
+	UILabel						uiFireLevelLabel;
 
 	Player						playerScript;			//< Pointer to the player script
 
@@ -53,32 +61,34 @@ public class GameHUD : MonoBehaviour {
 			return;
 
 		// Get the center screen label
+		uiTopScreenLabel = trUI.Find("Label_TopScreen").gameObject.GetComponent<UILabel>();
+		uiTopScreenLabel.text = "";
 		uiCenterScreenLabel = trUI.Find("Label_CenterScreen").gameObject.GetComponent<UILabel>();
 		uiCenterScreenLabel.text = "";
 		uiBottomScreenLabel = trUI.Find("Label_BottomScreen").gameObject.GetComponent<UILabel>();
 		uiBottomScreenLabel.text = "";
 
 		// Get the buttons labels
-		Transform trButtonALabel = trUI.Find("Label_A");
+		trButtonALabel = trUI.Find("Label_A");
 		if(trButtonALabel != null) {
 
 			uiButtonALabel = trButtonALabel.gameObject.GetComponent<UILabel>();
 			uiButtonALabel.text = "";
 		}
 
-		Transform trButtonBLabel = trUI.Find("Label_B");
+		trButtonBLabel = trUI.Find("Label_B");
 		if(trButtonBLabel != null) {
 			uiButtonBLabel = trButtonBLabel.gameObject.GetComponent<UILabel>();
 			uiButtonBLabel.text = "";
 		}
 
-		Transform trButtonASprite = trUI.Find("ButtonA/Sprite_ButtonA");
+		trButtonASprite = trUI.Find("ButtonA/Sprite_ButtonA");
 		if(trButtonASprite != null) {
 			uiButtonAAnimation = trButtonASprite.gameObject.GetComponent<UISpriteAnimation>();
 			uiButtonAAnimation.enabled = false;
 		}
 
-		Transform trButtonBSprite = trUI.Find("ButtonB/Sprite_ButtonB");
+		trButtonBSprite = trUI.Find("ButtonB/Sprite_ButtonB");
 		if(trButtonBSprite != null) {
 			uiButtonBAnimation = trButtonBSprite.gameObject.GetComponent<UISpriteAnimation>();
 			uiButtonBAnimation.enabled = false;
@@ -101,11 +111,23 @@ public class GameHUD : MonoBehaviour {
 			uiNoiseBar.sliderValue = 0.0f;
 		}
 
+		// Global HUD: get the fire level to be shown on the HUD
+		trFireLevel = trUI.Find("FireLevel");
+
+		if(trFireLevel != null) {
+			trFireLabel = trFireLevel.Find("FireLabel");
+		}
+		if(trFireLabel != null) {
+
+			uiFireLevelLabel = trFireLabel.gameObject.GetComponent<UILabel>();
+		}
+
 		// Find the "Game Over" sprite
 		trSpriteGameOver = trUI.Find("SpriteGameOver");
 		if(trSpriteGameOver != null)
 			trSpriteGameOver.gameObject.SetActive(false);
 	}
+
 	
 	/* -----------------------------------------------------------------------------------------------------------
 	 * 
@@ -171,11 +193,41 @@ public class GameHUD : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Updates the label which shown the current fire level
+	/// </summary>
+	public void FireLevelUpdate(string stText) {
+
+		if(uiFireLevelLabel == null)
+			return;
+
+		uiFireLevelLabel.text = stText;
+	}
+
+	/// <summary>
 	/// Activate the 'GameOver' sprite, showing it on the screen
 	/// </summary>
 	public void ShowGameOver() {
 
 		trSpriteGameOver.gameObject.SetActive(true);
+		SetBottomScreenText("Press start to play again");
+		ActivateButtonIcons(false); // Disable the buttons icons
+		ActivateButtonLabels(false); // Disable the buttons labels
+		ActivateNoiseBar(false); // Disable the noise stuff
+		ActivateFireLevel(false); // Disable the fire level meter
+	}
+
+	/// <summary>
+	/// Activate the 'Level Won' state
+	/// </summary>
+	public void ShowLevelWon() {
+
+		ActivateButtonIcons(false); // Disable the buttons icons
+		ActivateButtonLabels(false); // Disable the buttons labels
+		SetTopScreenText("Survived for another day..."); // Set the message
+		ActivateNoiseBar(false); // Disable the noise stuff
+		ActivateFireLevel(false); // Disable the fire level meter
+
+		// TODO: disable the thunder sound
 	}
 
 	/// <summary>
@@ -196,5 +248,60 @@ public class GameHUD : MonoBehaviour {
 	public void SetBottomScreenText(string stText) {
 
 		uiBottomScreenLabel.text = stText;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public void SetCenterScreenText(string stText) {
+
+		uiCenterScreenLabel.text = stText;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public void SetTopScreenText(string stText) {
+
+		uiTopScreenLabel.text = stText;
+	}
+
+	/// <summary>
+	/// Enable or disable the buttons icons on the screen
+	/// </summary>
+	/// <param name="bnNewStatus">True to activate the game object (showing the sprite on the screen), false to hide it</param>
+	public void ActivateButtonIcons(bool bnNewStatus) {
+
+		trButtonASprite.gameObject.SetActive(bnNewStatus);
+		trButtonBSprite.gameObject.SetActive(bnNewStatus);
+	}
+
+	/// <summary>
+	/// Enable or disable the buttons labels on the screen
+	/// </summary>
+	/// <param name="bnNewStatus">True to activate the game object (showing the text on the screen), false to hide it</param>
+	public void ActivateButtonLabels(bool bnNewStatus) {
+
+		trButtonALabel.gameObject.SetActive(bnNewStatus);
+		trButtonBLabel.gameObject.SetActive(bnNewStatus);
+	}
+
+	/// <summary>
+	/// Enable or disable the noise bar on the screen
+	/// </summary>
+	/// <param name="bnNewStatus"> A boolean, true to activate the object, false otherwise </param>
+	public void ActivateNoiseBar(bool bnNewStatus) {
+
+		trNoiseBar.gameObject.SetActive(bnNewStatus);
+	}
+
+	/// <summary>
+	/// Enable or disable the fire level on the screen
+	/// </summary>
+	/// <param name="bnNewStatus"> A boolean, true to activate the object, false otherwise </param>
+	public void ActivateFireLevel(bool bnNewStatus) {
+
+		if(trFireLevel != null)
+			trFireLevel.gameObject.SetActive(bnNewStatus);
 	}
 }

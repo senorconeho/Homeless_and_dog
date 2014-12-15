@@ -24,23 +24,23 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	public Transform trCurrentBasicRoom;
 	public BasicRoom currentBasicRoomScript;
 
-	// CLEAN THIS FILE!
+	public bool bnZoomIn = false;
+	public int nZoomDirection = 1;
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-	// Use this for initialization
-	void Start () {
+
+	void Awake() {
 
 		cam = gameObject.GetComponent<Camera>();	
 		tr = this.transform;
+	}
 
-		//if(trTarget != null) {
+	// Use this for initialization
+	void Start () {
 
-		//	// Tell the player that we are they camera
-		//	Player playerScript = trTarget.gameObject.GetComponent<Player>();
-		//	playerScript.RegisterCamera(this.transform, this);
-		//}
 	}
 	
 	// Update is called once per frame
@@ -49,6 +49,11 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		// update the camera position. The 'x' value is the left ('start') of the screen	
 		//vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
 	//	vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
+		//if(Input.GetMouseButtonUp(1)) {
+
+		//	nZoomDirection *= -1;
+		//	bnZoomIn = true;
+		//}
 	}
 
 	/// <summary>
@@ -59,24 +64,15 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		if(trTarget == null)
 			return;
 
+		if(bnZoomIn) {
+
+			camera.orthographicSize += Time.deltaTime * nZoomDirection;
+			// FIXME
+			if(camera.orthographicSize < 0.01f) { camera.orthographicSize = 0.01f; bnZoomIn = false; }
+			if(camera.orthographicSize > 0.72f) { camera.orthographicSize = 0.72f; bnZoomIn = false; }
+		}
 		Vector3 vTargetPosition = trTarget.position;	// The position of the target in the world
 		Vector3 vCurrentCameraPosition = tr.position;	// Current camera position
-
-		// HORIZONTAL CHECK
-		// Check where the target is in the screen
-		//if(vTargetPosition.x < tr.position.x && !bnCamLockedLeft) {
-		//	// Target to the left of the camera, camera not locked:
-		//	// Follow target
-		//	Vector3 vNewPosition = new Vector3(vTargetPosition.x, tr.position.y, tr.position.z);
-		//	tr.position = vNewPosition;
-		//}
-		//else if(vTargetPosition.x > tr.position.x) {
-		//	// Target to the right of the camera:
-		//	// make the camera follow
-		//	Vector3 vNewPosition = new Vector3(vTargetPosition.x, tr.position.y, tr.position.z);
-		//	tr.position = vNewPosition;
-		//}
-		
 
 		// Check the left limit of the screen
 		if(trTarget.position.x <= (trLeftScenarioLimit.position.x + fHalfScreenWidth)) {
@@ -104,52 +100,6 @@ public class CameraFollowTarget2D : MonoBehaviour {
 			Vector3 vNewPosition = new Vector3(vTargetPosition.x, tr.position.y, tr.position.z);
 			tr.position = vNewPosition;
 		}
-		// VERTICAL CHECK
-		// 1 - If the dog is in the upper half of the camera, follow it
-		//if(vTargetPosition.y < vCurrentCameraPosition.y) {
-
-		//	// FIXME: fix the 0.72f value with a 'half room height' value or something like that
-		//	if(vCurrentCameraPosition.y > 0.72f) {
-
-
-		//		Vector3 vNewPosition = tr.position;
-		//		vNewPosition.y = vTargetPosition.y;
-		//		tr.position = vNewPosition;
-		//	}
-
-
-		//}
-		//else if(vTargetPosition.y > vCurrentCameraPosition.y) {
-		//	
-		//	Vector3 vNewPosition = tr.position;
-		//	vNewPosition.y = vTargetPosition.y;
-		//	tr.position = vNewPosition;
-		//}
-		//else {
-
-		//}
-
-		//	vScreenWorldPosition = cam.ScreenToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
-		//	Update the viewport position
-		//vViewPortWorldPosition = cam.ViewportToWorldPoint(new Vector3(0,0, camera.nearClipPlane));
-
-		//if(vViewPortWorldPosition.x < 0f) {
-		//	// Camera with the left off screen?
-		//	bnCamLockedLeft = true;		// Lock it's movement
-		//	tr.position = vCurrentCameraPosition;	// Bring it back
-		//}
-		//else if(isEqual(vViewPortWorldPosition.x, 0)) {
-		//	// At zero
-		//	if(!bnCamLockedLeft) {
-		//		bnCamLockedLeft = true; // Camera not locked? Lock it up!
-		//		tr.position = vCurrentCameraPosition;	// Update the position
-		//	}
-		//}
-		//else {
-		//	bnCamLockedLeft = false;
-		//}
-
-		// VERTICAL
 	}
 
 	/* -----------------------------------------------------------------------------------------------------------
@@ -157,13 +107,23 @@ public class CameraFollowTarget2D : MonoBehaviour {
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
-	public void SetCameraTarget(Transform trTarget) {
+	/// <summary>
+	/// </summary>
+	public void SetCameraTarget(Transform trNewTarget) {
 
-		if(trTarget != null) {
+		if(trNewTarget != null) {
+
+			trTarget = trNewTarget;
 
 			// Tell the player that we are they camera
-			Player playerScript = trTarget.gameObject.GetComponent<Player>();
-			playerScript.RegisterCamera(this.transform, this);
+			Player playerScript = trNewTarget.gameObject.GetComponent<Player>();
+
+			if(playerScript != null)
+				playerScript.RegisterCamera(this.transform, this);
+		}
+		else {
+
+			Debug.LogWarning(this.transform + "Target null");
 		}
 	}
 
@@ -182,6 +142,8 @@ public class CameraFollowTarget2D : MonoBehaviour {
 
 		Vector3 vTargetPosition = trTarget.position;		// The position of the target in the world
 		vTargetPosition.z = this.transform.position.z;
+		vTargetPosition.y = this.transform.position.y;
+
 		// Updates the height position
 		if(trCurrentBasicRoom != null)
 			vTargetPosition.y = trCurrentBasicRoom.position.y + fHalfScreenHeight;
@@ -213,6 +175,7 @@ public class CameraFollowTarget2D : MonoBehaviour {
 		//	vTargetPosition.x = fHalfScreenWidth; 
 		//	this.transform.position = vTargetPosition;
 		//}
+		
 		if(tr.position.x < (trLeftScenarioLimit.position.x + fHalfScreenWidth)) {
 
 			Vector3 vNewPosition = new Vector3((trLeftScenarioLimit.position.x + fHalfScreenWidth), tr.position.y, tr.position.z);
@@ -234,5 +197,14 @@ public class CameraFollowTarget2D : MonoBehaviour {
 
 		trLeftScenarioLimit = trLeft;
 		trRightScenarioLimit = trRight;
+	}
+
+	/// <summary>
+	/// </summary>
+	public void ZoomInCharacters() {
+
+		camera.orthographicSize *= .5f;
+		Vector3 vTargetPosition = new Vector3(transform.position.x, .41f, transform.position.z);
+		transform.position = vTargetPosition;
 	}
  }

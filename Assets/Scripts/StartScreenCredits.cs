@@ -40,7 +40,7 @@ public class StartScreenCredits : MonoBehaviour {
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 	}
 	
-	/// <summary>90610-280
+	/// <summary>
 	/// Use this for initialization
 	/// <\summary>
 	void Start () {
@@ -48,13 +48,36 @@ public class StartScreenCredits : MonoBehaviour {
 		// Randomize where to start showing the credits
 		nCreditIdx = Random.Range(0, stCredits.Length-1);
 
-		StartCoroutine(WaitAndChangeCredits(fChangeTextTime));
+		StartCoroutine(SetupCameras()); // Need to wait a little because the MainGame script forces the camera to the players
+		StartCoroutine(DelayedStart());
 	}
-	
+
+	IEnumerator DelayedStart() {
+
+			yield return new WaitForSeconds(0.5f);
+			StartCoroutine(WaitAndChangeCredits(fChangeTextTime));
+	}
+
 	/* ==========================================================================================================
 	 * CLASS METHODS
 	 * ==========================================================================================================
 	 */
+	/// <summary>
+	/// <\summary>
+	IEnumerator SetupCameras() {
+
+		// FIXME
+		yield return new WaitForSeconds(.150f);
+
+		// Center the camera on the barrel
+		Transform trBarrel = gameScript.GetBarrel();
+
+		gameScript.dogCameraScript.SetCameraTarget(trBarrel);
+		gameScript.dogCameraScript.FocusCameraOnTarget();
+		gameScript.dudeCameraScript.SetCameraTarget(trBarrel);
+		gameScript.dudeCameraScript.FocusCameraOnTarget();
+	}
+	
 	/// <summary>
 	/// <\summary>
 	IEnumerator WaitAndChangeCredits(float fWaitTime) {
@@ -64,27 +87,28 @@ public class StartScreenCredits : MonoBehaviour {
 
 		while(true) {
 
-			if(gameScript.hudDudeScript == null || gameScript.hudDogScript == null)
+			if(gameScript.hudDudeScript == null || gameScript.hudDogScript == null) {
 				continue;
-
-			gameScript.hudDudeScript.SetBottomScreenText(stText);
-			gameScript.hudDogScript.SetBottomScreenText(stText);
-			yield return new WaitForSeconds(fWaitTime);
-
-			bnShowStartMessage =!bnShowStartMessage;
-
-			if(!bnShowStartMessage) {
-				stText = stCredits[nCreditIdx];
-
-				// Skip to the next credit
-				nCreditIdx++;
-				if(nCreditIdx > stCredits.Length-1)
-					nCreditIdx = 0;
 			}
-			else
-				stText = stStartMessage;
 
+			if(gameScript.hudDudeScript != null && gameScript.hudDogScript != null) {
+				gameScript.hudDudeScript.SetBottomScreenText(stText);
+				gameScript.hudDogScript.SetBottomScreenText(stText);
+			}
+				yield return new WaitForSeconds(fWaitTime);
+
+				bnShowStartMessage =!bnShowStartMessage;
+
+				if(!bnShowStartMessage) {
+					stText = stCredits[nCreditIdx];
+
+					// Skip to the next credit
+					nCreditIdx++;
+					if(nCreditIdx > stCredits.Length-1)
+						nCreditIdx = 0;
+				}
+				else
+					stText = stStartMessage;
+			}
 		}
-	}
-
 }

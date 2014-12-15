@@ -130,13 +130,20 @@ public class ResidentBehaviour : MonoBehaviour {
 			StartCoroutine(WaitHere(3));
 		}
 		else if(trTarget.tag == "Dog") {
-			// Have we reached the dog
-			GotTheDog(trTarget);
-			// ok, head back straight to the exit
-			nWaypointIndex = roomScript.GetNumberOfWaypoints()-1;
-
-			trTarget = roomScript.GetWaypointObject(nWaypointIndex);
-			StartCoroutine(WaitHere(1));
+			// DEBUG
+			Debug.LogWarning("NOT HERE!");
+			//// Have we reached the dog
+			//GotTheDog(trTarget);
+			//// ok, head back straight to the exit
+			////nWaypointIndex = roomScript.GetNumberOfWaypoints()-1;
+			////trTarget = roomScript.GetWaypointObject(nWaypointIndex);
+			////StartCoroutine(WaitHere(1));
+			//
+			//// Walk to the window
+			//bnGotDog = true;
+			//nWaypointIndex = 0;
+			//trTarget = roomScript.GetWaypointObject(nWaypointIndex);
+			//StartCoroutine(WaitHere(2));
 		}
 		else if(trTarget.tag == "SpawnPoint") {
 
@@ -194,9 +201,14 @@ public class ResidentBehaviour : MonoBehaviour {
 	/// </summary>
 	public void GotTheDog(Transform trDog) {
 
-		// TODO: make the screen black for 1s before the dog is shown on the outside
 		// Tell the room that we caught the dog!
 		roomScript.DogCatched();
+
+		// Walk back to the exit
+		nWaypointIndex = 2;
+		trTarget = roomScript.GetWaypointObject(nWaypointIndex);
+		StartCoroutine(WaitHere(2));
+		// TODO: play a 'busted' sfx
 	}
 
 	/// <summary>

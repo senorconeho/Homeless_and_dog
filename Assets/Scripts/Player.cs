@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public bool										bnCollisionDogAndDude = false;
 	[HideInInspector] public GameHUD								hudScript;					//< The in-game HUD
 	[HideInInspector] public Transform							trItemPicked;				//< Have we picked some item?
-	[HideInInspector] public Transform							trItemOver;					//< Transform of the item we are over
+	public Transform							trItemOver;					//< Transform of the item we are over
 	[HideInInspector] public Transform							trWindowOver;				//< 
 	[HideInInspector] public Transform							trThrowCursor; 			//< Transform of the 'ThrowCursor' object. Only need for the homeless dude
 	[HideInInspector] public ThrowCursor						throwCursorScript;	//< The ThrowCursor from the cursor object
@@ -23,6 +23,7 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public CheckHitBox						hitBoxScript;
 	public Vector2								vThrowForceDirection;
 	[HideInInspector] public Transform trThrowPosition;
+	[HideInInspector] public Transform	trSpawnPoint;
 
 	Transform							trCamera;
 	CameraFollowTarget2D	cameraScript;
@@ -51,6 +52,7 @@ public class Player : MonoBehaviour {
 		THROW,									// 4 - Dude: throwing the dog
 		ON_AIR,									// 5 - Dog: on air (falling or being throwed)
 		DOG_ON_LAP,							// 6 - Dude: ready to throw the dog; Dog: cannot move
+		SIT,										// 7 - Sitted by the fire
 		STATE_NULL 					/// null
 	};
 	[HideInInspector] public eFSMState currentState;
@@ -58,25 +60,24 @@ public class Player : MonoBehaviour {
 	SpriteRenderer sr;
 
 	/* -----------------------------------------------------------------------------------------------------------
-	 * UNITY
+	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
-	// 
+	/// <summary>
+	///
+	/// </summary>
 	void Awake() {
 
-		// HACK
-
-
-
 		// Get the HUD script
-		hudScript = GetComponent<GameHUD>();
-		movementScript = GetComponent<SimpleMoveRigidBody2D>();
-		animator = this.GetComponent<Animator> ();
-		animatorOriginal = animator;
-		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
-		hitBoxScript = transform.Find("HitBox").gameObject.GetComponent<CheckHitBox>();
+		hudScript = GetComponent<GameHUD>();	// HUD script
+		movementScript = GetComponent<SimpleMoveRigidBody2D>();	// movement script
+		animator = this.GetComponent<Animator> ();	// animator
+		animatorOriginal = animator;	// keep the original animator (used by the dude's animation stuff)
+		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();	// main game script
+		hitBoxScript = transform.Find("HitBox").gameObject.GetComponent<CheckHitBox>(); // hit box script
 
-		sr = GetComponent<SpriteRenderer>();
+		sr = GetComponent<SpriteRenderer>();	// pointer to the sprite renderer
+
 		// HUD STUFF
 		// Get the objects for each type of player
 		if(playerType == MainGame.ePlayerType.DUDE) {
@@ -94,10 +95,11 @@ public class Player : MonoBehaviour {
 
 			trThrowPosition = transform.Find("ThrowPosition");
 		}
-
 	}
 
-	// Use this for initialization
+	/// <summary>
+	/// Use this for initialization
+	/// </summary>
 	void Start () {
 	
 		// Initializes the FSM
@@ -117,13 +119,20 @@ public class Player : MonoBehaviour {
 		}
 	}
 	
-	// Update is called once per frame
+	/// <summary>
+	/// Update is called once per frame
+	/// </summary>
 	void Update () {
 		
 		// FIXME
 		CheckInput();
 		FSMExecuteCurrentState();
 	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * 
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 
 	/// <summary>
 	/// The camera will call this method to register itself with this player
@@ -222,6 +231,10 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * WINDOWS METHODS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 	/// <summary>
 	/// We are over some window
 	/// <summary>
@@ -260,6 +273,52 @@ public class Player : MonoBehaviour {
 		// Updates the HUD
 		hudScript.SetButtonsText("",null);
 	}
+
+	/// <summary>
+	/// Throw an item through the window. Only works if the window is the 'inside one'
+	/// </summary>
+	void ThrowItemThroughWindow(Transform trWindowOutside) {
+
+		if(trItemPicked == null)  
+			return;
+
+		// 1 - Move the item to the out window location
+		trItemPicked.transform.position = trWindowOutside.transform.position;
+		// Updates the HUD
+		hudScript.SetButtonsText("",null);
+
+		// 2 - Drop the item
+		DropItem();
+	}
+
+	/// <summary>
+	/// Makes the character move through a window, reappearing on the other side (actually, another room)
+	/// </summary>
+	/// <param name="trWindow"> Transform of the window </param>
+	public void MoveThroughWindow(Transform trWindow) {
+
+		// Get the 'other side' object
+		Window windowScript = trWindow.gameObject.GetComponent<Window>();
+		Transform trOtherSide = windowScript.trWindowOtherSide;
+		BasicRoom otherSideBasicRoomScript = windowScript.windowOtherSideScript.basicRoomScript; //< The BasicRoom script for the window on the other side
+
+		// Move the character
+		this.transform.position = trOtherSide.transform.position;	// FIXME
+		// Trigger the 'entered the room'
+		otherSideBasicRoomScript.EnteredRoom();
+		//
+		//cameraScript.AdjustHeightForNewRoom(windowScript.windowOtherSideScript.trBasicRoom);
+		cameraScript.SetCurrentBasicRoom(windowScript.windowOtherSideScript.trBasicRoom, otherSideBasicRoomScript);
+		// Updates the camera limits
+		cameraScript.UpdateLimits(otherSideBasicRoomScript.GetLeftLimit(), otherSideBasicRoomScript.GetRightLimit());
+		// Update the focus of the camera
+		cameraScript.FocusCameraOnTarget();
+	}
+
+	/* -----------------------------------------------------------------------------------------------------------
+	 * ITEMS METHODS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 
 	/// <summary>
 	///
@@ -351,22 +410,10 @@ public class Player : MonoBehaviour {
 
 	}
 
-	/// <summary>
-	/// Throw an item through the window. Only works if the window is the 'inside one'
-	/// </summary>
-	void ThrowItemThroughWindow(Transform trWindowOutside) {
-
-		if(trItemPicked == null)  
-			return;
-
-		// 1 - Move the item to the out window location
-		trItemPicked.transform.position = trWindowOutside.transform.position;
-		// Updates the HUD
-		hudScript.SetButtonsText("",null);
-
-		// 2 - Drop the item
-		DropItem();
-	}
+	/* -----------------------------------------------------------------------------------------------------------
+	 * DOG/DUDE INTERACTION
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
 
 	/// <summary>
 	///
@@ -484,30 +531,6 @@ public class Player : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Makes the character move through a window, reappearing on the other side (actually, another room)
-	/// </summary>
-	/// <param name="trWindow"> Transform of the window </param>
-	public void MoveThroughWindow(Transform trWindow) {
-
-		// Get the 'other side' object
-		Window windowScript = trWindow.gameObject.GetComponent<Window>();
-		Transform trOtherSide = windowScript.trWindowOtherSide;
-		BasicRoom otherSideBasicRoomScript = windowScript.windowOtherSideScript.basicRoomScript; //< The BasicRoom script for the window on the other side
-
-		// Move the character
-		this.transform.position = trOtherSide.transform.position;	// FIXME
-		// Trigger the 'entered the room'
-		otherSideBasicRoomScript.EnteredRoom();
-		//
-		//cameraScript.AdjustHeightForNewRoom(windowScript.windowOtherSideScript.trBasicRoom);
-		cameraScript.SetCurrentBasicRoom(windowScript.windowOtherSideScript.trBasicRoom, otherSideBasicRoomScript);
-		// Updates the camera limits
-		cameraScript.UpdateLimits(otherSideBasicRoomScript.GetLeftLimit(), otherSideBasicRoomScript.GetRightLimit());
-		// Update the focus of the camera
-		cameraScript.FocusCameraOnTarget();
-	}
-
-	/// <summary>
 	/// Throw method for the homeless dude
 	/// <summary>
 	public void ThrowDog() {
@@ -544,6 +567,11 @@ public class Player : MonoBehaviour {
 
 	}
 	
+	/* -----------------------------------------------------------------------------------------------------------
+	 * GAME STATES
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+
 	/// <summary>
 	/// Activate the Game Over status
 	/// </summary>
@@ -562,7 +590,29 @@ public class Player : MonoBehaviour {
 		// or play some cutscene
 		MovementAllowToGetInput(false);
 		// Move the character to the spawn point
-		//transform.position = ;
+		Transform trSpawner = gameScript.GetPlayerSpawner(playerType);
+		
+		FSMEnterNewState(eFSMState.SIT);
+		movementScript.HaltCharacter();
+
+		if(trSpawner != null)
+			transform.position = trSpawner.position;
+
+
+
+		// And if we set the camera target as the barrel?
+		cameraScript.SetCameraTarget(gameScript.GetBarrel());
+		movementScript.FaceObject(gameScript.GetBarrel());
+
+		cameraScript.FocusCameraOnTarget(); // FIXME: 
+		cameraScript.ZoomInCharacters();
+
+		// Change the hud
+		hudScript.ShowLevelWon();
+
+		// TODO
+		// Change the music
+		// wait for a keypress to jump to the next level
 	}
 
 	/// <summary>
@@ -574,9 +624,9 @@ public class Player : MonoBehaviour {
 		movementScript.bnAllowedToGetInput = bnStatus;
 	}
 
-	/* -----------------------------------------------------------------------------------------------------------
-	 * INPUT: MOVE TO ANOTHER SCRIPT, PLEASE!
-	 * -----------------------------------------------------------------------------------------------------------
+	/* ====================================================================================================
+	 * INPUT STUFF
+	 * ====================================================================================================
 	 */
 		/// <summary>
 	/// Check the player input
@@ -598,6 +648,17 @@ public class Player : MonoBehaviour {
 					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
 					gameScript.DogEnteredTheGame();
+				}
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_WON_LEVEL_SCREEN) {
+					// Load the next level
+					Application.LoadLevel(gameScript.GetNextLevel());
+				}
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_OVER) {
+
+					// TODO: show a way to reload the level or to go back to main menu
+					//
+					// Restart this level...
+					Application.LoadLevel(Application.loadedLevel);
 				}
 			}
 
@@ -657,7 +718,7 @@ public class Player : MonoBehaviour {
 		if(playerType == MainGame.ePlayerType.DUDE) {
 
 			// On the start screen
-			if(Input.GetKeyUp(KeyCode.Space)) {
+			if(Input.GetKeyUp(KeyCode.Space)) { // Start button
 
 				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_START_SCREEN) {
 					// Allow the player to move around
@@ -666,6 +727,15 @@ public class Player : MonoBehaviour {
 					hudScript.uiCenterScreenLabel.text = "Waiting for the other player...";
 					// Dog pressed the start button on the start screen
 					gameScript.DudeEnteredTheGame();
+				}
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_WON_LEVEL_SCREEN) {
+					// Load the next level
+					Application.LoadLevel(gameScript.GetNextLevel());
+				}
+				if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_OVER) {
+
+					// Restart this level...
+					Application.LoadLevel(Application.loadedLevel);
 				}
 			}
 
@@ -791,6 +861,9 @@ public class Player : MonoBehaviour {
 				//}
 				break;
 
+			case eFSMState.SIT:
+				break;
+
 			default:
 				Debug.LogError("I shouldn't be here.");
 				break;
@@ -894,6 +967,9 @@ public class Player : MonoBehaviour {
 				//}
 				break;
 
+			case eFSMState.SIT:
+				break;
+
 			default:
 				Debug.LogError("I shouldn't be here.");
 				break;
@@ -906,6 +982,21 @@ public class Player : MonoBehaviour {
 	public void FSMLeaveCurrentState() {
 
 		switch(FSMGetCurrentState()) {
+
+			case eFSMState.IDLE:
+				break;
+
+			case eFSMState.RUNNING:
+
+				break;
+			case eFSMState.IDLE_CARRYING_ITEM:
+
+				break;
+			case eFSMState.RUNNING_CARRYING_ITEM:
+				break;
+
+			case eFSMState.THROW:
+				break;
 
 			case eFSMState.ON_AIR:
 				movementScript.bnPlayerCanControl = true;
@@ -940,8 +1031,12 @@ public class Player : MonoBehaviour {
 				//	hudScript.ButtonAAnimate(false);
 				//}
 				break;
+
+			case eFSMState.SIT:
+				break;
+
 			default:
-				//Debug.LogError("I shouldn't be here.");
+				Debug.LogError("FSM Exit state: I shouldn't be here.");
 				break;
 		}
 	}

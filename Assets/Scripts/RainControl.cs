@@ -8,6 +8,8 @@ public class RainControl : MonoBehaviour {
 
 	Animator[]	lightningAnimators;
 	Transform		trThunder;
+
+	public bool	bnPlayThunder = true;	//< Play or not the thunder sfx and animation
 	[SerializeField]
 	public AudioClip		sfxThunder;
 	public float				fThunderMinTime;
@@ -33,7 +35,8 @@ public class RainControl : MonoBehaviour {
 
 		//trRainDrops = transform.Find("Rain/RainDropsSprites");
 		//trRainDrops.gameObject.SetActive(false);
-		StartCoroutine(TimedThunder());
+		if(bnPlayThunder)
+			StartCoroutine(TimedThunder());
 	}
 	
 	/// <summary>
@@ -78,6 +81,17 @@ public class RainControl : MonoBehaviour {
 			DoTheRoar();
 			yield return new WaitForSeconds(fTime);
 		 	fTime = Random.Range(fThunderMinTime, fThunderMaxTime);
+			
+			if(bnPlayThunder == false) {
+
+				break;
+			}
 		}
+	}
+
+	public void StopTimedThunder() {
+
+		bnPlayThunder = false;
+		StopCoroutine(TimedThunder());
 	}
 }

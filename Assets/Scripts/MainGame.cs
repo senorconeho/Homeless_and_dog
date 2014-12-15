@@ -30,7 +30,7 @@ public class MainGame : MonoBehaviour {
 		GAME_START_SCREEN, 
 		GAME_PLAY,				// Game executing
 		GAME_PAUSE,				// Game paused: ignore input from the player
-		GAME_WON_LEVEL,
+		GAME_WON_LEVEL_SCREEN,
 		GAME_OVER
 	};
 
@@ -67,8 +67,14 @@ public class MainGame : MonoBehaviour {
 	public CameraFollowTarget2D dudeCameraScript;
 
 	PlayerSpawner	playerSpawnerScript;
+	LevelControl	levelControlScript;
 
-
+	public Color[] gameboyColorPalette = new Color[] { 
+		new Color(8/255f, 24/255f, 32/255f),
+		new Color(48/255f, 104/255f, 80/255f),
+		new Color(136/255f, 195/255f, 112/255f),
+		new Color(224/255f, 248/255f, 208/255f)
+ 	};
 
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
@@ -89,6 +95,7 @@ public class MainGame : MonoBehaviour {
 		if(fontInGame != null) {
 			// Make the font use the 'point' filter. This can't be done in the inspector
 			fontInGame.material.mainTexture.filterMode = FilterMode.Point;
+			fontInGame.material.color = gameboyColorPalette[3];
 		}
 	}
 
@@ -99,8 +106,6 @@ public class MainGame : MonoBehaviour {
 		playerSpawnerScript.SpawnPlayers();
 		StartCoroutine(SetupDog());
 		StartCoroutine(SetupDude());
-
-
 	}
 	
 	/* -----------------------------------------------------------------------------------------------------------
@@ -136,10 +141,13 @@ public class MainGame : MonoBehaviour {
 	public void ChangeStatusToGameWonLevel() {
 
 		// Change the status
-		gameStatus = eGameStatus.GAME_WON_LEVEL;
+		gameStatus = eGameStatus.GAME_WON_LEVEL_SCREEN;
 		// Activate the message on the screens
 		dudeScript.ActivateGameWonLevel();
 		dogScript.ActivateGameWonLevel();
+
+		// Stop the rain effects
+		levelControlScript.StopThunderEffects();
 	}
 
 	/// <summary>
@@ -151,20 +159,37 @@ public class MainGame : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Return the next level to be played, relative to the current level
+	/// </summary>
+	/// <returns> </returns>
+	public int GetNextLevel() {
+
+		// FIXME
+		int nNextLevel = 2;
+
+		return nNextLevel;
+	}
+
+	/// <summary>
 	/// Supposedly we already have the scripts, cameras, etc
 	/// </summary>
 	IEnumerator SetupDog() {
 
-		yield return new WaitForSeconds(.250f);
+		// FIXME
+		yield return new WaitForSeconds(.050f);
 
-		dogCameraScript.trTarget = trDog;
+		dogCameraScript.SetCameraTarget(trDog);
 		dogScript.RegisterCamera(trDogCamera, dogCameraScript);
 	}
 
+	/// <summary>
+	/// Supposedly we already have the scripts, cameras, etc
+	/// </summary>
 	 IEnumerator SetupDude() {
 
-		yield return new WaitForSeconds(.250f);
-		dudeCameraScript.trTarget = trDude;
+		// FIXME
+		yield return new WaitForSeconds(.050f);
+		dudeCameraScript.SetCameraTarget(trDude);
 		dudeScript.RegisterCamera(trDudeCamera, dudeCameraScript);
 	}
 
@@ -195,5 +220,35 @@ public class MainGame : MonoBehaviour {
 			// TODO: start game!
 			Application.LoadLevel(Application.loadedLevel+1);
 		}
+	}
+
+	/// <summary>
+	/// Return the object that holds the spawner for a particular type of player. Useful to use it as waypoint
+	/// or character placement in game
+	/// </summary>
+	/// <param name="playerType">An ePlayerType enum with the type of the player</param>
+	/// <returns></returns>
+	public Transform GetPlayerSpawner(ePlayerType playerType) {
+
+		Transform rv = null;
+
+		if(playerType == ePlayerType.DOG)
+			rv = playerSpawnerScript.GetDogSpawnPoint();
+		if(playerType == ePlayerType.DUDE)
+			rv = playerSpawnerScript.GetDudeSpawnPoint();
+
+		return rv;
+	}
+	/// <summary>
+	/// Called from LevelControl: register itself with the main game manager
+	/// </summary>
+	public void RegisterLevelController(Transform trLevelController, LevelControl levelControllerScript) {
+
+		levelControlScript = levelControllerScript;
+	}
+
+	public Transform GetBarrel() {
+
+		return levelControlScript.GetBarrel();
 	}
 }

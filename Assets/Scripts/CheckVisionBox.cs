@@ -47,9 +47,15 @@ public class CheckVisionBox : MonoBehaviour {
 
 		// Check if we hit the dog
 		if(col.transform.tag == "Dog") {
+			// DEBUG
+			//Debug.Log("STARTED Collision with the dog");
 			// Gotcha!
-			if(residentScript != null)
-				residentScript.SpottedTheDog(col.transform);
+			if(residentScript != null) {
+				//Debug.Log("Spotted");
+				//residentScript.SpottedTheDog(col.transform);
+				// FIXME
+				residentScript.GotTheDog(col.transform);
+			}
 		}
 		//else if(col.transform.gameObject.layer == MainGame.nWindowsLayer) {
 
@@ -66,8 +72,12 @@ public class CheckVisionBox : MonoBehaviour {
 		// Check if we hit the dog
 		if(col.transform.tag == "Dog") {
 			// Gotcha!
-			if(residentScript != null)
+			//Debug.Log("EXITED Collision with the dog");
+			if(residentScript != null) {
+
+				//Debug.Log("Lost");
 				residentScript.LostTheDog(col.transform);
+			}
 		}
 	}
 
