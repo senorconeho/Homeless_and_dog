@@ -59,6 +59,8 @@ public class Player : MonoBehaviour {
 	AnimationClipOverrides animationOverridesScript;
 	SpriteRenderer sr;
 
+	[Header("Sound Effects")]
+	[SerializeField] public AudioClip sfxDogThrowedOutOfTheWindow;	//< play when the dog was throwed out through the window
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -524,6 +526,13 @@ public class Player : MonoBehaviour {
 			MoveThroughWindow(trWindow);
 			//this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
 			//cameraScript.FocusCameraOnTarget();
+			
+			// Play the SFX
+			if(sfxDogThrowedOutOfTheWindow != null) {
+
+				audio.PlayOneShot(sfxDogThrowedOutOfTheWindow);
+			}
+
 
 			// Trying to 'toss' the dog out
 			rigidbody2D.AddForce(new Vector2(-1,1), ForceMode2D.Impulse);

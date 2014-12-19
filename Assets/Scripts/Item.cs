@@ -18,6 +18,7 @@ public class Item : MonoBehaviour {
 
 	public MainGame.eItemTypes	itemType;			//<
 
+	[Header("Sound Effects")]
 	[SerializeField]
 	public AudioClip	sfxItemPicked;	//< item picked by the player
 	[SerializeField]

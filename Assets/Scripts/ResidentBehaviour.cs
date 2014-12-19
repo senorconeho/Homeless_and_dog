@@ -22,6 +22,9 @@ public class ResidentBehaviour : MonoBehaviour {
 
 	public int nWaypointIndex = 0;	//< Which waypoint are we?
 
+	[Header("Sound Effects")]
+	[SerializeField] public AudioClip sfxGotTheDog;	//< play when the was caught
+
 	/* ==========================================================================================================
 	 * UNITY MAIN LOOP
 	 * ==========================================================================================================
@@ -209,6 +212,10 @@ public class ResidentBehaviour : MonoBehaviour {
 		trTarget = roomScript.GetWaypointObject(nWaypointIndex);
 		StartCoroutine(WaitHere(2));
 		// TODO: play a 'busted' sfx
+		if(sfxGotTheDog != null) {
+
+			audio.PlayOneShot(sfxGotTheDog);
+		}
 	}
 
 	/// <summary>
