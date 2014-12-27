@@ -119,6 +119,13 @@ public class Item : MonoBehaviour {
 		}
 	}
 
+	public void Dropped(Transform trPicker, float fStartHeight) {
+
+		// DEBUG
+		Debug.Log(trPicker + " dropped from " + fStartHeight);
+		Dropped(trPicker);
+	}
+
 	/// <summary>
 	/// What to do when this item is dropped by someone
 	/// </summary>

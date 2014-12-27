@@ -15,7 +15,7 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public GameHUD								hudScript;					//< The in-game HUD
 	[HideInInspector] public Transform							trItemPicked;				//< Have we picked some item?
 	public Transform							trItemOver;					//< Transform of the item we are over
-	[HideInInspector] public Transform							trWindowOver;				//< 
+	public Transform							trWindowOver;				//< 
 	[HideInInspector] public Transform							trThrowCursor; 			//< Transform of the 'ThrowCursor' object. Only need for the homeless dude
 	[HideInInspector] public ThrowCursor						throwCursorScript;	//< The ThrowCursor from the cursor object
 	[HideInInspector] public SimpleMoveRigidBody2D	movementScript;
@@ -265,12 +265,17 @@ public class Player : MonoBehaviour {
 	/// <param name="trWindow">The Transform of the window</param>
 	public void OverWindowExit(Transform trWindow) {
 
+		// DEBUG
+		//Debug.LogWarning(trWindow + "Over window exit " + this.transform);
+
 		// ignore all collisions when not playing
 		if(gameScript.GetCurrentGameStatus() != MainGame.eGameStatus.GAME_PLAY)
 			return;
 
-		if(trWindowOver == trWindow)
+		if(trWindowOver == trWindow) {
+		
 			trWindowOver = null;
+		}
 
 		// Updates the HUD
 		hudScript.SetButtonsText("",null);
@@ -373,7 +378,7 @@ public class Player : MonoBehaviour {
 		// Tell the item that we are dropping it
 		Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
 		//itemScript.Dropped(this.transform);
-		itemScript.Dropped(trCarrier);
+		itemScript.Dropped(trCarrier, trItemPicked.transform.position.y);
 
 		trItemPicked = null;
 
@@ -523,6 +528,9 @@ public class Player : MonoBehaviour {
 
 			// Throw ourselves out the window, back into the street
 			// TRANSPORT
+			// FIXME: actually, the exit trigger is not being detected in Windo.cs
+			trWindowOver = null;
+
 			MoveThroughWindow(trWindow);
 			//this.transform.position = trWindow.gameObject.GetComponent<Window>().trWindowOtherSide.transform.position;
 			//cameraScript.FocusCameraOnTarget();

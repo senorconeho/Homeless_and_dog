@@ -41,11 +41,19 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 
 		if(collision.transform.gameObject.layer == MainGame.nGroundLayer) {
 
+			// DEBUG
+			//Debug.Log("collision without noise: " + collision.relativeVelocity.y);
+			
 			if(collision.relativeVelocity.magnitude > fCollisionVelocityThreshold) {
 
 				CrashedWithTheGround();
 				// DEBUG
-				Debug.Log("collision with ground! " + collision.relativeVelocity.magnitude + " " + collision.transform);
+				//Debug.Log("collision with ground! " + collision.relativeVelocity.magnitude + " " + collision.transform);
+			}
+			else {
+
+				// DEBUG
+				//Debug.Log("collision without noise: " + collision.relativeVelocity.magnitude);
 			}
 		}
 	}

@@ -262,9 +262,12 @@ public class Window : MonoBehaviour {
 	void CheckExitTriggerHitBox(Transform trCol) {
 
 		// Dog exited collisions with...
-		if(trCol.transform.tag == "Dog" && dogScript != null) {
+		if(trCol.transform.tag == "Dog") {
 
-			dogScript.OverWindowExit(this.transform);
+			if(dogScript != null) {
+
+				dogScript.OverWindowExit(this.transform);
+			}
 		}
 	}
 

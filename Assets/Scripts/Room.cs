@@ -285,6 +285,7 @@ public class Room : MonoBehaviour {
 		// 1 - already done in Player
 		// 2 - Make the dog appear outside the window
 		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindow);
+
 		// and then close the window, so the dog can't enter back
 		CloseWindow();
 		// 4 - 
