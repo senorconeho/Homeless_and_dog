@@ -345,7 +345,16 @@ public class Player : MonoBehaviour {
 
 			// Tell the item that we picked it up
 			Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
-			itemScript.PickedUp(this.transform, this);
+			
+			// For the dog, we pass the 'carrier' object, so the picked object stays in the dog's mouth
+			if(playerType == MainGame.ePlayerType.DOG) {
+
+				itemScript.PickedUp(trCarrier, this);
+			}
+			else {
+
+				itemScript.PickedUp(this.transform, this);
+			}
 
 			// When carrying an item, the player will move slowly
 			//movementScript.fMaxSpeed = fCarryingItemSpeed;

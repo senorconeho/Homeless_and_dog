@@ -19,11 +19,6 @@ public class Item : MonoBehaviour {
 
 	public MainGame.eItemTypes	itemType;			//<
 
-	AudioClip	sfxItemPicked;	//< item picked by the player
-	AudioClip	sfxItemDropped;	//< item dropped by the player
-	AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
-	AudioClip	sfxItemCrashed;	//< Item crashed on the ground
-
 	public Animation	clipPickAnimation;	//< animation to be played when this item is picked
 
 	SoundEffectsManager sfxScript;
@@ -36,10 +31,6 @@ public class Item : MonoBehaviour {
 
 		// Get the sound effects
 		sfxScript = GameObject.Find("GameManager").gameObject.GetComponent<SoundEffectsManager>();
-		sfxItemPicked =		sfxScript.sfxItemPicked;	//< item picked by the player
-		sfxItemDropped =	sfxScript.sfxItemDropped;	//< item dropped by the player
-		sfxItemBurned =		sfxScript.sfxItemBurned;	//< item delivered in the fire barrel
-		sfxItemCrashed =	sfxScript.sfxItemCrashed;	//< Item crashed on the ground
 	}
 
 	// Use this for initialization
@@ -83,13 +74,13 @@ public class Item : MonoBehaviour {
 			}
 			
 			// Play a sound
-			if(sfxItemBurned != null) {
+			if(sfxScript.sfxItemBurned != null) {
 
-				audio.PlayOneShot(sfxItemBurned);
+				audio.PlayOneShot(sfxScript.sfxItemBurned);
 				// Disables the collider and sprite renderer, so the object doesn't affect the game until is destroyed
 				col.enabled = false;
 				sr.enabled = false;
-				StartCoroutine(WaitAndThenDie(sfxItemBurned.length));
+				StartCoroutine(WaitAndThenDie(sfxScript.sfxItemBurned.length));
 			}
 			else {
 				// Not playing anything?
@@ -122,9 +113,9 @@ public class Item : MonoBehaviour {
 		pickedByScript = pickerScript;
 		// disable all collisions
 		//col.enabled = false;
-		if(sfxItemPicked != null) {
+		if(sfxScript.sfxItemPicked != null) {
 
-			audio.PlayOneShot(sfxItemPicked);
+			audio.PlayOneShot(sfxScript.sfxItemPicked);
 		}
 	}
 
@@ -147,9 +138,9 @@ public class Item : MonoBehaviour {
 		col.enabled = false;
 		col.enabled = true;
 
-		if(sfxItemDropped != null) {
+		if(sfxScript.sfxItemDropped != null) {
 
-			audio.PlayOneShot(sfxItemDropped);
+			audio.PlayOneShot(sfxScript.sfxItemDropped);
 		}
 
 		// Count how much time this item spends falling
@@ -224,6 +215,9 @@ public class Item : MonoBehaviour {
 		fDroppedTimer = Time.time - fDroppedTimer;
 	}
 
+	/// <summary>
+	///
+	/// </summary>
 	public float GetDroppedTime() {
 
 		return fDroppedTimer;
