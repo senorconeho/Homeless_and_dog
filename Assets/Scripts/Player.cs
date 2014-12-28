@@ -345,8 +345,7 @@ public class Player : MonoBehaviour {
 
 			// Tell the item that we picked it up
 			Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
-			//itemScript.PickedUp(this.transform);
-			itemScript.PickedUp(trCarrier, this);
+			itemScript.PickedUp(this.transform, this);
 
 			// When carrying an item, the player will move slowly
 			//movementScript.fMaxSpeed = fCarryingItemSpeed;
@@ -377,8 +376,7 @@ public class Player : MonoBehaviour {
 		
 		// Tell the item that we are dropping it
 		Item itemScript = trItemPicked.gameObject.GetComponent<Item>();
-		//itemScript.Dropped(this.transform);
-		itemScript.Dropped(trCarrier, trItemPicked.transform.position.y);
+		itemScript.Dropped(this.transform);
 
 		trItemPicked = null;
 
@@ -515,6 +513,7 @@ public class Player : MonoBehaviour {
 	public void DogCatched() {
 		// disable control
 		MovementAllowToGetInput(false);
+		movementScript.HaltCharacter();
 		// Drop the item, if any
 		DropItem();
 	}

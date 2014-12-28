@@ -218,8 +218,6 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	/// </summary>
 	public void HaltCharacter() {
 
-		// DEBUG
-		Debug.Log(this.transform + " halting");
 		rigidbody2D.velocity = Vector2.zero;
 	}
 

@@ -15,6 +15,7 @@ public class Item : MonoBehaviour {
 	public BoxCollider2D	col;
 	public bool						bnCrashed;					//< Have this item crashed on the ground?
 	SpriteRenderer				sr;
+	public float					fDroppedTimer;
 
 	public MainGame.eItemTypes	itemType;			//<
 
@@ -119,13 +120,6 @@ public class Item : MonoBehaviour {
 		}
 	}
 
-	public void Dropped(Transform trPicker, float fStartHeight) {
-
-		// DEBUG
-		Debug.Log(trPicker + " dropped from " + fStartHeight);
-		Dropped(trPicker);
-	}
-
 	/// <summary>
 	/// What to do when this item is dropped by someone
 	/// </summary>
@@ -138,16 +132,20 @@ public class Item : MonoBehaviour {
 		}
 
 		bnPickedUp = false;
-		transform.tag = "Untagged";
+		transform.tag = "Item";
 		trPickedBy = null;
 		pickedByScript = null;
 		// disable all collisions
 		col.enabled = false;
 		col.enabled = true;
+
 		if(sfxItemDropped != null) {
 
 			audio.PlayOneShot(sfxItemDropped);
 		}
+
+		// Count how much time this item spends falling
+		StartDroppedTimer();
 	}
 
 	/// <summary>
@@ -200,5 +198,26 @@ public class Item : MonoBehaviour {
 			// DEBUG
 			Debug.Log("Collision with window");
 		}
+	}
+
+	/// <summary>
+	/// Counts the time this object is falling from 'dropped' until hit the ground or is picked
+	/// </summary>
+	void StartDroppedTimer() {
+
+		fDroppedTimer = Time.time;
+	}
+
+	/// <summary>
+	///
+	/// </summary>
+	public void StopDroppedTimer() {
+
+		fDroppedTimer = Time.time - fDroppedTimer;
+	}
+
+	public float GetDroppedTime() {
+
+		return fDroppedTimer;
 	}
 }

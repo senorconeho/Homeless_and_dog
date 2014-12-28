@@ -76,6 +76,9 @@ public class MainGame : MonoBehaviour {
 		new Color(224/255f, 248/255f, 208/255f)
  	};
 
+	[Header("Items stuff")]
+	public float	fItemDroppedTimeThreshold = 0.3f;	//< for how long the item must fall to be considered 'crashed' when touching the ground
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------

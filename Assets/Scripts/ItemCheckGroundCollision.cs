@@ -36,24 +36,19 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 	/// </summary>
 	void OnCollisionEnter2D(Collision2D collision) {
 		
-		if(itemScript.bnPickedUp == true)
+		if(itemScript.bnPickedUp == true) {
+		
 			return;
+		}
 
 		if(collision.transform.gameObject.layer == MainGame.nGroundLayer) {
 
-			// DEBUG
-			//Debug.Log("collision without noise: " + collision.relativeVelocity.y);
+			// Hit the ground? Stops the 'drop timer'
+			itemScript.StopDroppedTimer();
 			
-			if(collision.relativeVelocity.magnitude > fCollisionVelocityThreshold) {
+			if(itemScript.GetDroppedTime() > gameScript.fItemDroppedTimeThreshold ) {
 
 				CrashedWithTheGround();
-				// DEBUG
-				//Debug.Log("collision with ground! " + collision.relativeVelocity.magnitude + " " + collision.transform);
-			}
-			else {
-
-				// DEBUG
-				//Debug.Log("collision without noise: " + collision.relativeVelocity.magnitude);
 			}
 		}
 	}
