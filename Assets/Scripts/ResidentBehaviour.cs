@@ -212,10 +212,10 @@ public class ResidentBehaviour : MonoBehaviour {
 		trTarget = roomScript.GetWaypointObject(nWaypointIndex);
 		StartCoroutine(WaitHere(2));
 		// TODO: play a 'busted' sfx
-		if(sfxGotTheDog != null) {
+		//if(sfxGotTheDog != null) {
 
-			audio.PlayOneShot(sfxGotTheDog);
-		}
+		//	audio.PlayOneShot(sfxGotTheDog);
+		//}
 	}
 
 	/// <summary>

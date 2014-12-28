@@ -19,21 +19,29 @@ public class Item : MonoBehaviour {
 
 	public MainGame.eItemTypes	itemType;			//<
 
-	[Header("Sound Effects")]
-	[SerializeField]
-	public AudioClip	sfxItemPicked;	//< item picked by the player
-	[SerializeField]
-	public AudioClip	sfxItemDropped;	//< item dropped by the player
-	[SerializeField]
-	public AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
-	[SerializeField]
-	public AudioClip	sfxItemCrashed;	//< Item crashed on the ground
+	AudioClip	sfxItemPicked;	//< item picked by the player
+	AudioClip	sfxItemDropped;	//< item dropped by the player
+	AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
+	AudioClip	sfxItemCrashed;	//< Item crashed on the ground
 
 	public Animation	clipPickAnimation;	//< animation to be played when this item is picked
+
+	SoundEffectsManager sfxScript;
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
+
+	void Awake() {
+
+		// Get the sound effects
+		sfxScript = GameObject.Find("GameManager").gameObject.GetComponent<SoundEffectsManager>();
+		sfxItemPicked =		sfxScript.sfxItemPicked;	//< item picked by the player
+		sfxItemDropped =	sfxScript.sfxItemDropped;	//< item dropped by the player
+		sfxItemBurned =		sfxScript.sfxItemBurned;	//< item delivered in the fire barrel
+		sfxItemCrashed =	sfxScript.sfxItemCrashed;	//< Item crashed on the ground
+	}
+
 	// Use this for initialization
 	void Start () {
 	

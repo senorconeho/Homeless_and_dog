@@ -9,15 +9,26 @@ public class RainControl : MonoBehaviour {
 	Animator[]	lightningAnimators;
 	Transform		trThunder;
 
-	public bool	bnPlayThunder = true;	//< Play or not the thunder sfx and animation
-	[SerializeField]
-	public AudioClip		sfxThunder;
-	public float				fThunderMinTime;
-	public float				fThunderMaxTime;
+	public bool		bnPlayThunder = true;	//< Play or not the thunder sfx and animation
+	AudioClip			sfxThunder;
+	public float	fThunderMinTime;
+	public float	fThunderMaxTime;
 
-	Transform		trRainDrops;
-	float				fThunderTimer;
+	Transform			trRainDrops;
+	float					fThunderTimer;
+
+	SoundEffectsManager sfxScript;
 	
+	/* ==========================================================================================================
+	 * UNITY METHODS
+	 * ==========================================================================================================
+	 */
+	void Awake() {
+
+		sfxScript = GameObject.Find("GameManager").gameObject.GetComponent<SoundEffectsManager>();
+		sfxThunder = sfxScript.sfxThunder;
+	}
+
 	// Use this for initialization
 	void Start () {
 	

@@ -59,8 +59,7 @@ public class Player : MonoBehaviour {
 	AnimationClipOverrides animationOverridesScript;
 	SpriteRenderer sr;
 
-	[Header("Sound Effects")]
-	[SerializeField] public AudioClip sfxDogThrowedOutOfTheWindow;	//< play when the dog was throwed out through the window
+	SoundEffectsManager sfxScript;
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -76,6 +75,7 @@ public class Player : MonoBehaviour {
 		animator = this.GetComponent<Animator> ();	// animator
 		animatorOriginal = animator;	// keep the original animator (used by the dude's animation stuff)
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();	// main game script
+		sfxScript = GameObject.Find("GameManager").gameObject.GetComponent<SoundEffectsManager>();	// main game script
 		hitBoxScript = transform.Find("HitBox").gameObject.GetComponent<CheckHitBox>(); // hit box script
 
 		sr = GetComponent<SpriteRenderer>();	// pointer to the sprite renderer
@@ -511,6 +511,12 @@ public class Player : MonoBehaviour {
 	/// Called from Room
 	/// </summary>
 	public void DogCatched() {
+
+		if(sfxScript.sfxDogCatched != null) {
+
+			audio.PlayOneShot(sfxScript.sfxDogCatched);
+		}
+
 		// disable control
 		MovementAllowToGetInput(false);
 		movementScript.HaltCharacter();
@@ -535,9 +541,9 @@ public class Player : MonoBehaviour {
 			//cameraScript.FocusCameraOnTarget();
 			
 			// Play the SFX
-			if(sfxDogThrowedOutOfTheWindow != null) {
+			if(sfxScript.sfxThrowedThroughTheWindow != null) {
 
-				audio.PlayOneShot(sfxDogThrowedOutOfTheWindow);
+				audio.PlayOneShot(sfxScript.sfxThrowedThroughTheWindow);
 			}
 
 

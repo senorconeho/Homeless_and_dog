@@ -12,17 +12,18 @@ public class SoundEffectsManager : MonoBehaviour {
 	 */
 	// PUBLIC
 
-	// Item
-	public AudioClip	sfxItemPicked;	//< item picked by the player
-	public AudioClip	sfxItemDropped;	//< item dropped by the player
-	public AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
-	public AudioClip	sfxItemCrashed;
+	[Header("Items effects")]
+	[SerializeField] public AudioClip	sfxItemPicked;	//< item picked by the player
+	[SerializeField] public AudioClip	sfxItemDropped;	//< item dropped by the player
+	[SerializeField] public AudioClip	sfxItemBurned;	//< item delivered in the fire barrel
+	[SerializeField] public AudioClip	sfxItemCrashed;
 
-	// Dog
-	public AudioClip	sfxJump;							//< Jumped on the homeless lap
-	public AudioClip	sfxWindowEnter;				//< Passed through a window
-	public AudioClip	sfxWindowEnterDenied;	//< Trying to enter a closed window
+	[Header("Dog effects")]
+	[SerializeField] public AudioClip	sfxThrowedThroughTheWindow;	//< Dog throwed through the window
+	[SerializeField] public AudioClip	sfxDogCatched;	//< Dog was catched by the apartment resident
 	
+	[Header("Environment effects")]
+	[SerializeField] public AudioClip	sfxThunder;
 	// PROTECTED
 
 
