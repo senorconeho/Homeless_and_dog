@@ -47,8 +47,8 @@ public class MainGame : MonoBehaviour {
 		ITEM_SHOES
 	}
 
-	public Transform 		trDog;
-	public Transform		trDude;
+	[HideInInspector] public Transform 		trDog;
+	[HideInInspector] public Transform		trDude;
 
 	[HideInInspector] public Player				dudeScript;
 	[HideInInspector] public Player				dogScript;
@@ -61,13 +61,13 @@ public class MainGame : MonoBehaviour {
 
 	public Font					fontInGame;
 
-	public Transform		trDogCamera;
-	public Transform		trDudeCamera;
-	public CameraFollowTarget2D dogCameraScript;
-	public CameraFollowTarget2D dudeCameraScript;
+	[HideInInspector] public Transform		trDogCamera;
+	[HideInInspector] public Transform		trDudeCamera;
+	[HideInInspector] public CameraFollowTarget2D dogCameraScript;
+	[HideInInspector] public CameraFollowTarget2D dudeCameraScript;
 
-	PlayerSpawner	playerSpawnerScript;
-	LevelControl	levelControlScript;
+	[HideInInspector] PlayerSpawner	playerSpawnerScript;
+	[HideInInspector] LevelControl	levelControlScript;
 
 	public Color[] gameboyColorPalette = new Color[] { 
 		new Color(8/255f, 24/255f, 32/255f),
