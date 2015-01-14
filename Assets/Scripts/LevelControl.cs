@@ -30,7 +30,7 @@ public class LevelControl : MonoBehaviour {
 		gameScript.RegisterLevelController(this.transform, this);
 
 		// Get the barrel placement object
-		trBarrelSpawner = transform.Find("BarrelSpawner");
+		trBarrelSpawner = GameObject.Find("BarrelSpawner").transform;
 		CreateAndConfigureTheBarrel();
 
 		// Rain
