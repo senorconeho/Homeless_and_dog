@@ -21,6 +21,7 @@ public class Window : MonoBehaviour {
 	};
 
 	public eWindowStatusType windowStatus;
+	public bool bnDetectCollisionWithDog = true;	//< allow the dog to enter? Will be false on the first tutorial level
 
 	[SerializeField]
 	public Sprite			spriteWindowOpen;
@@ -45,7 +46,8 @@ public class Window : MonoBehaviour {
 	void Awake() {
 
 		spriteRenderer = GetComponent<SpriteRenderer>();
-		windowOtherSideScript = trWindowOtherSide.gameObject.GetComponent<Window>();
+		// Set by room.cs
+		//windowOtherSideScript = trWindowOtherSide.gameObject.GetComponent<Window>();
 		col = GetComponent<BoxCollider2D>();
 		spriteCurtains = transform.Find("Curtains").gameObject.GetComponent<SpriteRenderer>();
 
@@ -89,13 +91,21 @@ public class Window : MonoBehaviour {
 
 				animator.SetInteger("windowStatus", (int)windowStatus);
 		}
+
+		if(!bnDetectCollisionWithDog) {
+
+			col.enabled = false;	// disable the collision detection with the dog
+		}
+
 		// Update the window sprite
 		if(windowStatus == eWindowStatusType.OPEN) {
 
 			// Update the sprite
 			//spriteRenderer.sprite = spriteWindowOpen;
 			// Enables the collider
-			col.enabled = true ;
+			if(bnDetectCollisionWithDog)
+				col.enabled = true ;
+
 			// Enables the curtains
 			if(spriteCurtains != null)
 				spriteCurtains.enabled = true;
@@ -105,7 +115,9 @@ public class Window : MonoBehaviour {
 			// Update the sprite
 			//spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
-			col.enabled = false;
+			if(bnDetectCollisionWithDog)
+				col.enabled = false;
+
 			// Disables the curtains
 			spriteCurtains.enabled = false;
 		}
@@ -135,7 +147,8 @@ public class Window : MonoBehaviour {
 			// Update the sprite
 			//spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
-			col.enabled = false;
+			if(bnDetectCollisionWithDog)
+				col.enabled = false;
 			// Disables the curtains
 			if(spriteCurtains != null)
 				spriteCurtains.enabled = false;
@@ -158,7 +171,9 @@ public class Window : MonoBehaviour {
 			// Update the sprite
 		//	spriteRenderer.sprite = spriteWindowOpen;
 			// Enables the collider
-			col.enabled = true;
+			if(bnDetectCollisionWithDog)
+				col.enabled = true;
+
 			// Enables the curtains
 			if(spriteCurtains != null)
 				spriteCurtains.enabled = true;
@@ -234,6 +249,15 @@ public class Window : MonoBehaviour {
 			
 		}
 	}
+
+	/// <summary>
+	/// Called from Room.cs: set the other side window stuff
+	/// </summary>
+	public void SetupOtherSideWindow(Transform trWindow, Window script) {
+
+		trWindowOtherSide = trWindow;
+		windowOtherSideScript = script;
+	}
 	/* -----------------------------------------------------------------------------------------------------------
 	 * PHYSICS
 	 * -----------------------------------------------------------------------------------------------------------
@@ -299,5 +323,4 @@ public class Window : MonoBehaviour {
 			Gizmos.DrawLine(transform.position, trWindowOtherSide.transform.position);
 		}
 	}
-
 }

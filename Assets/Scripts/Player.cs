@@ -145,6 +145,13 @@ public class Player : MonoBehaviour {
 		cameraScript = camScript;
 	}
 
+	/// <summary>
+	/// <summary>
+	public void FaceLeft() {
+
+		movementScript.FaceLeft();
+	}
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * COLLISION WITH ANOTHER PLAYER
 	 * -----------------------------------------------------------------------------------------------------------

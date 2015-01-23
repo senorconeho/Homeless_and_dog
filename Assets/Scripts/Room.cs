@@ -13,24 +13,28 @@ public class Room : MonoBehaviour {
 	// PUBLIC
 	BasicRoom						basicRoomScript;
 	MainGame						gameScript;
-	Transform						trWindow;													//< Window of the room
 	Transform 					trWaypoint;
-	Window							windowScript;											//< pointer to the window script
-	[HideInInspector] public Transform[]	trResidentWaypoints;							//< Waypoints array
-
+	
 	// Resident stuff
-	[HideInInspector] public Transform	trResidentSpawnPoint;								//< Object pointing where to generate a resident
-	[SerializeField] public Transform	trResidentPrefab;										//< Prefab of the resident itself
+	[HideInInspector] public Transform[]	trResidentWaypoints;	//< Waypoints array
+	[HideInInspector] public Transform		trResidentSpawnPoint;	//< Object pointing where to generate a resident
+	[SerializeField] 	public Transform		trResidentPrefab;			//< Prefab of the resident itself
+	
 	Transform					trResident = null;									//< 
-	public float							fResidentMinTimeToAppear = 8.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
-	public float							fResidentMaxTimeToAppear = 17.5f;		//< Max time to the resident reappear
-	float			fResidentCountdownTimer;						//< Resident 'appearance' timer
-	bool							bnResidentIn = false;								//< is the resident in the room?
+	public float fResidentMinTimeToAppear = 8.0f;		//< The resident timer works this way: the room will randomize a value between min and max. When the timer is over, the resident will swipe the room and disappear. The game will randomize a new value and so forth
+	public float fResidentMaxTimeToAppear = 17.5f;		//< Max time to the resident reappear
+	float fResidentCountdownTimer;						//< Resident 'appearance' timer
+	bool bnResidentIn = false;								//< is the resident in the room?
 
 	// Window stuff
-	float							fReopenWindowMinTime = 5.0f;				//< Min time to reopen a closed window
-	float							fReopenWindowMaxTime = 10.0f;				//< Max time to reopen a closed window
-	float			fReopenWindowTimer;									//< Reopen timer
+	float 		fReopenWindowMinTime = 5.0f;	//< Min time to reopen a closed window
+	float 		fReopenWindowMaxTime = 10.0f;	//< Max time to reopen a closed window
+	float			fReopenWindowTimer;						//< Reopen timer
+	Window		windowInsideScript;						//< pointer to the window script
+	Window		windowOutsideScript;					//< pointer to the window script
+	[Header("Windows")]
+	public Transform	trWindowInside;								//< Transform of the window side inside the room
+	public Transform	trWindowOutside;							//< Transform of the window side on the street
 
 	/* ==========================================================================================================
 	 * UNITY MAIN LOOP
@@ -44,11 +48,34 @@ public class Room : MonoBehaviour {
 		gameScript = GameObject.Find("GameManager").gameObject.GetComponent<MainGame>();
 		basicRoomScript = gameObject.GetComponent<BasicRoom>();
 
-		trWindow = FindChildrenByTag("InsideWindow", this.transform);
-		if(trWindow != null) {
-
-			windowScript = trWindow.gameObject.GetComponent<Window>();
+		// Find the window inside the apartment, if the designer didn't set it in the inspector
+		if(trWindowInside == null) {
+			trWindowInside = FindChildrenByTag("InsideWindow", this.transform);
 		}
+
+		if(trWindowInside != null) {
+
+			windowInsideScript = trWindowInside.gameObject.GetComponent<Window>();
+		}
+
+		// Find the window outside the apartment, if the designer didn't set it in the inspector
+		if(trWindowOutside == null) {
+			trWindowOutside = FindChildrenByTag("OutsideWindow", this.transform);
+		}
+
+		if(trWindowOutside != null) {
+
+			windowOutsideScript = trWindowOutside.gameObject.GetComponent<Window>();
+		}
+		else {
+
+			// DEBUG
+			Debug.LogError(this.transform + "missing trWindowOutside");
+		}
+
+		// Tell each window script which window is it 'other side'
+		windowInsideScript.SetupOtherSideWindow(trWindowOutside, windowOutsideScript);
+		windowOutsideScript.SetupOtherSideWindow(trWindowInside, windowInsideScript);
 
 		// HACK ALERT!!!!
 		if(trResidentWaypoints.Length == 0) {
@@ -57,7 +84,7 @@ public class Room : MonoBehaviour {
 			trWaypoint = FindChildrenByTag("Waypoint", this.transform);
 			trResidentSpawnPoint = transform.Find("ResidentSpawn");
 			trResidentWaypoints = new Transform[3];
-			trResidentWaypoints[0] = trWindow;
+			trResidentWaypoints[0] = trWindowInside;
 			trResidentWaypoints[1] = trWaypoint;
 			trResidentWaypoints[2] = trResidentSpawnPoint;
 		}
@@ -153,11 +180,11 @@ public class Room : MonoBehaviour {
 		if(bnResidentIn) {
 
 			// Turn on the lights
-			windowScript.LightTurnOn();
+			windowInsideScript.LightTurnOn();
 		}
 		else {
 
-			windowScript.LightTurnOff();
+			windowInsideScript.LightTurnOff();
 		}
 	}
 
@@ -186,7 +213,7 @@ public class Room : MonoBehaviour {
 	/// <returns>The transform of the window in this room</returns>
 	public Transform GetWindowObject() {
 
-		return trWindow;
+		return trWindowInside;
 	}
 
 	/// <summary>
@@ -217,9 +244,9 @@ public class Room : MonoBehaviour {
 	public void CloseWindow() {
 
 		// Close this side...
-		windowScript.CloseWindow();
+		windowInsideScript.CloseWindow();
 		// ...and the other too ...
-		windowScript.windowOtherSideScript.CloseWindow();
+		windowInsideScript.windowOtherSideScript.CloseWindow();
 		// ...and starts the cooldown timer to reopen the window
 		fReopenWindowTimer = Random.Range(fReopenWindowMinTime, fReopenWindowMaxTime);
 	}
@@ -230,9 +257,9 @@ public class Room : MonoBehaviour {
 	public void OpenWindow() {
 
 		// Close this side...
-		windowScript.OpenWindow();
+		windowInsideScript.OpenWindow();
 		// ...and the other too ...
-		windowScript.windowOtherSideScript.OpenWindow();
+		windowInsideScript.windowOtherSideScript.OpenWindow();
 	}
 
 	/// <summary>
@@ -242,7 +269,7 @@ public class Room : MonoBehaviour {
 	public bool CanTheWindowBeReopened() {
 
 		// Is this window already open?
-		if(windowScript.IsTheWindowOpen())
+		if(windowInsideScript.IsTheWindowOpen())
 			return false;
 
 		// No, it's closed. Check the 'cooldown' timer
@@ -284,7 +311,7 @@ public class Room : MonoBehaviour {
 		yield return new WaitForSeconds(fWaitTime);
 		// 1 - already done in Player
 		// 2 - Make the dog appear outside the window
-		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindow);
+		gameScript.dogScript.ThrowTheDogOutOfTheWindow(trWindowInside);
 
 		// and then close the window, so the dog can't enter back
 		CloseWindow();

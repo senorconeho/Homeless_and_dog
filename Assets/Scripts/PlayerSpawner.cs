@@ -44,6 +44,12 @@ public class PlayerSpawner : MonoBehaviour {
 
 			Player playerScript = trDog.gameObject.GetComponent<Player>();
 			playerScript.trSpawnPoint = trDogSpawnPoint;
+
+			// Correct the sprite facing rotation
+			if(trDogSpawnPoint.rotation.y == 1) { // Facing Left, 180 degrees
+
+				playerScript.FaceLeft();
+			}
 		}
 		if(dudePrefab != null) {
 

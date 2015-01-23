@@ -77,11 +77,11 @@ public class AutoAdjustCamera : MonoBehaviour {
 		
 			if(cam.gameObject.tag == "CameraDog") {
 
-				cam.pixelRect = rectLeftCamera;
+				cam.pixelRect = rectRightCamera;
 			}
 			if(cam.gameObject.tag == "CameraDude") {
 
-				cam.pixelRect = rectRightCamera;
+				cam.pixelRect = rectLeftCamera;
 			}
 			//cam.orthographicSize = fCameraSize;
 		}

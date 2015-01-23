@@ -26,6 +26,10 @@ public class Item : MonoBehaviour {
 	 * UNITY
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
+	void OnEnable() {
+
+		StartDroppedTimer();
+	}
 
 	void Awake() {
 

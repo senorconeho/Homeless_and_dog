@@ -43,11 +43,11 @@ public class GameHUD : MonoBehaviour {
 		// find the panel object
 		if(trUI == null && playerScript.playerType == MainGame.ePlayerType.DOG) {
 
-			trUI = GameObject.Find("/UI Root (2D)/CameraLeft/PanelDog").gameObject.transform;
+			trUI = GameObject.Find("/UI Root (2D)/CameraRight/PanelDog").gameObject.transform;
 		}
 		if(trUI == null && playerScript.playerType == MainGame.ePlayerType.DUDE) {
 
-			trUI = GameObject.Find("/UI Root (2D)/CameraRight/PanelDude").gameObject.transform;
+			trUI = GameObject.Find("/UI Root (2D)/CameraLeft/PanelDude").gameObject.transform;
 		}
 	}
 

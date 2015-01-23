@@ -25,6 +25,10 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 
 		if(gameScript != null && itemScript != null) {
 
+			// DEBUG
+			Debug.Log("adding noise from " + this.transform.parent.transform);
+
+
 			gameScript.AddNoise(fItemNoise);
 			itemScript.Crashed();
 		}
@@ -48,6 +52,8 @@ public class ItemCheckGroundCollision : MonoBehaviour {
 			
 			if(itemScript.GetDroppedTime() > gameScript.fItemDroppedTimeThreshold ) {
 
+				// DEBUG
+				Debug.Log(itemScript.GetDroppedTime());
 				CrashedWithTheGround();
 			}
 		}

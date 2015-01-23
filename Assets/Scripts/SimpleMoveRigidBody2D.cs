@@ -35,6 +35,8 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	//
 	void Awake ()
 	{
+		animator = this.GetComponent<Animator> ();
+		trSprite = this.transform;
 
 	}
 
@@ -42,8 +44,6 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 	void Start ()
 	{
 
-		animator = this.GetComponent<Animator> ();
-		trSprite = this.transform;
 	}
 
 	// Update is called once per frame
@@ -236,6 +236,15 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 			FlipSprite();
 		}
+	}
+
+	/// <summary>
+	/// Make the sprite face left
+	/// </summary>
+	public void FaceLeft() {
+
+		if(!bnFacingLeft)
+			FlipSprite();
 	}
 }
 
