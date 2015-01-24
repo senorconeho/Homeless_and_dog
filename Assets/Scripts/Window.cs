@@ -100,26 +100,34 @@ public class Window : MonoBehaviour {
 		// Update the window sprite
 		if(windowStatus == eWindowStatusType.OPEN) {
 
-			// Update the sprite
-			//spriteRenderer.sprite = spriteWindowOpen;
-			// Enables the collider
 			if(bnDetectCollisionWithDog)
-				col.enabled = true ;
+				col.enabled = true;
 
 			// Enables the curtains
 			if(spriteCurtains != null)
 				spriteCurtains.enabled = true;
+
+			// Set the animator state
+			if(animator != null) {
+
+				animator.SetInteger("windowStatus", (int)windowStatus);
+			}
 		}
 		else if(windowStatus == eWindowStatusType.CLOSED) {
 
-			// Update the sprite
-			//spriteRenderer.sprite = spriteWindowClosed;
 			// Disables the collider
 			if(bnDetectCollisionWithDog)
 				col.enabled = false;
 
 			// Disables the curtains
-			spriteCurtains.enabled = false;
+			if(spriteCurtains != null)
+				spriteCurtains.enabled = false;
+			
+			// Set the animator state
+			if(animator != null) {
+
+				animator.SetInteger("windowStatus", (int)windowStatus);
+			}
 		}
 	}
 
