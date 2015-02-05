@@ -12,10 +12,10 @@ public class RoomBuildEditor : Editor {
 	 * CLASS VARIABLES
 	 * ==========================================================================================================
 	 */
-	private SerializedProperty	floorSprite;
 	private SerializedProperty	floorWidthInPixels;
+	private SerializedProperty	offsetHorizontalFromObject;
+	private SerializedProperty	offsetVerticalFromObject;
 
-	private SpriteRenderer	m_SpriteRenderer;
 	private GameObject go;
 
 	SpriteRenderer sprite;
@@ -29,10 +29,10 @@ public class RoomBuildEditor : Editor {
 	GameObject tilesParent;
 	
 	// GUI Text Messages
-	private static GUIContent spriteContent = new GUIContent("Sprite", "Sprite to be tiled");
 	private static GUIContent widthContent = new GUIContent("Floor Width", "Floor width in pixels");
-	private static GUIContent buildContent = new GUIContent("Build room",	"Build the room stuff");
-	private static GUIContent deleteContent = new GUIContent("Clean room", "Delete room stuff");
+	private static GUIContent offsetHorizontalContent = new GUIContent("Offset X", "Offset from the object");
+	private static GUIContent offsetVerticalContent = new GUIContent("Offset Y", "Offset from the object");
+	private static GUIContent buildContent = new GUIContent("Create floor",	"Build the floor for this room");
 
 	// GUI Formatting
 
@@ -46,8 +46,9 @@ public class RoomBuildEditor : Editor {
 	/// <\summary>
 	public void OnEnable() {
 
-		floorSprite = serializedObject.FindProperty("floorSprite");
 		floorWidthInPixels = serializedObject.FindProperty("widthInPixels");
+		offsetHorizontalFromObject = serializedObject.FindProperty("offsetHorizontal");
+		offsetVerticalFromObject = serializedObject.FindProperty("offsetVertical");
 	}
 
 	/// <summary>
@@ -62,8 +63,9 @@ public class RoomBuildEditor : Editor {
 		DrawDefaultInspector();
 
 		// Draw the sprite field
-		//EditorGUILayout.PropertyField(floorSprite, spriteContent);
 		EditorGUILayout.PropertyField(floorWidthInPixels, widthContent);
+		EditorGUILayout.PropertyField(offsetHorizontalFromObject, offsetHorizontalContent);
+		EditorGUILayout.PropertyField(offsetVerticalFromObject, offsetVerticalContent);
 
 		// Draw the build button
 		EditorGUILayout.Space();
@@ -72,10 +74,6 @@ public class RoomBuildEditor : Editor {
 			CreateTiles();
 			AddCollider();
 			AddLimits();
-		}
-		EditorGUILayout.Space();
-		if(GUILayout.Button(deleteContent)) {
-			Debug.Log("Deleting Content");
 		}
 
 		// Update SerializedObject
@@ -93,9 +91,22 @@ public class RoomBuildEditor : Editor {
 		go = Selection.activeGameObject;
 		// Get the sprite renderer
 		sprite = go.GetComponent<SpriteRenderer>();
-
 		gridX = floorWidthInPixels.floatValue;
 
+		// Check if the object already exist. If so, destroy them
+		// Check the 'RoomFloor' object
+		Transform trOldRoomFloor = go.transform.Find("RoomFloor");
+		if(trOldRoomFloor != null) {
+
+			DestroyImmediate(trOldRoomFloor.gameObject);
+		}
+		Transform trOldLimits = go.transform.Find("Limits");
+		if(trOldLimits != null) {
+
+			DestroyImmediate(trOldLimits.gameObject);
+		}
+
+		// Create the floor
 		spriteSize_wu = new Vector2(sprite.bounds.size.x / go.transform.localScale.x,
 				sprite.bounds.size.y / go.transform.localScale.y);
 		scale = Vector3.one;
@@ -108,8 +119,9 @@ public class RoomBuildEditor : Editor {
 
 		tilesParent = new GameObject();
 		tilesParent.transform.parent = go.transform;
-		tilesParent.transform.name = "StaticScenario";
-		tilesParent.transform.localPosition = Vector3.zero;
+		tilesParent.transform.name = "RoomFloor";
+		tilesParent.transform.localPosition = new Vector3(offsetHorizontalFromObject.floatValue, offsetVerticalFromObject.floatValue, 0.0f);
+		tilesParent.layer = 8; //FIXME
 
 		GameObject childPrefab = new GameObject();
 		SpriteRenderer childSprite = childPrefab.AddComponent<SpriteRenderer>();
@@ -122,10 +134,11 @@ public class RoomBuildEditor : Editor {
 		for(int i=0; i < (int)Mathf.Round(tilesX); i++) {
 
 				child = Instantiate(childPrefab) as GameObject;
-				child.transform.position = go.transform.position + (new Vector3(sprite.bounds.size.x * i, 0, 0));
 				child.transform.localScale = scale;
-				child.transform.parent = tilesParent.transform;
 				child.transform.name = "tile_" + i;
+				child.transform.parent = tilesParent.transform;
+				child.transform.localPosition = new Vector3(sprite.bounds.size.x * i, 0, 0);
+				//child.transform.position = go.transform.position + (new Vector3(sprite.bounds.size.x * i, 0, 0));
 		}
 
 		totalWidth = (int)Mathf.Round(tilesX) * sprite.bounds.size.x;
@@ -164,6 +177,7 @@ public class RoomBuildEditor : Editor {
 
 		goLeftLimit.transform.localPosition = new Vector3(0 ,0,0);
 		goLeftLimit.transform.name = "LeftRoomLimit";
+		goLeftLimit.layer = 8; // FIXME
 		
 
 		// Add the right limit
@@ -177,6 +191,7 @@ public class RoomBuildEditor : Editor {
 
 		goRightLimit.transform.localPosition = new Vector3(totalWidth,0,0);
 		goRightLimit.transform.name = "RightRoomLimit";
+		goRightLimit.layer = 8; //FIXME
 
 
 	}

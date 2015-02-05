@@ -7,5 +7,8 @@ using System.Collections;
 public class RoomBuilder : MonoBehaviour {
 
 	[HideInInspector] public float widthInPixels;
+	[HideInInspector] public float offsetHorizontal;
+	[HideInInspector] public float offsetVertical;
+
 }
 

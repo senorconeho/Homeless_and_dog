@@ -36,6 +36,18 @@ public class CameraFollowTarget2D : MonoBehaviour {
 
 		cam = gameObject.GetComponent<Camera>();	
 		tr = this.transform;
+
+		// HACK: 
+		if(trLeftScenarioLimit == null) {
+
+			// Get from the street object
+			trLeftScenarioLimit = transform.Find("/Scenario/Street/Limits/LeftRoomLimit");
+		}
+		if(trRightScenarioLimit == null) {
+
+			// Get from the street object
+			trRightScenarioLimit = transform.Find("/Scenario/Street/Limits/RightRoomLimit");
+		}
 	}
 
 	// Use this for initialization
