@@ -172,8 +172,8 @@ public class RoomBuildEditor : Editor {
 
 		// Create the collider
 		BoxCollider2D leftCol =	goLeftLimit.AddComponent<BoxCollider2D>();
-		leftCol.size = new Vector2(0.1f, 1.0f);
-		leftCol.center = new Vector2(-leftCol.size.x / 2, 0);
+		leftCol.size = new Vector2(0.1f, 1.44f); // 144px height
+		leftCol.center = new Vector2(-leftCol.size.x / 2, .72f);
 
 		goLeftLimit.transform.localPosition = new Vector3(0 ,0,0);
 		goLeftLimit.transform.name = "LeftRoomLimit";
