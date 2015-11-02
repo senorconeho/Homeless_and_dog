@@ -44,7 +44,7 @@ public class Player : MonoBehaviour {
 	public float fMaxThrowForce = 10.0f; // FIXME: make public and tweakable
 
 	// Temperature Stuff (for the dude only)
-	public float	fTemperature = 100.0f;
+	public float	fTemperature = 1.0f;
 	public bool		isAroundTheFire = false; // Is the dude around the fire? If so, it's warming itself, otherwise is cooling down
 
 	/// Enumeration with all the possible states
@@ -674,8 +674,8 @@ public class Player : MonoBehaviour {
 	/// Method used only by the homeless dude: while within a certain distance from the fire, gain heat up.
 	public void UpdatePlayerTemperature() {
 		
-		float fTempGain = 0.75f;		// Gain while around the fire
-		float fTempLoss = 1.0f;		// Loss when not near the fire
+		float fTempGain = 0.075f;		// Gain while around the fire
+		float fTempLoss = 0.1f;		// Loss when not near the fire
 
 		if(isAroundTheFire) {
 			// Warming up
@@ -685,7 +685,10 @@ public class Player : MonoBehaviour {
 			fTemperature -= fTempLoss * Time.deltaTime;
 		}
 
-		fTemperature = Mathf.Clamp(fTemperature, 0.0f, 100.0f);
+		fTemperature = Mathf.Clamp01(fTemperature);
+
+		// HACK!
+		hudScript.NoiseBarUpdate(fTemperature);
 	}
 
 	public void SetAroundTheFire(bool bnAroundFire) {
