@@ -54,6 +54,12 @@ public class CheckHitBox : MonoBehaviour {
 				playerScript.OverDudeEnter();
 			}
 		}
+
+		// Check if entered the barrel's heat radius
+		if(trCol.gameObject.layer == MainGame.nBarrelLayer && trCol.tag == "BarrelHeat") {
+
+			playerScript.SetAroundTheFire(true);
+		}
 	}
 
 	/// <summary>
@@ -78,6 +84,12 @@ public class CheckHitBox : MonoBehaviour {
 				// Over the Homeless Dude
 				playerScript.OverDudeExit();
 			}
+		}
+
+		// Check if exited the barrel's heat radius
+		if(trCol.gameObject.layer == MainGame.nBarrelLayer && trCol.tag == "BarrelHeat") {
+
+				playerScript.SetAroundTheFire(false);
 		}
 	}
 

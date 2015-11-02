@@ -43,6 +43,10 @@ public class Player : MonoBehaviour {
 	float		fLastKeyUp = 0.0f;
 	public float fMaxThrowForce = 10.0f; // FIXME: make public and tweakable
 
+	// Temperature Stuff (for the dude only)
+	public float	fTemperature = 100.0f;
+	public bool		isAroundTheFire = false; // Is the dude around the fire? If so, it's warming itself, otherwise is cooling down
+
 	/// Enumeration with all the possible states
 	public enum eFSMState { 
 		IDLE,										// 0
@@ -662,6 +666,33 @@ public class Player : MonoBehaviour {
 		movementScript.bnAllowedToGetInput = bnStatus;
 	}
 
+	/* -----------------------------------------------------------------------------------------------------------
+	 * HEAT METHODS
+	 * -----------------------------------------------------------------------------------------------------------
+	 */
+	/// <summary>
+	/// Method used only by the homeless dude: while within a certain distance from the fire, gain heat up.
+	public void UpdatePlayerTemperature() {
+		
+		float fTempGain = 0.75f;		// Gain while around the fire
+		float fTempLoss = 1.0f;		// Loss when not near the fire
+
+		if(isAroundTheFire) {
+			// Warming up
+			fTemperature += fTempGain * Time.deltaTime;
+		}
+		else {
+			fTemperature -= fTempLoss * Time.deltaTime;
+		}
+
+		fTemperature = Mathf.Clamp(fTemperature, 0.0f, 100.0f);
+	}
+
+	public void SetAroundTheFire(bool bnAroundFire) {
+
+		isAroundTheFire = bnAroundFire;
+	}
+
 	/* ====================================================================================================
 	 * INPUT STUFF
 	 * ====================================================================================================
@@ -926,6 +957,11 @@ public class Player : MonoBehaviour {
 				// Check if we didn't picked an item
 				if(trItemPicked != null || bnCarryingDog) 
 					FSMEnterNewState(eFSMState.IDLE_CARRYING_ITEM);
+
+				// If we're the Dude, update our temperature
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					UpdatePlayerTemperature();
+				}
 				break;
 
 			case eFSMState.RUNNING:
@@ -939,6 +975,11 @@ public class Player : MonoBehaviour {
 				// Check if we didn't picked an item
 				if(trItemPicked != null || bnCarryingDog) 
 					FSMEnterNewState(eFSMState.RUNNING_CARRYING_ITEM);
+
+				// If we're the Dude, update our temperature
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					UpdatePlayerTemperature();
+				}
 				break;
 
 			case eFSMState.IDLE_CARRYING_ITEM:
@@ -961,6 +1002,11 @@ public class Player : MonoBehaviour {
 					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
 					hudScript.ThrowBarUpdate(fThrowBarValue);
 				}
+
+				// If we're the Dude, update our temperature
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					UpdatePlayerTemperature();
+				}
 				break;
 
 			case eFSMState.RUNNING_CARRYING_ITEM:
@@ -981,6 +1027,11 @@ public class Player : MonoBehaviour {
 					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
 					hudScript.ThrowBarUpdate(fThrowBarValue);
 				}
+
+				// If we're the Dude, update our temperature
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					UpdatePlayerTemperature();
+				}
 				break;
 
 			case eFSMState.ON_AIR:
@@ -997,6 +1048,10 @@ public class Player : MonoBehaviour {
 					bnCollisionDogAndDude = false;
 				}
 
+				// If we're the Dude, update our temperature
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					UpdatePlayerTemperature();
+				}
 				//if(playerType == MainGame.ePlayerType.DUDE) {
 
 				//	fThrowBarValue -= Time.deltaTime;
