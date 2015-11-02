@@ -18,6 +18,7 @@ public class RoomBuildEditor : Editor {
 
 	private GameObject go;
 
+
 	SpriteRenderer sprite;
 
 	float gridX;
@@ -31,7 +32,7 @@ public class RoomBuildEditor : Editor {
 	// GUI Text Messages
 	private static GUIContent widthContent = new GUIContent("Floor Width", "Floor width in pixels");
 	private static GUIContent offsetHorizontalContent = new GUIContent("Offset X", "Offset from the object");
-	private static GUIContent offsetVerticalContent = new GUIContent("Offset Y", "Offset from the object");
+	private static GUIContent offsetVerticalContent = new GUIContent("Offset Y", "Offset from the bottom of the screen, in pixels");
 	private static GUIContent buildContent = new GUIContent("Create floor",	"Build the floor for this room");
 
 	// GUI Formatting
@@ -87,13 +88,16 @@ public class RoomBuildEditor : Editor {
 	/// <summary>
 	/// <\summary>
 	void CreateTiles() {
+
+		int groundLayer = 8; // FIXME
+
 		// Get the current gameObject
 		go = Selection.activeGameObject;
 		// Get the sprite renderer
 		sprite = go.GetComponent<SpriteRenderer>();
 		gridX = floorWidthInPixels.floatValue;
 
-		// Check if the object already exist. If so, destroy them
+		// Check if the object already exists. If so, destroy them
 		// Check the 'RoomFloor' object
 		Transform trOldRoomFloor = go.transform.Find("RoomFloor");
 		if(trOldRoomFloor != null) {
@@ -120,8 +124,8 @@ public class RoomBuildEditor : Editor {
 		tilesParent = new GameObject();
 		tilesParent.transform.parent = go.transform;
 		tilesParent.transform.name = "RoomFloor";
-		tilesParent.transform.localPosition = new Vector3(offsetHorizontalFromObject.floatValue, offsetVerticalFromObject.floatValue, 0.0f);
-		tilesParent.layer = 8; //FIXME
+		tilesParent.transform.localPosition = new Vector3(offsetHorizontalFromObject.floatValue, offsetVerticalFromObject.floatValue / 100, 0.0f);
+		tilesParent.layer = groundLayer;
 
 		GameObject childPrefab = new GameObject();
 		SpriteRenderer childSprite = childPrefab.AddComponent<SpriteRenderer>();
@@ -161,6 +165,9 @@ public class RoomBuildEditor : Editor {
 	/// <\summary>
 	void AddLimits() {
 
+		float fColliderHeightInPixels = 1.44f; //144px
+		int limitLayer = 8; // FIXME -> ground layer
+			
 		GameObject limitsParent = new GameObject();
 		limitsParent.transform.parent = go.transform;
 		limitsParent.transform.name = "Limits";
@@ -172,12 +179,12 @@ public class RoomBuildEditor : Editor {
 
 		// Create the collider
 		BoxCollider2D leftCol =	goLeftLimit.AddComponent<BoxCollider2D>();
-		leftCol.size = new Vector2(0.1f, 1.44f); // 144px height
-		leftCol.center = new Vector2(-leftCol.size.x / 2, .72f);
+		leftCol.size = new Vector2(0.1f, fColliderHeightInPixels); // 144px height
+		leftCol.center = new Vector2(-leftCol.size.x / 2, fColliderHeightInPixels / 2);
 
 		goLeftLimit.transform.localPosition = new Vector3(0 ,0,0);
 		goLeftLimit.transform.name = "LeftRoomLimit";
-		goLeftLimit.layer = 8; // FIXME
+		goLeftLimit.layer = limitLayer; // FIXME
 		
 
 		// Add the right limit
@@ -186,12 +193,12 @@ public class RoomBuildEditor : Editor {
 
 		// Create the collider
 		BoxCollider2D rightCol =	goRightLimit.AddComponent<BoxCollider2D>();
-		rightCol.size = new Vector2(0.1f, 1.0f);
-		rightCol.center = new Vector2(leftCol.size.x / 2, 0);
+		rightCol.size = new Vector2(0.1f, fColliderHeightInPixels);
+		rightCol.center = new Vector2(leftCol.size.x / 2, fColliderHeightInPixels / 2);
 
 		goRightLimit.transform.localPosition = new Vector3(totalWidth,0,0);
 		goRightLimit.transform.name = "RightRoomLimit";
-		goRightLimit.layer = 8; //FIXME
+		goRightLimit.layer = limitLayer; //FIXME
 
 
 	}
