@@ -79,12 +79,16 @@ public class MainGame : MonoBehaviour {
 	[Header("Items stuff")]
 	public float	fItemDroppedTimeThreshold = 0.3f;	//< for how long the item must fall to be considered 'crashed' when touching the ground
 
+	public static MainGame instance;
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
 	 */
 
 	void Awake() {
+
+		instance = this;
 
 		// Find the game cameras
 		trDogCamera = transform.Find("/Cameras/CameraDog");

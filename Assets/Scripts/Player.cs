@@ -44,8 +44,10 @@ public class Player : MonoBehaviour {
 	public float fMaxThrowForce = 10.0f; // FIXME: make public and tweakable
 
 	// Temperature Stuff (for the dude only)
-	public float	fTemperature = 1.0f;
-	public bool		isAroundTheFire = false; // Is the dude around the fire? If so, it's warming itself, otherwise is cooling down
+	float	fTemperature = 1.0f;
+	bool		isAroundTheFire = false; // Is the dude around the fire? If so, it's warming itself, otherwise is cooling down
+	public float fTemperatureGain = 0.075f;		// Gain while around the fire
+	public float fTemperatureLoss = 0.1f;		// Loss when not near the fire
 
 	/// Enumeration with all the possible states
 	public enum eFSMState { 
@@ -674,18 +676,19 @@ public class Player : MonoBehaviour {
 	/// Method used only by the homeless dude: while within a certain distance from the fire, gain heat up.
 	public void UpdatePlayerTemperature() {
 		
-		float fTempGain = 0.075f;		// Gain while around the fire
-		float fTempLoss = 0.1f;		// Loss when not near the fire
-
 		if(isAroundTheFire) {
 			// Warming up
-			fTemperature += fTempGain * Time.deltaTime;
+			fTemperature += fTemperatureGain * Time.deltaTime;
 		}
 		else {
-			fTemperature -= fTempLoss * Time.deltaTime;
+			fTemperature -= fTemperatureLoss * Time.deltaTime;
 		}
 
 		fTemperature = Mathf.Clamp01(fTemperature);
+		if(fTemperature <= 0)
+			MainGame.instance.ChangeStatusToGameOver();
+
+		// TODO: check if the temperature reached 0!
 
 		// HACK!
 		hudScript.NoiseBarUpdate(fTemperature);
