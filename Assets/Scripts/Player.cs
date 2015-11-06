@@ -195,7 +195,7 @@ public class Player : MonoBehaviour {
 
 				if(hudScript != null){
 					// Updates the HUD
-					hudScript.SetButtonsText("", "GRAB");
+					hudScript.SetButtonsText(null, "GRAB");
 				}
 			}
 			else {
@@ -224,11 +224,21 @@ public class Player : MonoBehaviour {
 		//if(playerType == MainGame.ePlayerType.DOG && FSMGetCurrentState() != eFSMState.DOG_ON_LAP) {
 		if(playerType == MainGame.ePlayerType.DOG && !bnCarryingOtherChar) {
 
-			if(hudScript != null) {
-				// Updates the HUD
-				hudScript.SetButtonsText("", null);
-				bnCollisionDogAndDude = false;
+			// Are the dude frozen?
+			if(gameScript.IsTheDudeFrozen()) {
+
+				if(hudScript != null){
+					// Updates the HUD
+					hudScript.SetButtonsText(null, "");
+				}
 			}
+			else {
+				if(hudScript != null) {
+					// Updates the HUD
+					hudScript.SetButtonsText("", null);
+				}
+			}
+			bnCollisionDogAndDude = false;
 		}
 	}
 
@@ -243,7 +253,7 @@ public class Player : MonoBehaviour {
 
 
 		// Do we have an item already?
-		if(trItemPicked != null)
+		if(trItemPicked != null || bnCarryingOtherChar)
 			return;
 
 		trItemOver = trItem;
