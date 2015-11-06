@@ -1115,16 +1115,23 @@ public class Player : MonoBehaviour {
 				}
 
 				// If the player is carrying the dog, updates the throw bar
-				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingOtherChar) {
-
-					fThrowBarValue -= Time.deltaTime;
-					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
-					hudScript.ThrowBarUpdate(fThrowBarValue);
-				}
-
-				// If we're the Dude, update our temperature
 				if(playerType == MainGame.ePlayerType.DUDE) {
+				 
 					UpdatePlayerTemperature();
+					if(bnCarryingOtherChar) {
+
+						fThrowBarValue -= Time.deltaTime;
+						fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
+						hudScript.ThrowBarUpdate(fThrowBarValue);
+					}
+				}
+				else {
+					// we're the dog
+					if(trItemPicked == null && bnCarryingOtherChar && !gameScript.IsTheDudeFrozen()) {
+						// we have no item, we're still carrying the dude, but he is not frozen anymore
+						DogReleasedDude();
+						FSMEnterNewState(eFSMState.IDLE);
+					}
 				}
 				break;
 
@@ -1185,7 +1192,9 @@ public class Player : MonoBehaviour {
 					UpdatePlayerTemperature();
 					if(fTemperature > fUnfrozeTemperature) {
 						
+						// Change to IDLE
 						FSMEnterNewState(eFSMState.IDLE);
+						// Asks the dog to let me go
 					}
 				}
 				break;
@@ -1258,6 +1267,7 @@ public class Player : MonoBehaviour {
 			case eFSMState.FROZEN:
 				// Leaving FROZEN state
 				movementScript.SetRigidbodyKinematic(false);
+				movementScript.bnPlayerCanControl = true;
 				break;
 
 			case eFSMState.SIT:
