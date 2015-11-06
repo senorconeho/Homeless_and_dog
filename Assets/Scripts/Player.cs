@@ -47,7 +47,8 @@ public class Player : MonoBehaviour {
 	float	fTemperature = 1.0f;
 	bool		isAroundTheFire = false; // Is the dude around the fire? If so, it's warming itself, otherwise is cooling down
 	public float fTemperatureGain = 0.075f;		// Gain while around the fire
-	public float fTemperatureLoss = 0.1f;		// Loss when not near the fire
+	public float fTemperatureLoss = 0.2f;		// Loss when not near the fire
+	public float fUnfrozeTemperature = 0.25f;
 
 	/// Enumeration with all the possible states
 	public enum eFSMState { 
@@ -1182,6 +1183,10 @@ public class Player : MonoBehaviour {
 				// Entering the FROZEN state
 				if(playerType == MainGame.ePlayerType.DUDE) {
 					UpdatePlayerTemperature();
+					if(fTemperature > fUnfrozeTemperature) {
+						
+						FSMEnterNewState(eFSMState.IDLE);
+					}
 				}
 				break;
 
