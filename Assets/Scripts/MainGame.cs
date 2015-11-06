@@ -39,12 +39,13 @@ public class MainGame : MonoBehaviour {
 	// Possible item types
 	public enum eItemTypes {
 	
-		ITEM_DOG,		//< For animation purposes, the dog is an item too (it can be carryied by the dude)	
+		ITEM_DOG,		//< For animation purposes, the dog is an item too (it can be carryed by the dude)	
 		ITEM_CHAIR,
 		ITEM_GARBAGE,
 		ITEM_LAMP,
 		ITEM_PILLOW_BOOK_PAPER,
-		ITEM_SHOES
+		ITEM_SHOES,
+		ITEM_FROZEN_DUDE
 	}
 
 	public Transform 		trDog;
@@ -257,5 +258,13 @@ public class MainGame : MonoBehaviour {
 	public Transform GetBarrel() {
 
 		return levelControlScript.GetBarrel();
+	}
+
+	/// <summary>
+	/// Check if the dude is frozen
+	/// </summary>
+	public bool IsTheDudeFrozen() {
+
+		return (dudeScript.FSMGetCurrentState() == Player.eFSMState.FROZEN);
 	}
 }

@@ -10,7 +10,7 @@ public class Player : MonoBehaviour {
 	public Transform							trCarrier;					//< Put the object that indicates where the items must be placed (usually CarrierPosition)
 	//public bool										bnPickedUp = false;
 	//public bool										bnCarryingItem = false;
-	[HideInInspector] public bool										bnCarryingDog = false;
+	[HideInInspector] public bool										bnCarryingOtherChar = false;	// Is the dude carrying the dog?
 	[HideInInspector] public bool										bnCollisionDogAndDude = false;
 	[HideInInspector] public GameHUD								hudScript;					//< The in-game HUD
 	[HideInInspector] public Transform							trItemPicked;				//< Have we picked some item?
@@ -59,6 +59,7 @@ public class Player : MonoBehaviour {
 		ON_AIR,									// 5 - Dog: on air (falling or being throwed)
 		DOG_ON_LAP,							// 6 - Dude: ready to throw the dog; Dog: cannot move
 		SIT,										// 7 - Sitted by the fire
+		FROZEN,									// 8 - Dude: almost dead, cannot move; Dog: can use the dude as an item
 		STATE_NULL 					/// null
 	};
 	[HideInInspector] public eFSMState currentState;
@@ -137,6 +138,21 @@ public class Player : MonoBehaviour {
 		FSMExecuteCurrentState();
 	}
 
+	void LateUpdate() {
+
+		// 'Follows' the dog
+		//if(playerType == MainGame.ePlayerType.DUDE && gameScript.IsTheDudeFrozen() && gameScript.dogScript.bnCarryingOtherChar) {
+		//	
+		//	this.transform.position = gameScript.dogScript.trCarrier.position;
+		//}
+
+		// 'Follows' the dog
+		if(playerType == MainGame.ePlayerType.DOG && gameScript.IsTheDudeFrozen() && bnCarryingOtherChar) {
+			
+			MainGame.instance.trDude.position = trCarrier.position;
+		}
+	}
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * 
 	 * -----------------------------------------------------------------------------------------------------------
@@ -174,11 +190,23 @@ public class Player : MonoBehaviour {
 		// Dog with dude? 
 		if(playerType == MainGame.ePlayerType.DOG) {
 
-			if(hudScript != null){
-				// Updates the HUD
-				hudScript.SetButtonsText("JUMP ON", null);
-				bnCollisionDogAndDude = true;
+			// Are the dude frozen?
+			if(gameScript.IsTheDudeFrozen()) {
+
+				if(hudScript != null){
+					// Updates the HUD
+					hudScript.SetButtonsText("", "GRAB");
+				}
 			}
+			else {
+
+				if(hudScript != null){
+					// Updates the HUD
+					hudScript.SetButtonsText("JUMP ON", null);
+				}
+			}
+
+			bnCollisionDogAndDude = true;
 		}
 	}
 
@@ -194,7 +222,7 @@ public class Player : MonoBehaviour {
 		// Dog with dude? 
 		// FIXME
 		//if(playerType == MainGame.ePlayerType.DOG && FSMGetCurrentState() != eFSMState.DOG_ON_LAP) {
-		if(playerType == MainGame.ePlayerType.DOG && !bnCarryingDog) {
+		if(playerType == MainGame.ePlayerType.DOG && !bnCarryingOtherChar) {
 
 			if(hudScript != null) {
 				// Updates the HUD
@@ -448,7 +476,7 @@ public class Player : MonoBehaviour {
 	public void DogJumpedOnMyLap() {
 
 		//FSMEnterNewState(eFSMState.DOG_ON_LAP);
-		bnCarryingDog = true;
+		bnCarryingOtherChar = true;
 
 		if(playerType == MainGame.ePlayerType.DOG) {
 			//// Dog: while on the lap, the dog cannot move
@@ -484,7 +512,7 @@ public class Player : MonoBehaviour {
 	/// </summary>
 	public void DogJumpedOffMyLap() {
 
-		bnCarryingDog = false;
+		bnCarryingOtherChar = false;
 
 		// From the dog side...
 		if(playerType == MainGame.ePlayerType.DOG) {
@@ -610,6 +638,36 @@ public class Player : MonoBehaviour {
 		Debug.DrawRay(transform.position, vThrowForceDirection, Color.red, 1.0f, false);
 
 	}
+
+	/// <summary>
+	/// The dog grabbed the frozen dude
+	/// </summary>
+	void DogGrabbedDude() {
+
+		if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+			// Updates the HUD
+			hudScript.SetButtonsText(null,"LET GO");
+			FSMEnterNewState(eFSMState.IDLE_CARRYING_ITEM);
+			// HACK
+			//trItemPicked = gameScript.trDude;
+			bnCarryingOtherChar = true;
+		}
+	}
+
+	/// <summary>
+	/// Dog releases the frozen dude
+	/// </summary>
+	void DogReleasedDude() {
+
+		if(gameScript.GetCurrentGameStatus() == MainGame.eGameStatus.GAME_PLAY) {
+			// Updates the HUD
+			hudScript.SetButtonsText(null,"");
+			FSMEnterNewState(eFSMState.IDLE);
+			// HACK
+			//trItemPicked = gameScript.trDude;
+			bnCarryingOtherChar = false;
+		}
+	}
 	
 	/* -----------------------------------------------------------------------------------------------------------
 	 * GAME STATES
@@ -685,10 +743,12 @@ public class Player : MonoBehaviour {
 		}
 
 		fTemperature = Mathf.Clamp01(fTemperature);
-		if(fTemperature <= 0)
-			MainGame.instance.ChangeStatusToGameOver();
+		if(fTemperature <= 0) {
 
-		// TODO: check if the temperature reached 0!
+			FSMEnterNewState(eFSMState.FROZEN);
+		}
+
+
 
 		// HACK!
 		hudScript.NoiseBarUpdate(fTemperature);
@@ -741,23 +801,47 @@ public class Player : MonoBehaviour {
 			//
 			if(Input.GetKeyUp(KeyCode.K)) { // Dog Button B
 
-				// Are we holding an item?
-				if(trItemPicked != null) {
-					// Drop it
-					DropItem();
+				// Are we carrying the frozen dude?
+				if(bnCarryingOtherChar) {
+
+					DogReleasedDude();
 				}
-				else if(trItemOver != null) {
-					// Pick the item
-					PickItem();
+				else {		
+					// Are we holding an item?
+					if(trItemPicked != null) {
+						// Drop it
+						DropItem();
+					}
+					else if(trItemOver != null) {
+						// Pick the item
+						PickItem();
+					}
+
+					if(bnCollisionDogAndDude && gameScript.IsTheDudeFrozen()) {
+
+						if(bnCarryingOtherChar) {
+
+							DogReleasedDude();
+						}
+						else {
+							// Grab the dude
+							DogGrabbedDude();
+						}
+					}
 				}
 			}
+			
 			if(Input.GetKeyUp(KeyCode.L)) { // Dog Button A
 
 				// Are we in touch with the dude?
 				if(bnCollisionDogAndDude && FSMGetCurrentState() != eFSMState.DOG_ON_LAP) {
-					// Jump on the lap of the dude
-					FSMEnterNewState(eFSMState.DOG_ON_LAP);
-					// TODO: if holding an item, drop it immediately
+
+					// Are the dude frozen?
+					if(!gameScript.IsTheDudeFrozen()) {
+						// Jump on the lap of the dude
+						FSMEnterNewState(eFSMState.DOG_ON_LAP);
+						// TODO: if holding an item, drop it immediately
+					}
 				}
 				else if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
 					// Jump off the lap of the dude
@@ -818,7 +902,7 @@ public class Player : MonoBehaviour {
 
 				// FIXME
 				//if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) { // Throw the dog?
-				if(bnCarryingDog) { // Throw the dog?
+				if(bnCarryingOtherChar) { // Throw the dog?
 
 					ThrowDog();
 				}
@@ -838,7 +922,7 @@ public class Player : MonoBehaviour {
 
 				// FIXME
 				//if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
-				if(bnCarryingDog) {
+				if(bnCarryingOtherChar) {
 					// Pump the throw bar
 					if((Time.time - fLastKeyUp) > 0.05f) {
 
@@ -914,7 +998,7 @@ public class Player : MonoBehaviour {
 
 			case eFSMState.DOG_ON_LAP:
 				if(playerType == MainGame.ePlayerType.DOG) {
-					bnCarryingDog = true;
+					bnCarryingOtherChar = true;
 					// Dog: while on the lap, the dog cannot move
 					movementScript.bnPlayerCanControl = false;
 					// Updates the HUD
@@ -934,6 +1018,18 @@ public class Player : MonoBehaviour {
 				//	hudScript.ButtonAAnimate(true);
 				//	hudScript.ThrowBarActivate();
 				//}
+				break;
+
+			case eFSMState.FROZEN:
+				// Entering the FROZEN state
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					// While frozen, the dude cannot move
+					movementScript.bnPlayerCanControl = false; 
+					// HACK
+					// Updates the HUD
+					hudScript.SetButtonsText("","FROZEN");
+					movementScript.SetRigidbodyKinematic(true);
+				}
 				break;
 
 			case eFSMState.SIT:
@@ -961,11 +1057,14 @@ public class Player : MonoBehaviour {
 					FSMEnterNewState(eFSMState.ON_AIR);
 
 				// Check if we didn't picked an item
-				if(trItemPicked != null || bnCarryingDog) 
+				if(trItemPicked != null || bnCarryingOtherChar) {
+
 					FSMEnterNewState(eFSMState.IDLE_CARRYING_ITEM);
+				}
 
 				// If we're the Dude, update our temperature
 				if(playerType == MainGame.ePlayerType.DUDE) {
+
 					UpdatePlayerTemperature();
 				}
 				break;
@@ -979,11 +1078,14 @@ public class Player : MonoBehaviour {
 					FSMEnterNewState(eFSMState.ON_AIR);
 
 				// Check if we didn't picked an item
-				if(trItemPicked != null || bnCarryingDog) 
+				if(trItemPicked != null || bnCarryingOtherChar) {
+
 					FSMEnterNewState(eFSMState.RUNNING_CARRYING_ITEM);
+				}
 
 				// If we're the Dude, update our temperature
 				if(playerType == MainGame.ePlayerType.DUDE) {
+
 					UpdatePlayerTemperature();
 				}
 				break;
@@ -991,18 +1093,18 @@ public class Player : MonoBehaviour {
 			case eFSMState.IDLE_CARRYING_ITEM:
 				// Check if the character started to move
 				if(Mathf.Abs(rigidbody2D.velocity.x) > fHorizontalSpeedThreshold) {
-					if(trItemPicked != null || bnCarryingDog)
+					if(trItemPicked != null || bnCarryingOtherChar)
 						FSMEnterNewState(eFSMState.RUNNING_CARRYING_ITEM);
 					else
 						FSMEnterNewState(eFSMState.RUNNING);
 				}
-				else if(trItemPicked == null && !bnCarryingDog) {
+				else if(trItemPicked == null && !bnCarryingOtherChar) {
 
 					FSMEnterNewState(eFSMState.IDLE);
 				}
 
 				// If the player is carrying the dog, updates the throw bar
-				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingDog) {
+				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingOtherChar) {
 
 					fThrowBarValue -= Time.deltaTime;
 					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
@@ -1018,16 +1120,16 @@ public class Player : MonoBehaviour {
 			case eFSMState.RUNNING_CARRYING_ITEM:
 				// Check if the character stopped to move
 				if(Mathf.Abs(rigidbody2D.velocity.x) < fHorizontalSpeedThreshold) {
-					if(trItemPicked != null || bnCarryingDog)
+					if(trItemPicked != null || bnCarryingOtherChar)
 						FSMEnterNewState(eFSMState.IDLE_CARRYING_ITEM);
 					else
 						FSMEnterNewState(eFSMState.IDLE);
 				}
-				else if(trItemPicked == null && !bnCarryingDog) {
+				else if(trItemPicked == null && !bnCarryingOtherChar) {
 						FSMEnterNewState(eFSMState.RUNNING);
 				}
 				// If the player is carrying the dog, updates the throw bar
-				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingDog) {
+				if(playerType == MainGame.ePlayerType.DUDE && bnCarryingOtherChar) {
 
 					fThrowBarValue -= Time.deltaTime;
 					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
@@ -1064,6 +1166,13 @@ public class Player : MonoBehaviour {
 				//	fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
 				//	hudScript.ThrowBarUpdate(fThrowBarValue);
 				//}
+				break;
+
+			case eFSMState.FROZEN:
+				// Entering the FROZEN state
+				if(playerType == MainGame.ePlayerType.DUDE) {
+					UpdatePlayerTemperature();
+				}
 				break;
 
 			case eFSMState.SIT:
@@ -1116,7 +1225,7 @@ public class Player : MonoBehaviour {
 					hudScript.SetButtonsText("", null);
 					// Tell the Dude object that the dog is NOT in his lap anymore
 					gameScript.dudeScript.DogJumpedOffMyLap();
-					bnCarryingDog = false;
+					bnCarryingOtherChar = false;
 					// Restore the sprite renderer
 					sr.enabled = true;
 					movementScript.SetRigidbodyKinematic(false);
@@ -1129,6 +1238,11 @@ public class Player : MonoBehaviour {
 				//	hudScript.ThrowBarDeactivate();
 				//	hudScript.ButtonAAnimate(false);
 				//}
+				break;
+
+			case eFSMState.FROZEN:
+				// Leaving FROZEN state
+				movementScript.SetRigidbodyKinematic(false);
 				break;
 
 			case eFSMState.SIT:
