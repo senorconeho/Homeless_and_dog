@@ -1050,11 +1050,19 @@ public class Player : MonoBehaviour {
 			case eFSMState.FROZEN:
 				// Entering the FROZEN state
 				if(playerType == MainGame.ePlayerType.DUDE) {
+					// Check if we have the dog on our lap
+					if(gameScript.dogScript.FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
+						// Release the dog
+						gameScript.dogScript.DogJumpedOffMyLap();
+					}
+
+
 					// While frozen, the dude cannot move
 					movementScript.bnPlayerCanControl = false; 
 					// HACK
 					// Updates the HUD
 					hudScript.SetButtonsText("","FROZEN");
+
 					movementScript.SetRigidbodyKinematic(true);
 				}
 				break;
@@ -1261,6 +1269,7 @@ public class Player : MonoBehaviour {
 				break;
 
 			case eFSMState.DOG_ON_LAP:
+				// Leaving state
 				if(playerType == MainGame.ePlayerType.DOG) {
 					// TESTING: disable the collider from the dog
 					if(hitBoxScript != null) {
@@ -1279,6 +1288,7 @@ public class Player : MonoBehaviour {
 					sr.enabled = true;
 					movementScript.SetRigidbodyKinematic(false);
 				}
+
 				//if(playerType == MainGame.ePlayerType.DUDE) {
 				//	// Dude: enable the throw
 				//	trThrowCursor.gameObject.SetActive(false);
