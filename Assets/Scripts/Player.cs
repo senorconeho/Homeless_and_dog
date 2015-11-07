@@ -929,19 +929,35 @@ public class Player : MonoBehaviour {
 					}
 				}
 			}
-			if(Input.GetKeyUp(KeyCode.U)) { // Dude Button A
+			//if(Input.GetKeyUp(KeyCode.U)) { // Dude Button A
 
-				// FIXME
-				//if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
+			//	// FIXME
+			//	//if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
+			//	if(bnCarryingOtherChar) {
+			//		// Pump the throw bar
+			//		if((Time.time - fLastKeyUp) < 0.05f) {
+
+			//			fThrowBarValue += 16 * Time.deltaTime;
+			//		}
+			//		else {
+
+			//			fThrowBarValue -= 16 * Time.deltaTime;
+			//		}
+			//			fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
+			//	}
+			//	fLastKeyUp = Time.time;
+			//}
+			if(Input.GetKey(KeyCode.U)) { // Dude button A
+
 				if(bnCarryingOtherChar) {
-					// Pump the throw bar
-					if((Time.time - fLastKeyUp) > 0.05f) {
-
-						fThrowBarValue += 16 * Time.deltaTime;
-						fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
-					}
+					fThrowBarValue += 1.5f * Time.deltaTime;
+					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
 				}
-				fLastKeyUp = Time.time;
+			}
+			else if(bnCarryingOtherChar) {
+
+					fThrowBarValue -= 1.5f * Time.deltaTime;
+					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
 			}
 
 		}
