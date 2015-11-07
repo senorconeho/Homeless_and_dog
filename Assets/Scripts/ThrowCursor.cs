@@ -9,7 +9,7 @@ public class ThrowCursor : MonoBehaviour {
 	float fMinAngle = 0;
 	float fMaxAngle = 90;
 	public float fCurrentAngle;
-	float fIncrementAngle = 30.0f;
+	float fIncrementAngle = 90.0f;
 	float	fRadius = 0.2f;
 	public Vector3	vNewPosition;
 	public Vector2 	vOffset;
@@ -34,24 +34,20 @@ public class ThrowCursor : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		// Check if the sprite is 'looking' to the left
-		//if(this.transform.parent.transform.localScale.x < 0) {
-		//	// Dude looking to the left
-		//	fMinAngle = 90.0f;
-		//	fMaxAngle = 180.0f;
-		//}
-		//else {
-		//	fMinAngle = 0.0f;
-		//	fMaxAngle = 90.0f;
-		//}
+		// FIXME: shouldn't all inputs be together?
+		// INPUT STUFF
+		if(Input.GetKey(KeyCode.W)) { // Dude's key up
+			// Update the rotation angle
+			fCurrentAngle += (fIncrementAngle * Time.deltaTime);
+		}
+		if(Input.GetKey(KeyCode.S)) {
 
-		// Check if we need to reverse the cursors movement
-		if(fCurrentAngle >= fMaxAngle || fCurrentAngle <= fMinAngle) {
-
-			fCurrentAngle = Mathf.Clamp(fCurrentAngle, fMinAngle, fMaxAngle);
-			fIncrementAngle *= -1;
+			// Update the rotation angle
+			fCurrentAngle -= (fIncrementAngle * Time.deltaTime);
 		}
 
+		fCurrentAngle = Mathf.Clamp(fCurrentAngle, fMinAngle, fMaxAngle);
+		
 		// Calculate the new position
 		vNewPosition = new Vector3(vOffset.x + (fRadius * Mathf.Cos(fCurrentAngle * Mathf.Deg2Rad)), 
 				vOffset.y + (fRadius * Mathf.Sin(fCurrentAngle * Mathf.Deg2Rad)),
@@ -60,8 +56,6 @@ public class ThrowCursor : MonoBehaviour {
 		// Move the cursor to the new position
 		transform.localPosition = vNewPosition;
 
-		// Update the rotation angle
-		fCurrentAngle += (fIncrementAngle * Time.deltaTime);
 	}
 
 	/// <summary>
