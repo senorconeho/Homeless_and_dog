@@ -26,6 +26,7 @@ public class GameHUD : MonoBehaviour {
 	Transform					trFireLevel;
 	Transform					trFireLabel;
 	UILabel						uiFireLevelLabel;
+	Transform					trGameButtonsPanel;
 
 	Player						playerScript;			//< Pointer to the player script
 
@@ -126,6 +127,11 @@ public class GameHUD : MonoBehaviour {
 		trSpriteGameOver = trUI.Find("SpriteGameOver");
 		if(trSpriteGameOver != null)
 			trSpriteGameOver.gameObject.SetActive(false);
+
+		// Find the panel which explain the game controls
+		trGameButtonsPanel = trUI.Find("Panel-GameButtons");
+		if(trGameButtonsPanel != null)
+			trGameButtonsPanel.gameObject.SetActive(false);
 	}
 
 	
@@ -304,4 +310,35 @@ public class GameHUD : MonoBehaviour {
 		if(trFireLevel != null)
 			trFireLevel.gameObject.SetActive(bnNewStatus);
 	}
+
+	/// <summary>
+	/// Show or hide the panel showing the game buttons
+	/// </summary>
+	public void ActivateGameButtonsPanel(bool bnNewStatus) {
+
+		if(trGameButtonsPanel != null)
+			trGameButtonsPanel.gameObject.SetActive(bnNewStatus);
+	}
+
+	/// <summary>
+	/// Call the coroutine to show the panel and then hide it after some time
+	/// </summary>
+	public void ActivateGameButtonsPanelForSomeTime() {
+
+		StartCoroutine(ShowGameButtonsForSomeTime());
+	}
+
+	/// <summary>
+	/// Show the game buttons panel for some time and the disappear
+	/// </summary>
+	IEnumerator ShowGameButtonsForSomeTime() {
+
+		ActivateGameButtonsPanel(true);
+
+		yield return new WaitForSeconds(2.5f);
+
+		ActivateGameButtonsPanel(false);
+	}
+
+
 }

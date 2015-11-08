@@ -808,7 +808,6 @@ public class Player : MonoBehaviour {
 				}
 			}
 
-
 			//
 			if(Input.GetKeyUp(KeyCode.K)) { // Dog Button B
 
@@ -929,24 +928,6 @@ public class Player : MonoBehaviour {
 					}
 				}
 			}
-			//if(Input.GetKeyUp(KeyCode.U)) { // Dude Button A
-
-			//	// FIXME
-			//	//if(FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
-			//	if(bnCarryingOtherChar) {
-			//		// Pump the throw bar
-			//		if((Time.time - fLastKeyUp) < 0.05f) {
-
-			//			fThrowBarValue += 16 * Time.deltaTime;
-			//		}
-			//		else {
-
-			//			fThrowBarValue -= 16 * Time.deltaTime;
-			//		}
-			//			fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
-			//	}
-			//	fLastKeyUp = Time.time;
-			//}
 			if(Input.GetKey(KeyCode.U)) { // Dude button A
 
 				if(bnCarryingOtherChar) {
@@ -959,7 +940,11 @@ public class Player : MonoBehaviour {
 					fThrowBarValue -= 1.5f * Time.deltaTime;
 					fThrowBarValue = Mathf.Clamp01(fThrowBarValue);
 			}
+		}
 
+		if(Input.GetKey(KeyCode.Tab)) {
+
+			hudScript.ActivateGameButtonsPanelForSomeTime();
 		}
 	}
 	
