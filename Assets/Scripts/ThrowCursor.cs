@@ -15,6 +15,9 @@ public class ThrowCursor : MonoBehaviour {
 	public Vector2 	vOffset;
 	public Vector2 	vDirection;
 
+	public float fLaunchForce = 4.0f;
+	BallisticLaunch trajectoryScript;
+	Transform trThrowPosition;
 
 	void OnEnable() {
 
@@ -25,10 +28,16 @@ public class ThrowCursor : MonoBehaviour {
 
 	}
 
+	void Awake() {
+
+		trajectoryScript = GetComponent<BallisticLaunch>();
+	}
 
 	// Use this for initialization
 	void Start () {
 	
+		// Get the starting point of throws
+		trThrowPosition = MainGame.instance.dudeScript.trThrowPosition;
 	}
 	
 	// Update is called once per frame
@@ -55,6 +64,14 @@ public class ThrowCursor : MonoBehaviour {
 
 		// Move the cursor to the new position
 		transform.localPosition = vNewPosition;
+
+		// Update the preview script
+		if(trajectoryScript!=null) {
+			trajectoryScript.fLaunchAngle = fCurrentAngle;
+
+			Vector2 vVelocity = (transform.position - trThrowPosition.position).normalized;
+			trajectoryScript.vVelocity0 =  vVelocity * fLaunchForce;
+		}
 
 	}
 
