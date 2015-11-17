@@ -642,11 +642,9 @@ public class Player : MonoBehaviour {
 		// Restore the sprite renderer
 		sr.enabled = true;
 		FSMEnterNewState(eFSMState.ON_AIR);
-		vThrowForceDirection = vThrowForce * fMaxThrowForce;
-			rigidbody2D.AddForce(vThrowForceDirection, ForceMode2D.Impulse); // fMaxThrowForce now is set on the dog prefab
-
-		// DEBUG
-		Debug.DrawRay(transform.position, vThrowForceDirection, Color.red, 1.0f, false);
+		//vThrowForceDirection = vThrowForce * fMaxThrowForce;
+		vThrowForceDirection = vThrowForce * 4.0f;
+		rigidbody2D.AddForce(vThrowForceDirection, ForceMode2D.Impulse); // fMaxThrowForce now is set on the dog prefab
 
 	}
 

@@ -67,7 +67,6 @@ public class ThrowCursor : MonoBehaviour {
 
 		// Update the preview script
 		if(trajectoryScript!=null) {
-			trajectoryScript.fLaunchAngle = fCurrentAngle;
 
 			Vector2 vVelocity = (transform.position - trThrowPosition.position).normalized;
 			trajectoryScript.vVelocity0 =  vVelocity * fLaunchForce;

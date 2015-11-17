@@ -64,11 +64,13 @@ public class SimpleMoveRigidBody2D : MonoBehaviour
 
 		if(bnOnAir) {
 
-			if(Mathf.Abs(rigidbody2D.velocity.x) > fMaxSpeed) {
+			// FIXME: is this messing with the ballistic trajectory of the dog?
+			// ANSWER: YES!!!
+			//if(Mathf.Abs(rigidbody2D.velocity.x) > fMaxSpeed) {
 
-				rigidbody2D.velocity = new Vector2(Mathf.Sign(rigidbody2D.velocity.x) * fMaxSpeed,
-						rigidbody2D.velocity.y);
-			}
+			//	rigidbody2D.velocity = new Vector2(Mathf.Sign(rigidbody2D.velocity.x) * fMaxSpeed,
+			//			rigidbody2D.velocity.y);
+			//}
 		}
 		else
 		if (bnAllowedToGetInput) {
