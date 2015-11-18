@@ -628,7 +628,7 @@ public class Player : MonoBehaviour {
 
 		vThrowForceDirection = new Vector2(vDir.x, vDir.y).normalized;
 
-		gameScript.dogScript.ThrowDog(vThrowForceDirection);
+		gameScript.dogScript.ThrowDog(vThrowForceDirection * fThrowBarValue);
 		
 		// Change the FSM
 		FSMEnterNewState(eFSMState.IDLE);
@@ -676,6 +676,11 @@ public class Player : MonoBehaviour {
 			//trItemPicked = gameScript.trDude;
 			bnCarryingOtherChar = false;
 		}
+	}
+
+	public float GetThrowBarValue() {
+
+		return fThrowBarValue;
 	}
 	
 	/* -----------------------------------------------------------------------------------------------------------

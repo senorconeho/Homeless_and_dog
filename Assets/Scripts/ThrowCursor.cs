@@ -18,6 +18,7 @@ public class ThrowCursor : MonoBehaviour {
 	public float fLaunchForce = 4.0f;
 	BallisticLaunch trajectoryScript;
 	Transform trThrowPosition;
+	Player dudeScript;
 
 	void OnEnable() {
 
@@ -69,7 +70,7 @@ public class ThrowCursor : MonoBehaviour {
 		if(trajectoryScript!=null) {
 
 			Vector2 vVelocity = (transform.position - trThrowPosition.position).normalized;
-			trajectoryScript.vVelocity0 =  vVelocity * fLaunchForce;
+			trajectoryScript.vVelocity0 =  vVelocity * fLaunchForce * MainGame.instance.dudeScript.GetThrowBarValue();
 		}
 
 	}
