@@ -545,6 +545,8 @@ public class Player : MonoBehaviour {
 			transform.position = vDudePosition;
 			// Restore the sprite renderer
 			sr.enabled = true;
+			// Change to idle or running
+			FSMEnterNewState(eFSMState.IDLE);
 		}
 
 		if(playerType == MainGame.ePlayerType.DUDE) {
@@ -563,8 +565,6 @@ public class Player : MonoBehaviour {
 			}
 		}
 
-		// Change to idle or running
-		FSMEnterNewState(eFSMState.IDLE);
 	}
 
 	/// <summary>
@@ -1041,6 +1041,7 @@ public class Player : MonoBehaviour {
 					// Check if we have the dog on our lap
 					if(gameScript.dogScript.FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
 						// Release the dog
+						Debug.Log("Calling DogJumpedOffMyLap");
 						gameScript.dogScript.DogJumpedOffMyLap();
 					}
 
