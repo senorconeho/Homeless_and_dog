@@ -1041,7 +1041,6 @@ public class Player : MonoBehaviour {
 					// Check if we have the dog on our lap
 					if(gameScript.dogScript.FSMGetCurrentState() == eFSMState.DOG_ON_LAP) {
 						// Release the dog
-						Debug.Log("Calling DogJumpedOffMyLap");
 						gameScript.dogScript.DogJumpedOffMyLap();
 					}
 

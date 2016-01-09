@@ -30,6 +30,8 @@ public class GameHUD : MonoBehaviour {
 
 	Player						playerScript;			//< Pointer to the player script
 
+	private bool			isShowingGameButtonsPanel = false;
+
 	/* -----------------------------------------------------------------------------------------------------------
 	 * UNITY MAIN LOOP
 	 * -----------------------------------------------------------------------------------------------------------
@@ -316,8 +318,10 @@ public class GameHUD : MonoBehaviour {
 	/// </summary>
 	public void ActivateGameButtonsPanel(bool bnNewStatus) {
 
-		if(trGameButtonsPanel != null)
+		if(trGameButtonsPanel != null) {
 			trGameButtonsPanel.gameObject.SetActive(bnNewStatus);
+			isShowingGameButtonsPanel = bnNewStatus;
+		}
 	}
 
 	/// <summary>
@@ -325,7 +329,8 @@ public class GameHUD : MonoBehaviour {
 	/// </summary>
 	public void ActivateGameButtonsPanelForSomeTime() {
 
-		StartCoroutine(ShowGameButtonsForSomeTime());
+		if(!isShowingGameButtonsPanel)
+			StartCoroutine(ShowGameButtonsForSomeTime());
 	}
 
 	/// <summary>

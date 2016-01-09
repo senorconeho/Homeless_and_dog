@@ -114,6 +114,8 @@ public class MainGame : MonoBehaviour {
 		playerSpawnerScript.SpawnPlayers();
 		StartCoroutine(SetupDog());
 		StartCoroutine(SetupDude());
+
+		// 
 	}
 	
 	/* -----------------------------------------------------------------------------------------------------------
@@ -188,6 +190,9 @@ public class MainGame : MonoBehaviour {
 
 		dogCameraScript.SetCameraTarget(trDog);
 		dogScript.RegisterCamera(trDogCamera, dogCameraScript);
+
+		// FIXME
+		hudDogScript.ActivateGameButtonsPanelForSomeTime();
 	}
 
 	/// <summary>
@@ -199,6 +204,9 @@ public class MainGame : MonoBehaviour {
 		yield return new WaitForSeconds(.050f);
 		dudeCameraScript.SetCameraTarget(trDude);
 		dudeScript.RegisterCamera(trDudeCamera, dudeCameraScript);
+
+		// FIXME
+		hudDudeScript.ActivateGameButtonsPanelForSomeTime();
 	}
 
 

@@ -17,7 +17,8 @@ public class StartScreenCredits : MonoBehaviour {
 		"Music: ??",
 		"2014"
 	};
-	public string stStartMessage = "- Press Start -";
+	public string stStartMessageDog = "- Press <enter> -";		//FIXME
+	public string stStartMessageDude = "- Press <spacebar> -"; //FIXME
 
 	MainGame	gameScript;
 	float	fChangeTextTime = 4.5f;
@@ -82,7 +83,8 @@ public class StartScreenCredits : MonoBehaviour {
 	/// <\summary>
 	IEnumerator WaitAndChangeCredits(float fWaitTime) {
 
-		string stText = stStartMessage;
+		string stTextDog = stStartMessageDog;
+		string stTextDude = stStartMessageDude;
 		bool bnShowStartMessage = true;
 
 		while(true) {
@@ -92,23 +94,26 @@ public class StartScreenCredits : MonoBehaviour {
 			}
 
 			if(gameScript.hudDudeScript != null && gameScript.hudDogScript != null) {
-				gameScript.hudDudeScript.SetBottomScreenText(stText);
-				gameScript.hudDogScript.SetBottomScreenText(stText);
+				gameScript.hudDudeScript.SetBottomScreenText(stTextDude);
+				gameScript.hudDogScript.SetBottomScreenText(stTextDog);
 			}
 				yield return new WaitForSeconds(fWaitTime);
 
 				bnShowStartMessage =!bnShowStartMessage;
 
 				if(!bnShowStartMessage) {
-					stText = stCredits[nCreditIdx];
+					stTextDude = stCredits[nCreditIdx];
+					stTextDog = stCredits[nCreditIdx];
 
 					// Skip to the next credit
 					nCreditIdx++;
 					if(nCreditIdx > stCredits.Length-1)
 						nCreditIdx = 0;
 				}
-				else
-					stText = stStartMessage;
+				else {
+					stTextDog = stStartMessageDog;
+					stTextDude = stStartMessageDude;
+				}
 			}
 		}
 }
